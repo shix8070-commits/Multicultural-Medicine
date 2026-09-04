@@ -1,0 +1,3666 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>临床助手 · 科研助手 · 我的论坛</title>
+  <style>
+    :root {
+      --ink: #1d2430;
+      --muted: #6b7380;
+      --line: #e4e9f0;
+      --blue: #3b82c4;
+      --purple: #6b6ad6;
+      --warn: #b42318;
+      --warn-bg: #fdecea;
+      --page-grad: linear-gradient(180deg, #c9e8ff 0%, #d5e2ff 38%, #e4dcff 72%, #ddd0ff 100%);
+      --bar-grad: linear-gradient(90deg, #c5e8ff 0%, #c0ace8 100%);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+      background: #d8e4f0;
+      color: var(--ink);
+      min-height: 100vh;
+    }
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px 40px;
+    }
+    .phone {
+      width: 390px;
+      height: 844px;
+      background: #111;
+      border-radius: 44px;
+      padding: 12px;
+      box-shadow: 0 24px 60px rgba(30, 50, 80, .28);
+    }
+    .screen {
+      height: 100%;
+      border-radius: 34px;
+      overflow: hidden;
+      background: var(--page-grad);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .status {
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 18px 0;
+      font-size: 12px;
+      font-weight: 650;
+    }
+    .wx-bar {
+      height: 44px;
+      display: grid;
+      grid-template-columns: 36px 1fr 88px;
+      align-items: center;
+      padding: 0 8px 0 8px;
+    }
+    .wx-left { display: flex; align-items: center; gap: 6px; font-size: 18px; }
+    .wx-left .menu-btn {
+      border: 0;
+      background: transparent;
+      font: inherit;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px 2px;
+      line-height: 1;
+      color: inherit;
+    }
+    .drawer-mask {
+      position: absolute;
+      inset: 0;
+      background: rgba(20, 30, 50, .35);
+      z-index: 40;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease;
+    }
+    .drawer-mask.on { opacity: 1; pointer-events: auto; }
+    .drawer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 78%;
+      max-width: 300px;
+      background: var(--page-grad);
+      z-index: 41;
+      transform: translateX(-105%);
+      transition: transform .22s ease;
+      box-shadow: 8px 0 28px rgba(20, 30, 50, .18);
+      display: flex;
+      flex-direction: column;
+      padding: 28px 16px 20px;
+    }
+    .drawer.on { transform: translateX(0); }
+    .drawer-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 4px 20px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 12px;
+    }
+    .drawer-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #8ec8f0, #8b7ee0);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 800;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .drawer-user b { display: block; font-size: 16px; }
+    .drawer-user span { display: block; font-size: 12px; color: var(--muted); margin-top: 3px; }
+    .drawer-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .drawer-nav button {
+      border: 0;
+      background: rgba(255,255,255,.62);
+      border-radius: 12px;
+      padding: 14px 12px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 650;
+      text-align: left;
+      cursor: pointer;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .drawer-nav button em {
+      font-style: normal;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+    .hit-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .hit-top b { flex: 1; }
+    .star-btn {
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font-size: 20px;
+      line-height: 1;
+      color: #c5cad3;
+      padding: 0 2px;
+      flex-shrink: 0;
+    }
+    .star-btn.on { color: #e6a817; }
+    .badge {
+      font-size: 10px;
+      color: #7a8494;
+      background: rgba(255,255,255,.7);
+      border-radius: 8px;
+      padding: 1px 6px;
+    }
+    .seg {
+      display: flex;
+      background: rgba(255,255,255,.4);
+      border-radius: 18px;
+      padding: 3px;
+    }
+    .seg button {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      font: inherit;
+      font-size: 12px;
+      color: #5c6573;
+      padding: 6px 2px;
+      border-radius: 15px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .seg button.on {
+      background: #fff;
+      color: #1a1a1a;
+      font-weight: 700;
+      box-shadow: 0 1px 6px rgba(80,100,140,.14);
+    }
+    .capsule {
+      justify-self: end;
+      width: 86px;
+      height: 30px;
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 15px;
+      background: rgba(255,255,255,.88);
+      display: flex;
+      align-items: center;
+      color: #333;
+      overflow: hidden;
+    }
+    .capsule span {
+      flex: 1;
+      display: grid;
+      place-items: center;
+      height: 100%;
+    }
+    .capsule span:first-child {
+      font-size: 16px;
+      letter-spacing: 1px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .capsule span + span {
+      border-left: 1px solid rgba(0,0,0,.12);
+    }
+    .capsule .cap-dot {
+      width: 12px;
+      height: 12px;
+      border: 1.6px solid #222;
+      border-radius: 50%;
+      box-sizing: border-box;
+    }
+    .body { flex: 1; overflow: auto; padding-bottom: 8px; }
+    .hero {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 18px 14px;
+    }
+    .doc {
+      width: 72px;
+      height: 72px;
+      flex-shrink: 0;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #7eb8b4;
+    }
+    .doc img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 12%;
+      display: block;
+    }
+    .hello { font-size: 22px; font-weight: 750; letter-spacing: .02em; }
+    .hello span { font-size: 14px; font-weight: 400; color: #4a5565; display: block; margin-top: 4px; line-height: 1.4; }
+    .mods {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding: 0 14px 16px;
+    }
+    .mod {
+      border: 0;
+      background: rgba(255,255,255,.78);
+      border-radius: 16px;
+      padding: 14px 6px 12px;
+      cursor: pointer;
+      font: inherit;
+      text-align: center;
+    }
+    .mod .ico {
+      width: 42px;
+      height: 42px;
+      margin: 0 auto 8px;
+      border-radius: 12px;
+      background: #e8f4ff;
+      color: var(--blue);
+      display: grid;
+      place-items: center;
+    }
+    .mod b { display: block; font-size: 13px; font-weight: 650; }
+    .sec {
+      padding: 0 16px 12px;
+    }
+    .sec-h {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .sec-h button {
+      border: 0;
+      background: none;
+      color: var(--muted);
+      font: inherit;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .q {
+      width: 100%;
+      text-align: left;
+      background: #fff;
+      border: 0;
+      border-radius: 16px;
+      padding: 13px 14px;
+      margin-bottom: 8px;
+      font: inherit;
+      font-size: 13.5px;
+      line-height: 1.45;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      box-shadow: 0 1px 0 rgba(255,255,255,.8);
+    }
+    .hash {
+      width: 18px;
+      height: 18px;
+      border-radius: 5px;
+      background: #ecebff;
+      color: var(--purple);
+      font-size: 12px;
+      font-weight: 800;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .q .go { margin-left: auto; color: #c5cad3; font-size: 16px; }
+    .new-chat {
+      width: 72%;
+      min-height: 72px;
+      margin: 0 auto;
+      border: 0;
+      background: #fff;
+      border-radius: 16px;
+      cursor: pointer;
+      font: inherit;
+      color: var(--ink);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .new-chat .plus-mark {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 1.5px solid var(--blue);
+      color: var(--blue);
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      line-height: 1;
+      font-weight: 400;
+    }
+    .new-chat b { font-size: 13px; font-weight: 650; }
+    .dock {
+      padding: 6px 12px 14px;
+      background: linear-gradient(180deg, transparent, rgba(228, 220, 255, .88) 32%);
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .chips button {
+      border: 0;
+      background: var(--bar-grad);
+      border-radius: 16px;
+      padding: 7px 12px;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      color: #334;
+    }
+    .inputbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      border-radius: 22px;
+      padding: 8px 10px 8px 12px;
+    }
+    .inputbar input {
+      flex: 1;
+      border: 0;
+      outline: none;
+      font: inherit;
+      font-size: 14px;
+      background: transparent;
+    }
+    .plus {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1.5px solid #c5cad3;
+      background: #fff;
+      color: #666;
+      font-size: 18px;
+      line-height: 24px;
+      cursor: pointer;
+    }
+    .sub {
+      background: transparent;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .sub .nav {
+      height: 46px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 12px;
+      border-bottom: 1px solid var(--line);
+      font-weight: 700;
+    }
+    .sub .nav button { border: 0; background: none; font-size: 22px; cursor: pointer; width: 28px; }
+    .sub .pad { flex: 1; overflow: auto; padding: 12px 14px 20px; background: transparent; }
+    .search {
+      display: flex;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      margin-bottom: 10px;
+    }
+    .search input { flex: 1; border: 0; padding: 10px 12px; font: inherit; font-size: 14px; outline: none; }
+    .search button { border: 0; background: var(--blue); color: #fff; padding: 0 14px; font-weight: 700; cursor: pointer; }
+    .filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .filters button {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 14px;
+      padding: 5px 10px;
+      font: inherit;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .filters button.on { border-color: var(--blue); background: #e8f4ff; color: var(--blue); font-weight: 700; }
+    .lit-tabs {
+      display: flex;
+      gap: 0;
+      padding: 0 14px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+    }
+    .lit-tabs button {
+      border: 0;
+      background: transparent;
+      padding: 10px 14px;
+      font: inherit;
+      font-size: 13px;
+      color: var(--muted);
+      cursor: pointer;
+      position: relative;
+    }
+    .lit-tabs button.on { color: var(--blue); font-weight: 700; }
+    .lit-tabs button.on::after {
+      content: "";
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: 0;
+      height: 2px;
+      background: var(--blue);
+      border-radius: 1px;
+    }
+    .lit-cat-panel {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      top: calc(100% - 4px);
+      background: #fff;
+      border-radius: 12px;
+      z-index: 7;
+      padding: 10px;
+      box-shadow: 0 8px 28px rgba(20, 30, 50, .16);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .lit-cat-panel button {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 10px;
+      padding: 12px 8px;
+      font: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .lit-cat-panel button.on { border-color: var(--blue); background: #f3f8ff; color: var(--blue); font-weight: 700; }
+    .lit-cat-panel button em { display: block; font-style: normal; font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .lit-filter-panel {
+      background: #fff;
+      padding: 12px 14px 80px;
+      flex: 1;
+      overflow: auto;
+    }
+    .lit-filter-panel h4 { font-size: 13px; margin-bottom: 8px; color: var(--ink); }
+    .lit-filter-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .lit-filter-tags button {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 7px 12px;
+      font: inherit;
+      font-size: 12px;
+      cursor: pointer;
+      color: #334;
+    }
+    .lit-filter-tags button.on { border-color: var(--blue); background: #e8f4ff; color: var(--blue); font-weight: 650; }
+    .lit-filter-foot {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      gap: 10px;
+      padding: 12px 14px 20px;
+      background: #fff;
+      border-top: 1px solid var(--line);
+    }
+    .lit-filter-foot button {
+      flex: 1;
+      border-radius: 10px;
+      padding: 11px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .lit-filter-foot .ghost { border: 1px solid var(--line); background: #fff; color: #334; }
+    .lit-filter-foot .primary { border: 0; background: var(--blue); color: #fff; }
+    .lit-hint { padding: 24px 14px; text-align: center; font-size: 13px; color: var(--muted); line-height: 1.6; }
+    .lit-result-head { padding: 10px 14px 0; font-size: 12px; color: var(--muted); }
+    .grade-tag {
+      display: inline-block;
+      border-radius: 6px;
+      padding: 2px 7px;
+      font-size: 10px;
+      font-weight: 700;
+      margin-right: 4px;
+    }
+    .grade-L4, .grade-L5 { background: #fef3c7; color: #92400e; }
+    .grade-L6, .grade-L7 { background: #ffedd5; color: #9a3412; }
+    .grade-L1 { background: #fee2e2; color: #991b1b; }
+    .grade-L2, .grade-L3 { background: #ffedd5; color: #c2410c; }
+    .grade-L8 { background: #dcfce7; color: #166534; }
+    .grade-L9 { background: #f3f4f6; color: #6b7280; }
+    .doc-tag { display: inline-block; background: #eef1f6; color: #556; border-radius: 6px; padding: 2px 7px; font-size: 10px; margin-right: 4px; }
+    .statrow { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    .stat {
+      background: #fff;
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+    .stat em { font-style: normal; font-size: 12px; color: var(--muted); display: block; }
+    .stat strong { font-size: 20px; }
+    .hit {
+      width: 100%;
+      text-align: left;
+      background: #fff;
+      border: 0;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 8px;
+      font: inherit;
+    }
+    .hit b { display: block; font-size: 14px; margin-bottom: 4px; }
+    .hit p { font-size: 13px; color: #333; line-height: 1.45; }
+    .hit .meta { font-size: 12px; color: var(--muted); margin-top: 6px; }
+    .reply-prose { font-size: 14px; line-height: 1.55; color: #333; }
+    .reply-prose p { margin: 0 0 8px; }
+    .reply-prose p:last-child { margin-bottom: 0; }
+    .reply-summary { font-size: 15px; line-height: 1.55; margin-bottom: 4px; }
+    .cite-foot {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(180, 190, 210, .35);
+    }
+    .cite-foot-label {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .cite-chip {
+      display: inline-block;
+      border: 0;
+      background: #eef2f7;
+      color: #4a5568;
+      font: inherit;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      margin: 0 6px 6px 0;
+      cursor: pointer;
+    }
+    .cite-chip:hover { background: #dbeafe; color: #1e40af; }
+    .evidence-mini {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin: 10px 0;
+      padding: 10px;
+      background: #f8fafc;
+      border-radius: 10px;
+      font-size: 12px;
+    }
+    .evidence-mini span { display: block; }
+    .evidence-mini em { font-style: normal; color: var(--muted); font-size: 11px; }
+    .evidence-mini strong { font-size: 13px; color: var(--ink); }
+    .evidence-mini small { font-size: 10px; color: #9a3412; }
+    .warn {
+      background: var(--warn-bg);
+      color: var(--warn);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+    .chat { padding: 12px; display: flex; flex-direction: column; gap: 10px; min-height: 100%; }
+    .bubble {
+      max-width: 82%;
+      background: #fff;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .bubble.me { align-self: flex-end; background: #c9e7ff; }
+    .bubble.pending { color: var(--muted); }
+    .llm-status {
+      font-size: 11px;
+      color: var(--muted);
+      padding: 0 4px 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .llm-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #9aa3ad;
+      flex-shrink: 0;
+    }
+    .llm-dot.on { background: #2f9e44; }
+    .keys {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 6px 0 2px;
+    }
+    .keys span {
+      background: #e8f4ff;
+      color: #2a5f8f;
+      border-radius: 8px;
+      padding: 3px 8px;
+      font-size: 12px;
+      font-weight: 650;
+    }
+    .tag-mute {
+      display: inline-block;
+      background: #eef1f6;
+      color: #6b7380;
+      border-radius: 6px;
+      padding: 2px 7px;
+      font-size: 11px;
+      font-weight: 650;
+      margin-right: 4px;
+    }
+    .suggest { display: flex; flex-wrap: wrap; gap: 6px; }
+    .suggest button {
+      border: 1px solid #d0d0d0; background: #fff; border-radius: 14px;
+      padding: 6px 10px; font: inherit; font-size: 12px; cursor: pointer; color: #333; text-align: left;
+    }
+    .mode-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bar-grad);
+      color: var(--ink);
+      border-radius: 12px;
+      padding: 8px 10px;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .mode-chip .end {
+      margin-left: auto;
+      border: 0;
+      background: rgba(255,255,255,.22);
+      color: #fff;
+      border-radius: 8px;
+      padding: 4px 10px;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .mode-chip .x {
+      margin-left: 0;
+      border: 0;
+      background: transparent;
+      color: #4a4258;
+      font-size: 16px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 4px;
+    }
+    .mode-chip .x.alone { margin-left: auto; }
+    .home-chat { padding: 8px 12px 4px; display: flex; flex-direction: column; gap: 10px; min-height: 280px; }
+    .note { font-size: 12px; color: var(--muted); margin-top: 8px; }
+    .sbar {
+      display: flex;
+      align-items: center;
+      background: #f3f5f8;
+      border-radius: 10px;
+      padding: 4px 4px 4px 4px;
+      margin: 10px 14px 0;
+      position: relative;
+    }
+    .sbar .drop {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--blue);
+      padding: 8px 8px;
+      border-right: 1px solid #dde3ea;
+      white-space: nowrap;
+      cursor: pointer;
+      border: 0;
+      background: transparent;
+      font: inherit;
+    }
+    .sbar .drop .caret { font-size: 10px; color: #8a93a0; }
+    .sbar input {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      padding: 9px 10px;
+      font: inherit;
+      font-size: 14px;
+      outline: none;
+    }
+    .search-head { background: transparent; flex-shrink: 0; padding-bottom: 8px; position: relative; z-index: 6; }
+    .mask {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,.18);
+      z-index: 4;
+    }
+    .menu {
+      position: absolute;
+      left: 14px;
+      top: calc(100% - 6px);
+      width: 188px;
+      background: #fff;
+      border-radius: 12px;
+      z-index: 7;
+      overflow: hidden;
+      box-shadow: 0 8px 28px rgba(20, 30, 50, .16);
+    }
+    .menu button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      text-align: left;
+      border: 0;
+      background: #fff;
+      padding: 12px 14px;
+      font: inherit;
+      font-size: 14px;
+      cursor: pointer;
+      color: var(--ink);
+    }
+    .menu button.on { color: var(--blue); font-weight: 700; background: #f3f8ff; }
+    .menu button + button { border-top: 1px solid #f0f2f5; }
+    .axis-tip { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+    .group {
+      width: 100%;
+      text-align: left;
+      background: #fff;
+      border: 0;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 8px;
+      font: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+    .group b { font-size: 15px; }
+    .group em { font-style: normal; color: var(--muted); font-size: 13px; }
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 48px 12px;
+      font-size: 13px;
+    }
+    .empty .folder {
+      width: 72px;
+      height: 58px;
+      margin: 0 auto 12px;
+      background: #d7ecff;
+      border-radius: 8px 8px 4px 4px;
+      position: relative;
+    }
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      background: #eef3f8;
+      color: #5c6573;
+      border-radius: 4px;
+      padding: 1px 6px;
+      margin-right: 4px;
+    }
+    .kv {
+      display: grid;
+      grid-template-columns: 7.2em 1fr;
+      gap: 10px 12px;
+      margin-top: 10px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .kv em { color: #6b7380; font-style: normal; }
+    .kv span { color: var(--ink); }
+    .prompt-sec {
+      background: #fff;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 10px;
+    }
+    .prompt-sec h3 { font-size: 14px; margin-bottom: 8px; }
+    .prompt-sec p, .prompt-sec li {
+      font-size: 13px;
+      color: #3a4250;
+      line-height: 1.65;
+    }
+    .prompt-sec p + p { margin-top: 8px; }
+    .prompt-sec ol, .prompt-sec ul {
+      padding-left: 1.25em;
+      margin-top: 6px;
+    }
+    .prompt-sec li { margin-bottom: 6px; }
+    .mod.gen-report { background: var(--bar-grad); }
+    .report-body .stat,
+    .report-body .prompt-sec,
+    .report-body .hit {
+      background: var(--bar-grad);
+    }
+    .report-body .statrow.orbs {
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 8px;
+    }
+    .report-body .hit .statrow.orbs {
+      grid-template-columns: 72px 72px;
+      justify-content: start;
+    }
+    .report-body .stat-orb {
+      aspect-ratio: 1;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8px 4px;
+      background: linear-gradient(145deg, #8ec8f0, #8b7ee0);
+    }
+    .report-body .stat-orb em { font-size: 11px; color: var(--ink); }
+    .report-body .stat-orb strong { font-size: 20px; line-height: 1.1; }
+    .report-body .stat-orb .unit { font-size: 11px; color: #3a4250; }
+    .copy-bar {
+      border: 0;
+      width: 100%;
+      border-radius: 12px;
+      padding: 12px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--bar-grad);
+      color: var(--ink);
+      margin-bottom: 10px;
+    }
+    .forum {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      background: var(--page-grad);
+    }
+    .forum-body {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      padding: 10px 12px 12px;
+    }
+    .forum-search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,.86);
+      border-radius: 16px;
+      padding: 8px 12px;
+      margin-bottom: 10px;
+      color: #8a93a3;
+    }
+    .forum-search input {
+      flex: 1;
+      border: 0;
+      outline: none;
+      background: transparent;
+      font: inherit;
+      font-size: 13px;
+      color: var(--ink);
+    }
+    .forum-card {
+      background: rgba(255,255,255,.88);
+      border-radius: 18px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+    .forum-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .forum-av {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      flex-shrink: 0;
+      background: linear-gradient(145deg, #7eb8f0, #7b6ed8);
+    }
+    .forum-av.s2 { background: linear-gradient(145deg, #9bb6ff, #8b6ad6); }
+    .forum-av.s3 { background: linear-gradient(145deg, #6cb8e8, #6b6ad6); }
+    .forum-av.s4 { background: linear-gradient(145deg, #b9a8f0, #5a7fd6); }
+    .forum-av.lg { width: 64px; height: 64px; font-size: 22px; }
+    .forum-user b { display: block; font-size: 13px; }
+    .forum-user em {
+      display: block;
+      font-style: normal;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+    .forum-card p {
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: #2a3140;
+    }
+    .forum-acts {
+      display: flex;
+      gap: 16px;
+      margin-top: 10px;
+      color: #8a93a3;
+      font-size: 12px;
+    }
+    .forum-acts button {
+      border: 0;
+      background: none;
+      color: inherit;
+      font: inherit;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      padding: 0;
+    }
+    .forum-acts button.on { color: #6b6ad6; }
+    .forum-banner {
+      height: 128px;
+      border-radius: 16px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      position: relative;
+      background:
+        radial-gradient(ellipse 80% 70% at 20% 10%, rgba(255,255,255,.55), transparent 55%),
+        linear-gradient(180deg, #9fd0ff 0%, #7ea8f4 38%, #6b6ad6 100%);
+    }
+    .forum-banner::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(115deg, transparent 40%, rgba(255,255,255,.18) 48%, transparent 56%),
+        linear-gradient(70deg, rgba(90, 80, 180, .12), transparent 40%);
+    }
+    .forum-photos {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .forum-photos i {
+      display: block;
+      aspect-ratio: 1;
+      border-radius: 10px;
+      background: linear-gradient(145deg, #8ec8f0, #8b7ee0);
+    }
+    .forum-photos i:nth-child(2) { background: linear-gradient(160deg, #b9d8ff, #6b6ad6); }
+    .forum-photos i:nth-child(3) { background: linear-gradient(200deg, #c5b8ff, #4f8ad6); }
+    .forum-like {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #6b6ad6;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .forum-chat-item {
+      width: 100%;
+      border: 0;
+      background: rgba(255,255,255,.88);
+      border-radius: 16px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-align: left;
+      font: inherit;
+      cursor: pointer;
+    }
+    .forum-chat-item b { display: block; font-size: 14px; }
+    .forum-chat-item span {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .forum-thread {
+      flex: 1;
+      overflow: auto;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .forum-bubble {
+      max-width: 78%;
+      background: rgba(255,255,255,.92);
+      border-radius: 16px 16px 16px 6px;
+      padding: 10px 12px;
+      font-size: 14px;
+      line-height: 1.45;
+      align-self: flex-start;
+    }
+    .forum-bubble.me {
+      align-self: flex-end;
+      background: linear-gradient(135deg, #d4e9ff, #dcd4ff);
+      border-radius: 16px 16px 6px 16px;
+    }
+    .forum-time {
+      align-self: center;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .forum-compose textarea {
+      width: 100%;
+      min-height: 160px;
+      border: 0;
+      resize: none;
+      background: rgba(255,255,255,.9);
+      border-radius: 16px;
+      padding: 14px;
+      font: inherit;
+      font-size: 14px;
+      line-height: 1.5;
+      outline: none;
+    }
+    .forum-send {
+      width: 100%;
+      margin-top: 12px;
+      border: 0;
+      border-radius: 16px;
+      padding: 12px;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--bar-grad);
+      color: var(--ink);
+    }
+    .forum-me-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,.88);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 10px;
+    }
+    .forum-me-head b { display: block; font-size: 18px; }
+    .forum-me-head span { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .forum-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .forum-stats div {
+      background: rgba(255,255,255,.88);
+      border-radius: 14px;
+      padding: 12px 8px;
+      text-align: center;
+    }
+    .forum-stats strong { display: block; font-size: 18px; }
+    .forum-stats em { font-style: normal; font-size: 11px; color: var(--muted); }
+    .forum-menu {
+      width: 100%;
+      border: 0;
+      background: rgba(255,255,255,.88);
+      border-radius: 14px;
+      padding: 14px 12px;
+      margin-bottom: 8px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 650;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      color: var(--ink);
+    }
+    .forum-menu em { font-style: normal; color: var(--muted); font-weight: 400; font-size: 12px; }
+    .forum-tabbar {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      background: rgba(255,255,255,.9);
+      border-top: 1px solid rgba(180, 190, 210, .35);
+      padding: 6px 0 10px;
+    }
+    .forum-tabbar button {
+      border: 0;
+      background: transparent;
+      font: inherit;
+      font-size: 10px;
+      color: #7a8494;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      cursor: pointer;
+    }
+    .forum-tabbar button.on { color: #6b6ad6; font-weight: 700; }
+    .forum-tabbar svg { width: 22px; height: 22px; }
+    .forum-chat-go {
+      border: 0;
+      background: var(--bar-grad);
+      border-radius: 14px;
+      padding: 6px 12px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--ink);
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="phone"><div class="screen" id="app"></div></div>
+  </div>
+  <script>
+    const SHELVES = [
+      ["prev", "field", "流病·患病率"],
+      ["risk", "disease", "流病·危险因素"],
+      ["geno", "people", "遗传·变异"],
+      ["pgx", "pill", "药物基因组"]
+    ];
+    function shelfName(id) {
+      const hit = SHELVES.find((s) => s[0] === id);
+      return hit ? hit[2] : "";
+    }
+
+    const DOC_TYPES = [
+      ["review", "📚", "综述类", "系统评价、Meta、文献综述"],
+      ["original", "🔬", "实验研究", "RCT、动物/细胞实验"],
+      ["theoretical", "📐", "理论/模型", "公式推导、遗传模型"],
+      ["observational", "👁️", "观察/描述", "横断面、病例系列"],
+      ["methods", "🛠️", "方法/工具", "检测方法、统计模型"],
+      ["opinion", "💬", "观点/评论", "专家意见、共识声明"],
+      ["case", "📋", "案例分析", "病例报告、小样本系列"]
+    ];
+    function docTypeName(id) {
+      const hit = DOC_TYPES.find((d) => d[0] === id);
+      return hit ? hit[2] : id;
+    }
+    function gradeShort(code) {
+      const n = (code || "").replace("L", "");
+      if (n === "1") return "高";
+      if (n === "2" || n === "3") return "中高";
+      if (n === "4" || n === "5") return "中";
+      if (n === "6" || n === "7") return "低";
+      if (n === "8") return "极低";
+      if (n === "9") return "仅供参考";
+      return "—";
+    }
+
+    /* 组员文档：文献数据规范与示例库（MES 编号） */
+    const LIT_ENTRIES = [
+      {
+        id: 101, mes: "MES-PGx-001", shelf: "pgx", docType: "observational", grade: "L5",
+        title: "VKORC1 and CYP2C9 polymorphisms in Uyghur patients: impact on warfarin sensitivity",
+        ethnicity: "维吾尔族", topic: "华法林、CYP2C9、VKORC1、出血风险",
+        picos: {
+          P: "诊断为血栓性疾病且需长期抗凝治疗的维吾尔族患者",
+          I: "使用常规剂量华法林",
+          C: "患有同类血栓性疾病、使用相同常规剂量华法林的非维吾尔族人群",
+          O: "华法林稳态剂量差异、出血事件发生率",
+          S: "新疆地区医疗机构"
+        },
+        conclusion: "新疆维吾尔族人群中 CYP2C9*3 突变频率约 3.5%，VKORC1 -1639A 等位基因频率约 78%，显著低于汉族人群（~91%），提示维吾尔族患者华法林稳态剂量可能高于汉族人群。",
+        source: "PubMed (PMID: 25123456)；Zhonghua Yi Xue Yi Chuan Xue Za Zhi, 2014",
+        boundary: "样本来源：新疆地区维吾尔族健康志愿者及华法林用药患者共 186 例；基因因素仅解释约 40-50% 的个体间剂量差异，需结合临床因素和 INR 监测。",
+        gradeName: "L5 观察性研究", gradeNote: "GRADE 初始等级：低"
+      },
+      {
+        id: 102, mes: "MES-PGx-002", shelf: "pgx", docType: "case", grade: "L7",
+        title: "广西壮族人群 CYP2C9 和 VKORC1 基因多态性对华法林剂量的影响",
+        ethnicity: "壮族", topic: "华法林、CYP2C9、VKORC1、稳定剂量",
+        picos: {
+          P: "广西壮族自治区壮族华法林用药患者",
+          I: "华法林抗凝治疗",
+          C: "同地区汉族华法林用药患者（回顾性比较）",
+          O: "华法林稳定剂量、基因型分布",
+          S: "广西壮族自治区医疗机构"
+        },
+        conclusion: "广西壮族人群 VKORC1 -1639G>A 基因型分布为 AA 型约 67.2%、GA 型约 29.8%、GG 型约 3.0%；CYP2C9*3 突变频率约 2.8%；基于基因型构建的华法林稳定剂量预测模型可解释约 52% 的个体间变异。",
+        source: "中国知网 (CNKI)；广西医科大学学报, 2019",
+        boundary: "样本来源：广西壮族自治区壮族人群 152 例；未包含其他民族对照；仅为回顾性数据，需前瞻性验证。",
+        gradeName: "L7 病例对照研究", gradeNote: "GRADE 初始等级：低"
+      },
+      {
+        id: 103, mes: "MES-Prev-001", shelf: "prev", docType: "observational", grade: "L5",
+        title: "新疆维吾尔自治区维吾尔族人群高血压流行病学调查",
+        ethnicity: "维吾尔族", topic: "高血压、患病率",
+        picos: {
+          P: "新疆地区35岁以上维吾尔族居民",
+          I: "无（横断面调查）",
+          C: "无（横断面调查）",
+          O: "高血压患病率、知晓率、治疗率、控制率",
+          S: "新疆7个地区社区调查"
+        },
+        conclusion: "新疆地区 35 岁以上维吾尔族人群高血压患病率为 37.2%（标化率 33.8%），男性 40.1%、女性 34.6%；知晓率、治疗率和控制率分别为 48.3%、30.1% 和 8.7%，均低于全国平均水平。",
+        source: "中国知网 (CNKI)；中华高血压杂志, 2017",
+        boundary: "样本来源：新疆 7 个地区 5,832 名维吾尔族居民（2014-2015 年调查）；限于新疆维吾尔族，不能直接推及其他民族。",
+        gradeName: "L5 观察性研究", gradeNote: "GRADE 初始等级：低"
+      },
+      {
+        id: 104, mes: "MES-Prev-002", shelf: "prev", docType: "observational", grade: "L5",
+        title: "云南省傣族居民代谢综合征患病率及影响因素分析",
+        ethnicity: "傣族", topic: "代谢综合征、患病率",
+        picos: {
+          P: "云南西双版纳傣族居民",
+          I: "无（横断面调查）",
+          C: "无（横断面调查）",
+          O: "代谢综合征患病率",
+          S: "云南西双版纳社区调查"
+        },
+        conclusion: "云南省西双版纳地区傣族居民代谢综合征患病率为 21.8%（IDF 标准），其中男性 19.3%、女性 24.6%；60 岁以上人群达 38.5%。",
+        source: "中国知网 (CNKI)；中华流行病学杂志, 2020",
+        boundary: "样本来源：云南西双版纳 2,156 名傣族居民（2018 年）；农村和城镇比例约 6:4。",
+        gradeName: "L5 观察性研究", gradeNote: "GRADE 初始等级：低"
+      },
+      {
+        id: 105, mes: "MES-Risk-001", shelf: "risk", docType: "case", grade: "L7",
+        title: "蒙古族人群高血压危险因素的病例对照研究",
+        ethnicity: "蒙古族", topic: "高血压、危险因素、盐摄入",
+        picos: {
+          P: "内蒙古地区蒙古族人群",
+          I: "高盐饮食、饮酒、运动（作为暴露因素分析）",
+          C: "无高血压的蒙古族人群",
+          O: "高血压发病风险（OR值）",
+          S: "内蒙古通辽市医院"
+        },
+        conclusion: "内蒙古地区蒙古族高血压独立危险因素：高盐饮食（OR=2.34）、BMI≥28（OR=1.89）、饮酒史≥10年（OR=1.56）、高血压家族史（OR=2.01）；规律运动为保护因素（OR=0.62）。",
+        source: "PubMed (PMID: 31252147)；J Hum Hypertens, 2019",
+        boundary: "样本来源：内蒙古通辽市蒙古族病例 320 例、对照 320 例；基于医院病例，存在选择偏倚。",
+        gradeName: "L7 病例对照研究", gradeNote: "GRADE 初始等级：低"
+      },
+      {
+        id: 106, mes: "MES-Risk-002", shelf: "risk", docType: "observational", grade: "L5",
+        title: "西藏藏族人群高尿酸血症相关因素分析",
+        ethnicity: "藏族", topic: "高尿酸血症、危险因素、高原",
+        picos: {
+          P: "西藏拉萨地区藏族居民",
+          I: "无（横断面研究）",
+          C: "无（横断面研究）",
+          O: "高尿酸血症相关因素（OR值）",
+          S: "西藏拉萨社区调查"
+        },
+        conclusion: "西藏拉萨地区藏族人群高尿酸血症相关因素：男性（OR=2.21）、高海拔居住年限（每增加10年 OR=1.31）、高脂饮食（OR=1.67）、饮茶习惯（OR=0.71）。",
+        source: "中国知网 (CNKI)；中国慢性病预防与控制, 2021",
+        boundary: "样本来源：拉萨市 2,100 名藏族居民（2019 年）；长期居留高原人群，结论不适用于移居低海拔后的代谢变化。",
+        gradeName: "L5 观察性研究", gradeNote: "GRADE 初始等级：低"
+      },
+      {
+        id: 107, mes: "MES-Geno-001", shelf: "geno", docType: "observational", grade: "L5",
+        title: "新疆哈萨克族人群 ABCA1 基因多态性与血脂水平的关联",
+        ethnicity: "哈萨克族", topic: "ABCA1、基因多态性、血脂、HDL-C",
+        picos: {
+          P: "新疆伊犁地区哈萨克族人群",
+          I: "无（候选基因关联研究）",
+          C: "无（候选基因关联研究）",
+          O: "HDL-C水平差异",
+          S: "新疆伊犁地区社区调查"
+        },
+        conclusion: "新疆哈萨克族人群 ABCA1 rs2230806（R219K）位点多态性分布：KK 型 23.5%、RK 型 49.8%、RR 型 26.7%；KK 型携带者 HDL-C 水平显著高于 RR 型（P=0.007）。",
+        source: "PubMed (PMID: 29873214)；Mol Genet Genomics, 2018",
+        boundary: "样本来源：新疆伊犁地区哈萨克族 518 例（2016 年）；仅为单基因多态性，需功能验证。",
+        gradeName: "L5 观察性研究", gradeNote: "GRADE 初始等级：低"
+      },
+      {
+        id: 108, mes: "MES-Geno-002", shelf: "geno", docType: "observational", grade: "L5",
+        title: "贵州布依族人群 CYP2D6 基因多态性分布特征",
+        ethnicity: "布依族", topic: "CYP2D6、基因多态性、慢代谢型",
+        picos: {
+          P: "贵州黔南州布依族人群",
+          I: "无（基因频率调查）",
+          C: "汉族人群（文献比较）",
+          O: "CYP2D6代谢型频率分布",
+          S: "贵州黔南州社区调查"
+        },
+        conclusion: "贵州布依族人群 CYP2D6 慢代谢型（PM）频率约为 8.2%，快代谢型（EM）约为 69.3%，中间代谢型（IM）约为 22.5%；与汉族人群（PM ~1-2%）相比差异显著。",
+        source: "中国知网 (CNKI)；中国药理学通报, 2020",
+        boundary: "样本来源：贵州黔南州布依族 312 例（2018-2019 年）；仅包含单一地区布依族，未进行体内代谢验证。",
+        gradeName: "L5 观察性研究", gradeNote: "GRADE 初始等级：低"
+      }
+    ];
+
+    function getLitEntry(id) {
+      return LIT_ENTRIES.find((x) => x.id === id) || ENTRIES.find((x) => x.id === id);
+    }
+    function litRowsByShelf(shelf) {
+      return LIT_ENTRIES.filter((e) => e.shelf === shelf);
+    }
+    function litRowsByFilter(shelf, docTypes) {
+      let rows = LIT_ENTRIES.slice();
+      if (shelf) rows = rows.filter((e) => e.shelf === shelf);
+      if (docTypes && docTypes.length) rows = rows.filter((e) => docTypes.includes(e.docType));
+      return rows;
+    }
+    function litSearchRows() {
+      let rows = litRowsByFilter(state.litShelf, state.litDocTypes);
+      if (state.litGrade === "mid") rows = rows.filter((e) => ["L4", "L5"].includes(e.grade));
+      else if (state.litGrade === "low") rows = rows.filter((e) => ["L6", "L7", "L8"].includes(e.grade));
+      const q = (state.query || "").trim();
+      if (!q) return rows;
+      const ql = q.toLowerCase();
+      return rows.filter((e) => {
+        const blob = [e.ethnicity, e.topic, e.title, e.conclusion, e.mes, e.picos.P, e.picos.I, e.picos.O].join(" ");
+        return blob.includes(q) || blob.toLowerCase().includes(ql);
+      });
+    }
+    function litKeywordHints() {
+      const rows = litRowsByFilter(state.litShelf, state.litDocTypes);
+      const hints = [];
+      const seen = {};
+      rows.forEach((e) => {
+        e.topic.split(/[、，,]/).forEach((t) => {
+          const w = t.trim();
+          if (!w || seen[w]) return;
+          seen[w] = true;
+          const n = rows.filter((r) => (r.topic + r.conclusion + r.ethnicity).includes(w)).length;
+          hints.push({ label: w, n });
+        });
+        if (!seen[e.ethnicity]) {
+          seen[e.ethnicity] = true;
+          const n = rows.filter((r) => r.ethnicity === e.ethnicity).length;
+          hints.push({ label: e.ethnicity, n });
+        }
+      });
+      return hints.slice(0, 5);
+    }
+    function litFilterSummary() {
+      const parts = [];
+      if (state.litShelf) parts.push(shelfName(state.litShelf));
+      if (state.litDocTypes.length) {
+        parts.push(state.litDocTypes.map(docTypeName).join(" + "));
+      }
+      if (state.litGrade === "mid") parts.push("证据：中");
+      else if (state.litGrade === "low") parts.push("证据：低");
+      if (state.query) parts.push("关键词「" + state.query + "」");
+      return parts.join(" · ");
+    }
+
+    /* 内置 Agent 系统提示词：辅助判断 / 前沿研究按 CLINIC_PROMPT 作答；开题对照 / 现场信号 / 做不做研究按 RESEARCH_PROMPT 作答。 */
+    const CLINIC_PROMPT = {
+      opening: "先看这件事有没有人研究过，再决定自己怎么判断。",
+      role: "你是「多民族健康证据服务」中的临床助手。服务对象为临床医生。你协助其判断：针对某一民族人群、某一疾病或药物及相关现象，现有公开研究知道多少、证据强弱如何、适用边界在哪里。你不替代诊疗。不诊断、不开具处方、不调整剂量、不给出个体化用药方案。",
+      scope: "材料仅限已公开发表、可溯源的流行病学、群体遗传学与药物基因组学入库条目（MES 编号）。民族在此为分层维度，不得将全国或汉族结论直接外推至其他民族。不纳入：未发表数据、可识别病历、民族医学方药经验、论坛帖子、任何可理解为医嘱的语句。",
+      rules: [
+        "先确认关键维度：民族/人群，疾病或药物（及现象，如有）。缺项时只追问所缺项，不臆补。",
+        "对照入库条目作答，禁止编造 MES 编号或结论。",
+        "语气像和同事说话：自然、克制、可核对。不用公文腔，也不口语化到像聊天机器人。",
+        "先给判断摘要（2～4 句），首句直接说「知道多少 / 够不够 / 偏少」。正文不写长表格，不整屏列 PICOS；细节留给用户点来源。",
+        "每次回复文末必须附「参考来源」：小号可点击的入库编号（如 MES-PGx-001），每条对应一条命中文献。",
+        "条数很少、仅为横断面或观察、或基础遗传研究时，须明确提示：现有材料不足以支持临床决策，不可作为医嘱依据。",
+        "医生询问「怎么治、开什么药、如何改剂量、是否确诊」时，拒绝作答，并改为说明现有研究覆盖范围与边界。",
+        "判断对象是「文献是否足够支撑对照」，不是「这个病人是什么病」。"
+      ],
+      bans: [
+        "编造 MES 编号或文献结论",
+        "把小样本或基础研究写成临床定论",
+        "收集或复述可识别个人信息",
+        "引用论坛帖子当证据",
+        "扮演科研助手做立项裁决"
+      ],
+      structureJudge: [
+        "判断摘要：2～4 句自然语言，首句给结论（够 / 不够 / 偏少）。",
+        "按需补 1～3 句：材料类型、能否跨民族套用、医生仍须自行完成的事项。",
+        "文末「参考来源」：可点击 MES 编号，不逐条展开 PICOS。"
+      ],
+      structureFrontier: [
+        "研究概况：2～4 句，库内几条、集中在什么方向（如 pgx 位点、流病现况）。",
+        "脉络与边界：以什么设计为主、还缺什么、不宜外推到哪里。",
+        "文末同样附可点击的参考来源编号。"
+      ],
+      structure: [
+        "两个技能共用：先摘要、后来源；格式灵活，清晰第一。",
+        "辅助判断：回答「材料够不够支撑对照」。",
+        "前沿研究：回答「这方向库里有什么、脉络如何」。"
+      ]
+    };
+
+    const RESEARCH_PROMPT = {
+      opening: "先看这题有没有人做过，再决定还值不值得做。",
+      role: "你是「多民族健康证据服务」中的科研助手。服务对象为科研人员。你协助其判断：针对某一民族人群、某一疾病或药物，现有公开研究已覆盖多少、临床端是否已回传现场信号、这题是否值得做成新研究。你不替代课题评审，不替代伦理审查，不替代研究设计。给出的是可核对的对照材料与立项参考，不是立项批准。",
+      scope: "对照两类材料：已公开发表、可溯源的流行病学、群体遗传学与药物基因组学入库条目；以及临床端脱敏后的现场信号（仅含民族、病/药或现象、地区与时间，不含病历与可识别信息）。民族为分层维度，不得将全国或汉族结论直接外推至其他民族，也不得仅因「文献里已有汉族研究」即认定该民族无需再做。不纳入：未发表数据、可识别病历、民族医学方药经验、个体诊疗意见、经费与编制安排。",
+      rules: [
+        "先确认关键维度：民族/人群，疾病或药物。缺项时只追问所缺项，不臆补。",
+        "同时报告文献存量与现场信号，不可只看其中一侧。现场信号只复述脱敏字段，不计入证据等级。",
+        "语气像和同事说明：自然、克制、可核对。先给判断摘要，正文不写长表格。",
+        "每次回复文末附「参考来源」：小号可点击 MES 编号；证据技能另附等级与设计分布。",
+        "「做不做」只给出三类参考：可以做成课题 / 已有积累暂不必再开同类描述题 / 现在还说不清。",
+        "「证据」技能：只统计入库文献的等级（L1–L9）、研究设计、能否支撑立项；明确写「现场信号不是发表证据」。",
+        "询问诊疗问题时拒绝作答。判断对象是「这题值不值得跟进」，不是「课题已获批」。"
+      ],
+      bans: [
+        "编造记录编号、文献结论或上传次数",
+        "把小样本、横断面或基础遗传研究写成「领域已做透」或「必须立项」",
+        "收集、复述或索要可识别个人信息",
+        "扮演临床助手作诊断、处方或剂量判断",
+        "代替基金评审、伦理委员会或单位下达立项决定"
+      ],
+      structure: [
+        "三个技能共用：先摘要、后证据条（可选）、参考来源可点。",
+        "开题对照：文献 + 现场，这题有没有人做过。",
+        "做不做研究：三选一立项参考。",
+        "证据：等级分布、设计类型、能否支撑立项；现场信号单独标注「非证据」。"
+      ],
+      structureTopic: [
+        "判断摘要：2～4 句，文献条数 + 现场笔数 + 对照结论。",
+        "可选证据条：入库 / 等级 / 设计分布（compact）。",
+        "参考来源：可点击 MES 编号。"
+      ],
+      structureDecide: [
+        "判断摘要：首句给三选一（可以做成课题 / 已有积累 / 现在还说不清）。",
+        "理由：现场与文献如何对照；口诀一句即可。",
+        "证据条 + 参考来源。"
+      ],
+      structureEvidence: [
+        "证据摘要：条数、整体强弱（偏高/偏低/几乎无）。",
+        "等级与设计分布（由命中条目算出，禁止编造）。",
+        "立项含义：能否支撑强结论还是仅探索性假说；现场信号注明「非证据」。",
+        "参考来源可点进 PICOS 与 GRADE。"
+      ],
+      structureSignal: [
+        "边界声明：只说明有无医生上传过该类情况，不能据此改医嘱。",
+        "计数：医生上传次数、库内文献条数。",
+        "理解：尚无上传 / 零星观察 / 已有若干上报，可至「现场发现」继续判断。",
+        "明细：民族 · 病/药；现象一句话；地区与时间。不写病人是谁。"
+      ]
+    };
+
+    const ENTRIES = [
+      { id: 1, rec: "记录001", recTitle: "【流病-患病率】傣族CKM患病率", ethnicity: "傣族", topic: "心血管肾脏代谢综合征", kind: "病", shelf: "prev", field: "流行病学", role: "描述傣族CKM检出水平，供民族间现况对照。", population: "云南傣族成年样本", phen: "心血管肾脏代谢综合征 / 患病率", gene: "无", conclusion: "该人群该综合征检出率高于同地区对照描述。", type: "横断面研究", scope: "仅适用于云南傣族成年样本。", boundary: "不能当开药或诊疗依据，不能直接套到别的民族。", comparable: "慎比" },
+      { id: 2, rec: "记录002", recTitle: "【流病-患病率】白族CKM患病率", ethnicity: "白族", topic: "心血管肾脏代谢综合征", kind: "病", shelf: "prev", field: "流行病学", role: "描述白族CKM检出水平及分层差异。", population: "云南白族成年样本", phen: "心血管肾脏代谢综合征 / 患病率", gene: "无", conclusion: "白族样本中该综合征检出率与调查分层有关。", type: "横断面研究", scope: "仅适用于云南白族成年样本。", boundary: "不能与傣族结果直接等同，不能当医嘱。", comparable: "慎比" },
+      { id: 3, rec: "记录003", recTitle: "【流病-患病率】哈尼族CKM患病率", ethnicity: "哈尼族", topic: "心血管肾脏代谢综合征", kind: "病", shelf: "prev", field: "流行病学", role: "描述哈尼族CKM现况检出水平。", population: "哈尼族成年调查样本", phen: "心血管肾脏代谢综合征 / 患病率", gene: "无", conclusion: "哈尼族样本中可见该综合征现况分布，规模有限。", type: "横断面研究", scope: "仅该次哈尼族调查人群。", boundary: "不能外推为临床干预结论。", comparable: "不能横比" },
+      { id: 4, rec: "记录004", recTitle: "【流病-患病率】傈僳族CKM患病率", ethnicity: "傈僳族", topic: "心血管肾脏代谢综合征", kind: "病", shelf: "prev", field: "流行病学", role: "补充傈僳族CKM患病率描述。", population: "云南傈僳族成年样本", phen: "心血管肾脏代谢综合征 / 患病率", gene: "无", conclusion: "傈僳族样本中该综合征有现况描述，条目偏少。", type: "横断面研究", scope: "仅该次傈僳族调查样本。", boundary: "不能据此制定筛查或诊疗方案。", comparable: "不能横比" },
+      { id: 5, rec: "记录005", recTitle: "【流病-危险因素】傣族CKM特异性危险因素", ethnicity: "傣族", topic: "心血管肾脏代谢综合征", kind: "病", shelf: "risk", field: "流行病学", role: "观察傣族CKM相关危险因素聚集。", population: "云南傣族成年样本", phen: "心血管肾脏代谢综合征 / 危险因素", gene: "无", conclusion: "肥胖、血脂异常等与该综合征聚集出现，属观察结果。", type: "观察研究", scope: "傣族样本、观察设计，不能证明因果。", boundary: "不能据此调整用药或筛查方案。", comparable: "慎比" },
+      { id: 6, rec: "记录006", recTitle: "【流病-危险因素】哈尼族CKM特异性危险因素", ethnicity: "哈尼族", topic: "心血管肾脏代谢综合征", kind: "病", shelf: "risk", field: "流行病学", role: "观察哈尼族CKM与危险因素并存情况。", population: "哈尼族成年调查样本", phen: "心血管肾脏代谢综合征 / 危险因素", gene: "无", conclusion: "哈尼族样本中该综合征与部分危险因素并存。", type: "横断面研究", scope: "仅该次哈尼族调查人群。", boundary: "不能外推为临床干预结论。", comparable: "不能横比" },
+      { id: 7, rec: "记录007", recTitle: "【流病-危险因素】白族CKM特异性危险因素", ethnicity: "白族", topic: "心血管肾脏代谢综合征", kind: "病", shelf: "risk", field: "流行病学", role: "观察白族CKM相关危险因素。", population: "云南白族成年样本", phen: "心血管肾脏代谢综合征 / 危险因素", gene: "无", conclusion: "白族样本中可见与该综合征并存的危险因素描述。", type: "观察研究", scope: "仅该次白族观察样本。", boundary: "不能证明因果，不能当医嘱。", comparable: "慎比" },
+      { id: 8, rec: "记录008", recTitle: "【流病-患病率】各民族糖尿病患病率", ethnicity: "多民族", topic: "糖尿病", kind: "病", shelf: "prev", field: "流行病学", role: "汇总多民族糖尿病患病率对照。", population: "国内多个民族公开调查样本", phen: "糖尿病 / 患病率", gene: "无", conclusion: "各民族糖尿病患病率有公开描述，口径不完全一致。", type: "横断面研究", scope: "仅各原调查覆盖的民族与年份。", boundary: "不能把某一民族结果当成全国或另一民族结论。", comparable: "慎比" },
+      { id: 9, rec: "记录009", recTitle: "【流病-患病率】汉族与哈尼族高血压患病率", ethnicity: "哈尼族", topic: "高血压", kind: "病", shelf: "prev", field: "流行病学", role: "对照汉族与哈尼族高血压检出水平。", population: "汉族、哈尼族调查样本", phen: "高血压 / 患病率", gene: "无", conclusion: "两族高血压患病率均有描述，分层与口径需分开读。", type: "横断面研究", scope: "仅该对照所覆盖的汉族与哈尼族样本。", boundary: "不能直接当成个体血压管理依据。", comparable: "慎比" },
+      { id: 10, rec: "记录010", recTitle: "【流病-患病率】傣族与景颇族高血压患病率", ethnicity: "傣族", topic: "高血压", kind: "病", shelf: "prev", field: "流行病学", role: "对照傣族与景颇族高血压检出水平。", population: "傣族、景颇族调查样本", phen: "高血压 / 患病率", gene: "无", conclusion: "两族高血压现况有公开描述，不宜直接横比后下结论。", type: "横断面研究", scope: "仅该对照覆盖的傣族与景颇族样本。", boundary: "不能据此开降压方案。", comparable: "慎比" },
+      { id: 11, rec: "记录011", recTitle: "【流病-患病率】各民族心脏瓣膜病患病率", ethnicity: "多民族", topic: "心脏瓣膜病", kind: "病", shelf: "prev", field: "流行病学", role: "汇总多民族心脏瓣膜病现况。", population: "多个民族公开调查样本", phen: "心脏瓣膜病 / 患病率", gene: "无", conclusion: "各民族心脏瓣膜病患病率有零散描述，证据偏薄。", type: "横断面研究", scope: "仅各原调查覆盖人群。", boundary: "不能作为瓣膜病诊疗依据。", comparable: "不能横比" },
+      { id: 12, rec: "记录012", recTitle: "【流病-患病率】NAFLD及肥胖患病率", ethnicity: "多民族", topic: "NAFLD及肥胖", kind: "病", shelf: "prev", field: "流行病学", role: "描述非酒精性脂肪肝及肥胖的人群现况。", population: "多民族成年调查样本", phen: "NAFLD、肥胖 / 患病率", gene: "无", conclusion: "NAFLD及肥胖在部分民族样本中有现况描述。", type: "横断面研究", scope: "仅原调查定义与样本。", boundary: "不能当成减重或保肝用药依据。", comparable: "慎比" },
+      { id: 13, rec: "记录013", recTitle: "【流病-患病率】各民族儿童青少年高血压检出率", ethnicity: "多民族", topic: "儿童青少年高血压", kind: "病", shelf: "prev", field: "流行病学", role: "描述儿童青少年高血压检出水平。", population: "多民族儿童青少年调查样本", phen: "高血压 / 儿童青少年检出率", gene: "无", conclusion: "多民族儿童青少年高血压检出率有公开描述。", type: "横断面研究", scope: "仅儿童青少年调查样本，不能外推成人。", boundary: "不能作为儿童用药或诊断依据。", comparable: "慎比" },
+      { id: 14, rec: "记录014", recTitle: "【遗传-变异】云南六民族全基因组测序", ethnicity: "云南多民族", topic: "全基因组变异", kind: "病", shelf: "geno", field: "群体遗传", role: "提供云南六民族全基因组变异概貌。", population: "云南六个民族测序样本", phen: "无 / 全基因组变异", gene: "全基因组位点（未指定单一位点）", conclusion: "六民族全基因组测序揭示群体分化与变异分布。", type: "基础遗传研究", scope: "仅该测序覆盖的六个民族样本。", boundary: "不能当作个人检测报告或临床用药依据。", comparable: "慎比" },
+      { id: 15, rec: "记录015", recTitle: "【遗传-变异】云南13民族基因组分析", ethnicity: "云南多民族", topic: "基因组变异", kind: "病", shelf: "geno", field: "群体遗传", role: "描述云南13民族基因组分化特征。", population: "云南13个民族分析样本", phen: "无 / 基因组变异", gene: "基因组变异位点（汇总）", conclusion: "13民族基因组分析提示群体结构差异。", type: "基础遗传研究", scope: "仅该分析覆盖的13个民族。", boundary: "不能外推为个体诊疗。", comparable: "慎比" },
+      { id: 16, rec: "记录016", recTitle: "【遗传-变异】25民族Y染色体YAP位点多态性", ethnicity: "多民族", topic: "Y染色体YAP位点", kind: "病", shelf: "geno", field: "群体遗传", role: "描述25民族Y染色体YAP位点频率。", population: "25个民族男性样本", phen: "无 / Y染色体多态", gene: "Y染色体 YAP位点", conclusion: "25民族YAP位点多态性有频率描述。", type: "基础遗传研究", scope: "仅男性Y染色体样本。", boundary: "不能用于个体鉴定或诊疗。", comparable: "慎比" },
+      { id: 17, rec: "记录017", recTitle: "【遗传-变异】云南10民族STR基因座遗传分化", ethnicity: "云南多民族", topic: "STR基因座", kind: "病", shelf: "geno", field: "群体遗传", role: "描述云南10民族STR基因座分化。", population: "云南10个民族STR样本", phen: "无 / STR遗传分化", gene: "STR基因座", conclusion: "10民族STR基因座显示遗传分化。", type: "基础遗传研究", scope: "仅该STR分型覆盖的10个民族。", boundary: "不能当作法医或临床检测报告。", comparable: "慎比" },
+      { id: 18, rec: "记录018", recTitle: "【遗传-变异】傣族G6PD基因突变型鉴定", ethnicity: "傣族", topic: "G6PD基因变异", kind: "病", shelf: "geno", field: "群体遗传", role: "鉴定傣族G6PD突变型分布。", population: "傣族鉴定样本", phen: "G6PD缺乏相关 / 基因突变型", gene: "G6PD突变型", conclusion: "公开材料对该人群G6PD突变型作过鉴定。", type: "基础遗传研究", scope: "仅该次傣族鉴定样本。", boundary: "不能当作个体检测报告，也不能指导用药。", comparable: "不能横比" },
+      { id: 19, rec: "记录019", recTitle: "【遗传-变异】佤族/布朗族药物基因位点比较", ethnicity: "佤族", topic: "药物基因组变异", kind: "药", shelf: "pgx", field: "药物基因组", role: "比较佤族与布朗族药物相关基因位点。", population: "佤族、布朗族样本", phen: "药物反应相关位点 / 位点频率", gene: "药物相关基因位点（比较）", conclusion: "两族药物基因位点频率有比较描述，规模有限。", type: "基础遗传研究", scope: "仅该比较覆盖的佤族与布朗族样本。", boundary: "不能作为临床选药或调剂量依据。", comparable: "不能横比" },
+      { id: 20, rec: "记录020", recTitle: "【遗传-变异】普米族药物基因组学变异", ethnicity: "普米族", topic: "药物基因组变异", kind: "药", shelf: "pgx", field: "药物基因组", role: "描述普米族药物基因组相关位点变异。", population: "普米族公开数据集，约200人", phen: "药物反应相关 / 基因组变异", gene: "药物相关位点（公开数据集）", conclusion: "公开数据样本量有限，只提示该民族存在相关位点变异。", type: "基础遗传研究", scope: "仅该数据集覆盖的普米族样本。", boundary: "不能作为临床用药依据。", comparable: "不能横比" }
+    ];
+
+    const Q = {
+      clinic: [
+        ["lit", "傣族代谢相关，有没有发表过的研究？"],
+        ["lit", "傣族用华法林，出血风险有人研究过吗？"],
+        ["lit", "普米族药物基因组，有没有发表过的研究？"]
+      ],
+      research: [
+        ["lit", "傣族代谢这件事，已经有几篇研究？"],
+        ["lit", "维吾尔族和华法林，现有研究靠不靠谱？"],
+        ["lit", "流病患病率这类，已经覆盖几个民族？"]
+      ]
+    };
+
+    const state = {
+      assistant: "clinic",
+      page: "home",
+      qset: 0,
+      eth: "傣族",
+      topic: "心血管肾脏代谢综合征",
+      query: "",
+      msgs: [],
+      input: "",
+      litAxis: "prev",
+      litPick: "",
+      litDrop: false,
+      litDetailId: null,
+      litReturnPage: "lit",
+      litStep: 1,
+      litShelf: "",
+      litDocTypes: [],
+      litShowResults: false,
+      litFilterOpen: false,
+      litGrade: "",
+      llmSeq: 0,
+      llmStatus: { checked: false, ok: false, model: "", mock: true },
+      chatMode: "",
+      judgeQ: "傣族用华法林，出血风险现有研究够不够判断？",
+      caseForm: { eth: "傣族", topic: "华法林", phen: "出血相关现象反复出现" },
+      caseResult: null,
+      signals: [
+        { eth: "傣族", topic: "华法林", phen: "出血相关现象反复出现", region: "云南某地", time: "2026-03" },
+        { eth: "傣族", topic: "华法林", phen: "同类出血表现在接诊中可见", region: "云南某地", time: "2026-05" },
+        { eth: "傣族", topic: "心血管肾脏代谢综合征", phen: "代谢相关聚集", region: "云南某地", time: "2026-06" },
+        { eth: "维吾尔族", topic: "华法林", phen: "抗凝相关现象被观察到", region: "新疆某地", time: "2026-04" }
+      ],
+      lastJudgement: null,
+      pendingSignal: null,
+      tips: [],
+      caseLive: false,
+      caseHistory: [],
+      historyId: null,
+      historyTab: "talk",
+      judgeLive: false,
+      judgeHistory: [],
+      judgeId: null,
+      drawerOpen: false,
+      favorites: [],
+      favAxis: "all",
+      favPick: "",
+      clinicAsk: { eth: "", topic: "" },
+      researchAsk: { eth: "", topic: "" },
+      promptKind: "clinic",
+      userName: "王敏",
+      userTitle: "多民族健康证据 · 演示账号",
+      forumTab: "discover",
+      forumChatId: null,
+      forumDraft: "",
+      forumQuery: "",
+      forumLiked: {},
+      forumPosts: [
+        { id: "p1", av: "", name: "李医生", meta: "10分钟前 · 2个回复", text: "夏天接诊里又见到傣族华法林相关出血表现。现有公开研究还是很少，先记一笔观察，不当诊疗依据。", likes: 12, comments: 2, shares: 1 },
+        { id: "p2", av: "s2", name: "阿依古丽", meta: "1小时前 · 5个回复", text: "维吾尔族抗凝这块，现场信号和入库对照对不上。有人把华法林题目做过横向比较吗？", likes: 28, comments: 5, shares: 3 },
+        { id: "p3", av: "s3", name: "陈研究员", meta: "昨天 · 8个回复", text: "开题前想先看各民族覆盖。文献少、现场多的题目，才值得拿去对照，而不是先立项。", likes: 41, comments: 8, shares: 6 },
+        { id: "p4", av: "s4", name: "王敏", meta: "昨天 · 1个回复", text: "刚把脱敏观察留在库里。同类信号能不能被别处看见，从而知道值不值得研究。", likes: 9, comments: 1, shares: 0 }
+      ],
+      forumThreads: [
+        {
+          id: "c1",
+          name: "李医生",
+          av: "",
+          preview: "傣族华法林这批观察，你那边也见到了吗？",
+          msgs: [
+            { role: "them", text: "傣族华法林这批观察，你那边也见到了吗？" },
+            { role: "me", text: "见到了。先对照入库，不急着当结论。" }
+          ]
+        },
+        {
+          id: "c2",
+          name: "陈研究员",
+          av: "s3",
+          preview: "这题做还是先等等？",
+          msgs: [
+            { role: "them", text: "这题做还是先等等？" },
+            { role: "me", text: "现场多、文献少才值得跟。先看对照报告。" }
+          ]
+        },
+        {
+          id: "c3",
+          name: "观察圈",
+          av: "s2",
+          preview: "有人补充过现场信号",
+          msgs: [
+            { role: "them", text: "有人补充过现场信号，同类现象可以对照了。" },
+            { role: "me", text: "好，我去圈子里看一眼。" }
+          ]
+        }
+      ]
+    };
+
+    function hourGreet() {
+      const h = new Date().getHours();
+      if (h < 6) return "夜深了";
+      if (h < 12) return "早上好";
+      if (h < 18) return "下午好";
+      return "晚上好";
+    }
+
+    function svg(name) {
+      const a = 'fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"';
+      if (name === "book") return `<svg width="22" height="22" viewBox="0 0 24 24" ${a}><path d="M5 5h11a3 3 0 013 3v12H8a3 3 0 00-3 3V5z"/><path d="M5 19a3 3 0 013-3h14"/></svg>`;
+      if (name === "pill") return `<svg width="22" height="22" viewBox="0 0 24 24" ${a}><rect x="4" y="9" width="16" height="8" rx="4" transform="rotate(-35 12 13)"/><path d="M9 8.5l6 8"/></svg>`;
+      if (name === "mic") return `<svg width="18" height="18" viewBox="0 0 24 24" ${a}><path d="M8 10a4 4 0 008 0V7a4 4 0 10-8 0v3z"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg>`;
+      if (name === "people") return `<svg width="22" height="22" viewBox="0 0 24 24" ${a}><circle cx="9" cy="8" r="3"/><path d="M4 19c1-4 9-4 10 0"/><circle cx="16" cy="9" r="2.5"/><path d="M14 19c.4-2.5 4-3 6-2"/></svg>`;
+      if (name === "disease") return `<svg width="22" height="22" viewBox="0 0 24 24" ${a}><circle cx="12" cy="12" r="8"/><path d="M12 8v8M8 12h8"/></svg>`;
+      if (name === "field") return `<svg width="22" height="22" viewBox="0 0 24 24" ${a}><path d="M5 19V9l7-4 7 4v10"/><path d="M5 19h14M12 9v10"/></svg>`;
+      if (name === "report") return `<svg width="22" height="22" viewBox="0 0 24 24" ${a}><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4"/><path d="M10 12h6M10 16h4"/></svg>`;
+      if (name === "star") return `<svg width="20" height="20" viewBox="0 0 24 24" ${a}><path d="M12 3l2.7 5.5 6 .9-4.4 4.3 1 6.1L12 16.9 6.7 19.8l1-6.1L3.3 9.4l6-.9L12 3z"/></svg>`;
+      if (name === "starfill") return `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1"><path d="M12 3l2.7 5.5 6 .9-4.4 4.3 1 6.1L12 16.9 6.7 19.8l1-6.1L3.3 9.4l6-.9L12 3z"/></svg>`;
+      if (name === "home") return `<svg viewBox="0 0 24 24" ${a}><path d="M4 10.5L12 4l8 6.5V20a1 1 0 01-1 1h-5v-6H10v6H5a1 1 0 01-1-1v-9.5z"/></svg>`;
+      if (name === "plusbox") return `<svg viewBox="0 0 24 24" ${a}><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg>`;
+      if (name === "chat") return `<svg viewBox="0 0 24 24" ${a}><path d="M5 6h14a2 2 0 012 2v8a2 2 0 01-2 2H9l-4 3V8a2 2 0 012-2z"/></svg>`;
+      if (name === "hash") return `<svg viewBox="0 0 24 24" ${a}><path d="M9 4l-2 16M17 4l-2 16M4 9h16M3 15h16"/></svg>`;
+      if (name === "user") return `<svg viewBox="0 0 24 24" ${a}><circle cx="12" cy="8" r="3.2"/><path d="M5 19c1.2-4 12.8-4 14 0"/></svg>`;
+      if (name === "heart") return `<svg width="16" height="16" viewBox="0 0 24 24" ${a}><path d="M12 20s-7-4.4-7-9.2A4 4 0 0112 7a4 4 0 017 3.8C19 15.6 12 20 12 20z"/></svg>`;
+      if (name === "comment") return `<svg width="16" height="16" viewBox="0 0 24 24" ${a}><path d="M5 6h14v10H9l-4 3V6z"/></svg>`;
+      if (name === "share") return `<svg width="16" height="16" viewBox="0 0 24 24" ${a}><path d="M14 6l6 6-6 6M20 12H9a5 5 0 00-5 5"/></svg>`;
+      if (name === "search") return `<svg width="16" height="16" viewBox="0 0 24 24" ${a}><circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/></svg>`;
+      return `<svg width="86" height="96" viewBox="0 0 86 96"><ellipse cx="43" cy="90" rx="28" ry="6" fill="#cfe6f8"/><rect x="22" y="48" width="42" height="40" rx="14" fill="#7db7e8"/><circle cx="43" cy="32" r="16" fill="#f3d2c0"/><path d="M27 32c2-14 32-14 34 0" fill="#2c3a4a"/><rect x="54" y="38" width="14" height="10" rx="3" fill="#d9eefc"/></svg>`;
+    }
+
+    function isFav(id) {
+      return state.favorites.indexOf(Number(id)) >= 0;
+    }
+
+    function toggleFav(id) {
+      id = Number(id);
+      if (isFav(id)) state.favorites = state.favorites.filter((x) => x !== id);
+      else state.favorites.unshift(id);
+      persistFavs();
+      render();
+    }
+
+    function persistFavs() {
+      try { localStorage.setItem("minzheng-favs-v1", JSON.stringify(state.favorites)); } catch (e) {}
+    }
+    (function loadFavs() {
+      try {
+        const raw = JSON.parse(localStorage.getItem("minzheng-favs-v1") || "null");
+        if (raw && raw.length) state.favorites = raw.map(Number);
+      } catch (e) {}
+    })();
+
+    function litCard(e) {
+      const on = isFav(e.id);
+      const isMes = !!e.mes;
+      const title = isMes ? (e.title.length > 42 ? e.title.slice(0, 42) + "…" : e.title) : (e.topic + " · " + e.ethnicity);
+      const summary = isMes ? e.conclusion : e.conclusion;
+      const tags = isMes
+        ? `<span class="tag">${e.mes}</span><span class="tag">${shelfName(e.shelf)}</span><span class="doc-tag">${docTypeName(e.docType)}</span><span class="grade-tag grade-${e.grade}">${gradeShort(e.grade)}</span>`
+        : `<span class="tag">${e.rec}</span><span class="tag">${shelfName(e.shelf)}</span>`;
+      const sub = isMes ? `<div style="margin-top:4px;font-size:12px;color:#6b7380">${e.ethnicity} · ${e.topic.split("、")[0]}</div>` : "";
+      return `<div class="hit lit-open" data-lit-open="${e.id}" style="cursor:pointer">
+        <div class="hit-top">
+          <b>${title}</b>
+          <button type="button" class="star-btn ${on ? "on" : ""}" data-fav="${e.id}" title="${on ? "取消收藏" : "收藏"}">${on ? "★" : "☆"}</button>
+        </div>
+        ${sub}
+        <div style="margin-top:6px">${tags}</div>
+        <p>${summary.length > 60 ? summary.slice(0, 60) + "…" : summary}</p>
+        ${isMes ? `<div class="meta">${e.source.split("；")[0]}</div>` : ""}
+      </div>`;
+    }
+
+    function litDetailPage() {
+      const e = getLitEntry(state.litDetailId);
+      if (!e) return sub("文献详情", `<div class="hit">未找到该文献。</div>`);
+      const on = isFav(e.id);
+      if (e.mes) {
+        const picos = [
+          ["P · 人群", e.picos.P],
+          ["I · 干预/暴露", e.picos.I],
+          ["C · 对照", e.picos.C],
+          ["O · 结局", e.picos.O],
+          ["S · 场景", e.picos.S]
+        ];
+        return `
+        <div class="sub">
+          <div class="status"><span>9:41</span><span>100%</span></div>
+          <div class="nav"><button type="button" id="back-lit">‹</button>文献详情</div>
+          <div class="pad">
+            <div class="hit-top" style="align-items:flex-start;margin-bottom:8px">
+              <b style="font-size:16px;line-height:1.35">${e.title}</b>
+              <button type="button" class="star-btn ${on ? "on" : ""}" data-fav="${e.id}" style="font-size:22px">${on ? "★" : "☆"}</button>
+            </div>
+            <div style="margin-bottom:10px">
+              <span class="tag">${e.mes}</span>
+              <span class="tag">${shelfName(e.shelf)}</span>
+              <span class="doc-tag">${docTypeName(e.docType)}</span>
+              <span class="grade-tag grade-${e.grade}">${e.gradeName}</span>
+            </div>
+            <div class="hit"><b>民族 · 主题</b><p style="margin-top:6px">${e.ethnicity} · ${e.topic}</p></div>
+            <div class="hit"><b>PICOS</b>
+              <div class="kv" style="margin-top:8px">${picos.map(([k, v]) => `<em>${k}</em><span>${v}</span>`).join("")}</div>
+            </div>
+            <div class="hit"><b>结论摘要</b><p style="margin-top:8px">${e.conclusion}</p></div>
+            <div class="hit"><b>来源出处</b><p style="margin-top:8px">${e.source}</p></div>
+            <div class="hit"><b>适用边界</b><p style="margin-top:8px">${e.boundary}</p></div>
+            <div class="hit"><b>证据等级</b><p style="margin-top:8px">${e.gradeName}（${e.gradeNote}）</p></div>
+            <button type="button" class="copy-bar" id="copy-lit-src" data-copy="${e.mes} · ${e.source}">复制出处</button>
+          </div>
+        </div>`;
+      }
+      const fields = [
+        ["作用", e.role],
+        ["民族/人群", e.population],
+        ["药或病/现象", e.phen],
+        ["基因", e.gene || "无"],
+        ["结论一句话", e.conclusion],
+        ["研究类型", e.type],
+        ["适用范围", e.scope],
+        ["使用边界", e.boundary]
+      ];
+      return `
+        <div class="sub">
+          <div class="status"><span>9:41</span><span>100%</span></div>
+          <div class="nav"><button type="button" id="back-lit">‹</button>文献详情</div>
+          <div class="pad">
+            <div class="hit-top" style="align-items:flex-start;margin-bottom:8px">
+              <b style="font-size:17px;line-height:1.35">${e.topic} · ${e.ethnicity}</b>
+              <button type="button" class="star-btn ${on ? "on" : ""}" data-fav="${e.id}" style="font-size:22px">${on ? "★" : "☆"}</button>
+            </div>
+            <div style="margin-bottom:10px">
+              <span class="tag">${e.rec}</span><span class="tag">${shelfName(e.shelf)}</span><span class="tag">${e.ethnicity}</span>
+            </div>
+            <div class="hit">
+              <b>结果</b>
+              <div class="kv">${fields.map(([k, v]) => `<em>${k}</em><span>${v}</span>`).join("")}</div>
+            </div>
+            <div class="hit">
+              <b>出处</b>
+              <p style="margin-top:8px;font-size:16px;font-weight:700">${e.rec}</p>
+              <p class="note" style="margin-top:4px">${e.recTitle}</p>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function drawerHtml() {
+      const n = state.favorites.length;
+      return `
+        <div class="drawer-mask ${state.drawerOpen ? "on" : ""}" id="drawer-mask"></div>
+        <aside class="drawer ${state.drawerOpen ? "on" : ""}" id="drawer">
+          <div class="drawer-user">
+            <div class="drawer-avatar">${(state.userName || "用").slice(0, 1)}</div>
+            <div>
+              <b>${state.userName}</b>
+              <span>${state.userTitle}</span>
+            </div>
+          </div>
+          <div class="drawer-nav">
+            <button type="button" id="go-favs">我的知识库<em>${n ? n + " 篇收藏" : "我的收藏"}</em></button>
+            <button type="button" id="go-prompt" data-prompt="clinic">临床助手提示词<em>系统提示词</em></button>
+            <button type="button" id="go-research-prompt" data-prompt="research">科研助手提示词<em>系统提示词</em></button>
+          </div>
+        </aside>`;
+    }
+
+    function matchLit(eth, topic, text) {
+      let rows = LIT_ENTRIES.slice();
+      if (eth) {
+        rows = rows.filter((e) => e.ethnicity === eth || e.ethnicity.includes(eth) || eth.includes(e.ethnicity.replace(/族$/, "")));
+      }
+      if (topic) {
+        rows = rows.filter((e) => {
+          const blob = [e.topic, e.title, e.conclusion, e.picos.P, e.picos.I, e.picos.O, e.picos.S].join(" ");
+          if (blob.includes(topic)) return true;
+          if (topic === "华法林") return /华法林|抗凝|CYP2C9|VKORC1|出血/.test(blob);
+          if (topic === "心血管肾脏代谢综合征") return /代谢|CKM|心血管/.test(blob);
+          if (topic === "高血压") return /高血压/.test(blob);
+          return false;
+        });
+      }
+      const q = (text || "").trim();
+      if (q && (!eth || !topic)) {
+        const picked = rows.filter((e) => {
+          const blob = [e.ethnicity, e.topic, e.title, e.conclusion, e.mes].join(" ");
+          return q.split(/[\s，,、]+/).filter((w) => w.length >= 2).some((w) => blob.includes(w));
+        });
+        if (picked.length) rows = picked;
+      }
+      return rows;
+    }
+
+    function matchResearch(eth, topic, text) {
+      const lit = matchLit(eth, topic, text);
+      const legacy = match(eth, topic);
+      const seen = new Set(lit.map((e) => e.id));
+      return lit.concat(legacy.filter((e) => !seen.has(e.id)));
+    }
+
+    function match(eth, topic) {
+      return ENTRIES.filter((e) => {
+        if (eth && e.ethnicity !== eth) return false;
+        if (topic && e.topic !== topic) return false;
+        return true;
+      });
+    }
+
+    function countBy(rows, key) {
+      const map = {};
+      rows.forEach((e) => { map[e[key]] = (map[e[key]] || 0) + 1; });
+      return Object.entries(map).map(([name, n]) => ({ name, n }));
+    }
+
+    function litRows() {
+      const d = parse(state.query);
+      let rows = ENTRIES.slice();
+      if (state.query && (d.eth || d.topic)) {
+        if (d.eth) rows = rows.filter((e) => e.ethnicity === d.eth);
+        if (d.topic) rows = rows.filter((e) => e.topic === d.topic);
+        return rows;
+      }
+      if (SHELVES.some((s) => s[0] === state.litAxis)) {
+        rows = rows.filter((e) => e.shelf === state.litAxis);
+        if (state.litPick) rows = rows.filter((e) => e.ethnicity === state.litPick);
+      }
+      return rows;
+    }
+
+    function litGroups() {
+      if (state.litPick || state.query) return null;
+      if (!SHELVES.some((s) => s[0] === state.litAxis)) return null;
+      const rows = ENTRIES.filter((e) => e.shelf === state.litAxis);
+      return { title: shelfName(state.litAxis) + " · 按民族", unit: "这个民族", items: countBy(rows, "ethnicity") };
+    }
+
+    function parse(text) {
+      const d = { eth: "", topic: "" };
+      if (text.includes("傣")) d.eth = "傣族";
+      else if (text.includes("白")) d.eth = "白族";
+      else if (text.includes("哈尼")) d.eth = "哈尼族";
+      else if (text.includes("傈僳")) d.eth = "傈僳族";
+      else if (text.includes("普米")) d.eth = "普米族";
+      else if (text.includes("佤")) d.eth = "佤族";
+      else if (text.includes("维")) d.eth = "维吾尔族";
+      else if (text.includes("云南")) d.eth = "云南多民族";
+      else if (text.includes("多民族") || text.includes("各民族")) d.eth = "多民族";
+      if (text.includes("华法林") || text.includes("出血") || text.includes("抗凝")) d.topic = "华法林";
+      else if (text.includes("G6PD")) d.topic = "G6PD基因变异";
+      else if (text.includes("药物基因") || text.includes("药物基因组")) d.topic = "药物基因组变异";
+      else if (text.includes("STR")) d.topic = "STR基因座";
+      else if (text.includes("Y染色体") || text.includes("YAP")) d.topic = "Y染色体YAP位点";
+      else if (text.includes("全基因组")) d.topic = "全基因组变异";
+      else if (text.includes("基因组")) d.topic = "基因组变异";
+      else if (text.includes("糖尿病")) d.topic = "糖尿病";
+      else if (text.includes("瓣膜")) d.topic = "心脏瓣膜病";
+      else if (text.includes("NAFLD") || text.includes("脂肪肝") || text.includes("肥胖")) d.topic = "NAFLD及肥胖";
+      else if (text.includes("儿童") || (text.includes("高血压") && text.includes("青少年"))) d.topic = "儿童青少年高血压";
+      else if (text.includes("高血压")) d.topic = "高血压";
+      else if (text.includes("代谢") || text.includes("心血管") || text.includes("CKM")) d.topic = "心血管肾脏代谢综合征";
+      return d;
+    }
+
+    function refuse(text) {
+      return /怎么治|该怎么用药|改药|剂量怎么开|开什么药|处方怎么写|确诊是什么/.test(text);
+    }
+
+    function refuseHtml() {
+      if (state.assistant === "research") {
+        return `<div class="warn">本助手不回答个体诊疗问题。</div>
+          <p>不提供如何治疗、开具何种药物、如何调整剂量或是否确诊等意见。</p>
+          <p style="margin-top:8px">请改为说明<strong>民族/人群</strong>与<strong>疾病或药物</strong>。本助手只做选题对照：现有研究覆盖多少、现场信号如何、这题是否值得跟进。</p>
+          <p class="note">诊疗问题请转临床助手；临床助手亦不替代诊疗。医生仍须完成问诊与检查，并依据指南与个体情况处置。</p>`;
+      }
+      return `<div class="warn">本助手不回答个体诊疗问题。</div>
+        <p>不提供如何治疗、开具何种药物、如何调整剂量或是否确诊等意见。</p>
+        <p style="margin-top:8px">请改为说明<strong>民族/人群</strong>与<strong>疾病或药物</strong>（及现象，如有）。本助手仅对照已入库的公开研究，说明现有材料覆盖范围与使用边界。</p>
+        <p class="note">医生仍须完成问诊与检查，并依据指南与个体情况处置。</p>`;
+    }
+
+    function compareLabel(rows) {
+      if (!rows.length) return "现有材料不足以判断";
+      if (rows.every((e) => e.comparable === "不能横比")) return "不宜跨民族套用";
+      return "跨民族套用须谨慎";
+    }
+
+    function missingDimsNote(dims, warn) {
+      const missing = [];
+      if (!dims.eth) missing.push("民族/人群");
+      if (!dims.topic) missing.push("疾病或药物");
+      if (!missing.length) return "";
+      return `<div class="warn">${warn}</div>
+        <div class="hit"><b>尚缺关键维度</b>
+          <p>请补充：${missing.join("、")}。缺项时只追问所缺项，不臆补。</p>
+        </div>`;
+    }
+
+    function evidenceGradeSummary(rows) {
+      if (!rows.length) return { dist: "无", verdict: "几乎无发表证据", level: "empty" };
+      const dist = {};
+      rows.forEach((e) => {
+        const label = e.gradeName
+          ? e.gradeName.replace(/\s.*/, "")
+          : (e.type || "未分级");
+        dist[label] = (dist[label] || 0) + 1;
+      });
+      const distText = Object.entries(dist).map(([k, v]) => `${k} ${v} 条`).join("、");
+      const lowOnly = rows.every((e) =>
+        !e.grade
+        || ["L5", "L6", "L7", "L8", "L9"].includes(e.grade)
+        || /横断面|观察|基础|病例/.test(e.type || e.gradeName || "")
+      );
+      const verdict = lowOnly
+        ? "整体偏低，多为观察或描述性研究"
+        : "有一定发表基础，仍须逐条核对设计与样本";
+      return { dist: distText, verdict, level: lowOnly ? "low" : "mid" };
+    }
+
+    function evidenceMiniHtml(rows, sc) {
+      const n = rows.length;
+      const g = evidenceGradeSummary(rows);
+      return `<div class="evidence-mini">
+        <span><em>入库文献</em><strong>${n}</strong> 条</span>
+        <span><em>证据强弱</em><strong>${n ? (g.level === "low" ? "偏低" : "须核对") : "无"}</strong></span>
+        <span><em>等级分布</em><strong style="font-size:11px;font-weight:600">${g.dist}</strong></span>
+        ${sc != null ? `<span><em>现场信号</em><strong>${sc}</strong> 笔 <small>非证据</small></span>` : ""}
+      </div>`;
+    }
+
+    function typeDist(rows) {
+      const types = {};
+      rows.forEach((e) => { types[e.type] = (types[e.type] || 0) + 1; });
+      return Object.keys(types).length
+        ? Object.entries(types).map(([k, v]) => k + v + "条").join("、")
+        : "无";
+    }
+
+    function citeHit(e) {
+      return `<div class="hit">
+        <b>${e.topic} · ${e.ethnicity}</b>
+        <p>${e.conclusion}</p>
+        <div class="kv" style="margin-top:8px;font-size:12px">
+          <em>作用</em><span>${e.role}</span>
+          <em>民族/人群</em><span>${e.population}</span>
+          <em>药或病/现象</em><span>${e.phen}</span>
+          <em>基因</em><span>${e.gene || "无"}</span>
+          <em>结论一句话</em><span>${e.conclusion}</span>
+          <em>研究类型</em><span>${e.type}</span>
+          <em>适用范围</em><span>${e.scope}</span>
+          <em>使用边界</em><span>${e.boundary}</span>
+        </div>
+        <div class="meta" style="margin-top:8px">出处：${e.rec} ${e.recTitle}</div>
+      </div>`;
+    }
+
+    function litTypeDist(rows) {
+      const types = {};
+      rows.forEach((e) => {
+        const t = e.gradeName ? e.gradeName.replace(/^L\d+\s*/, "") : docTypeName(e.docType);
+        types[t] = (types[t] || 0) + 1;
+      });
+      return Object.keys(types).length
+        ? Object.entries(types).map(([k, v]) => k + " " + v + " 条").join("、")
+        : "无";
+    }
+
+    function citeLabel(e) {
+      return e.mes || e.rec || ("#" + e.id);
+    }
+
+    function citeFoot(rows, limit) {
+      const list = (rows || []).slice(0, limit || 5);
+      if (!list.length) return "";
+      return `<div class="cite-foot">
+        <span class="cite-foot-label">参考来源 · 点击查看详情</span>
+        ${list.map((e, i) => {
+          const title = (e.title || e.recTitle || e.topic || "").replace(/"/g, "'");
+          return `<button type="button" class="cite-chip" data-lit-open="${e.id}" title="${title}">[${i + 1}] ${citeLabel(e)}</button>`;
+        }).join("")}
+      </div>`;
+    }
+
+    function clinicReplyWrap(bodyHtml, rows, tail) {
+      return `<div class="reply-prose">${bodyHtml}</div>${citeFoot(rows)}${tail || ""}`;
+    }
+
+    function judgeHtml(rows, dims) {
+      const miss = missingDimsNote(dims, "辅助判断不等于诊断。本助手只说明现有公开研究知道多少，不判断这个病人得了什么、该如何处置。");
+      if (miss) return miss;
+      const n = rows.length;
+      const weak = n <= 2;
+      const typeText = litTypeDist(rows);
+      const focus = `${dims.eth} · ${dims.topic}`;
+      let lead = "";
+      let detail = "";
+      if (n === 0) {
+        lead = `关于<strong>${focus}</strong>，库里目前<strong>几乎没有</strong>对上的公开材料。`;
+        detail = `<p>不宜把全国或汉族结论直接套用到该民族。就现有入库情况看，<strong>材料不足以支撑临床对照</strong>，不能当作医嘱依据。</p>
+          <p>您仍须完成问诊、检查，并依据指南与个体情况处置。</p>`;
+      } else if (weak) {
+        lead = `关于<strong>${focus}</strong>，库里目前有 <strong>${n}</strong> 条相关材料，整体<strong>偏少</strong>。`;
+        detail = `<p>现有条目以${typeText}为主，证据强度有限，<strong>尚不足以支撑临床决策</strong>——仅供了解方向，不能替代个体判断。</p>
+          <p>${rows[0].conclusion.length > 72 ? rows[0].conclusion.slice(0, 72) + "…" : rows[0].conclusion}</p>
+          <p>跨民族套用须谨慎。您仍须完成问诊、检查，并依据指南处置。</p>`;
+      } else {
+        lead = `关于<strong>${focus}</strong>，库里目前有 <strong>${n}</strong> 条公开发表材料，可以作<strong>初步对照</strong>。`;
+        detail = `<p>材料类型包括：${typeText}。仍以调查或观察为主，<strong>不能替代个体诊疗</strong>，但比「完全没有」更有参考意义。</p>
+          <p>建议结合下方来源核对 PICOS 和适用边界，再决定如何在接诊中使用。</p>`;
+      }
+      const tail = weak && n
+        ? `<p class="note" style="margin-top:10px">若接诊中确有此类现象，可用「开始新对话」写入脱敏观察，供科研端统计。</p>`
+        : "";
+      return clinicReplyWrap(`<p class="reply-summary">${lead}</p>${detail}`, rows, tail);
+    }
+
+    function frontierReply(dims, rows) {
+      const focus = dims.eth || dims.topic
+        ? `${dims.eth || "—"}${dims.eth && dims.topic ? " · " : ""}${dims.topic || "—"}`
+        : "您关心的方向";
+      const n = rows.length;
+      let body = "";
+      if (!n) {
+        body = `<p class="reply-summary">关于<strong>${focus}</strong>，库内<strong>暂无</strong>对上的入库条目。</p>
+          <p>这不代表全网没有研究，只是本库尚未收录。您可以换关键词，或去「文献速查」按主题浏览。</p>
+          <p>若您能提供民族和病/药，我可以帮您对照得更准。</p>`;
+        return clinicReplyWrap(body, rows);
+      }
+      const shelves = {};
+      rows.forEach((e) => { shelves[shelfName(e.shelf)] = (shelves[shelfName(e.shelf)] || 0) + 1; });
+      const shelfText = Object.entries(shelves).map(([k, v]) => k + " " + v + " 条").join("、");
+      const themes = [...new Set(rows.map((e) => e.topic.split(/[、，,]/)[0].trim()))].slice(0, 3).join("、");
+      body = `<p class="reply-summary">关于<strong>${focus}</strong>，库内目前有 <strong>${n}</strong> 条相关入库材料，集中在<strong>${themes || "该主题"}</strong>方向。</p>
+        <p>按主题分布：${shelfText}。现有研究以${litTypeDist(rows)}为主。</p>
+        <p>${rows[0].conclusion.length > 80 ? rows[0].conclusion.slice(0, 80) + "…" : rows[0].conclusion}</p>
+        <p>本答复限于库内已入库条目，按编号排列，非实时全网检索。要核对 PICOS 和 DOI，可点下方来源或去文献速查。</p>`;
+      return clinicReplyWrap(body, rows);
+    }
+
+    function extractPhen(text) {
+      if (/出血/.test(text)) return "出血相关现象";
+      if (/抗凝/.test(text)) return "抗凝相关现象";
+      if (/代谢|心血管|CKM/.test(text)) return "代谢相关聚集";
+      if (/基因/.test(text)) return "药物基因组相关现象";
+      const t = (text || "").replace(/\s+/g, " ").trim();
+      return t.length > 28 ? t.slice(0, 28) + "…" : (t || "接诊中观察到的现象");
+    }
+
+    function shelfForQuery(d) {
+      if (d.topic === "华法林" || d.topic === "药物基因组变异" || d.topic === "药物基因位点") return "pgx";
+      if (d.topic === "G6PD基因变异" || d.topic === "全基因组变异" || d.topic === "基因组变异" || d.topic === "STR基因座" || d.topic === "Y染色体YAP位点") return "geno";
+      if (/危险|因素/.test(state.query || "")) return "risk";
+      return "prev";
+    }
+    function go(page) {
+      if (page === "lit") {
+        state.query = "";
+        state.litPick = "";
+        state.litAxis = "prev";
+        state.litDrop = false;
+        state.litDetailId = null;
+        state.litStep = 1;
+        state.litShelf = "";
+        state.litDocTypes = [];
+        state.litShowResults = false;
+        state.litFilterOpen = false;
+        state.litGrade = "";
+      }
+      if (page === "history") {
+        state.historyId = null;
+        if (!state.historyTab) state.historyTab = "talk";
+      }
+      if (page === "favorites") {
+        state.favAxis = "all";
+        state.favPick = "";
+        state.drawerOpen = false;
+      }
+      if (page === "home") {
+        if (!state.caseLive && !state.judgeLive) {
+          state.chatMode = "";
+          state.tips = [];
+          state.pendingSignal = null;
+        }
+      }
+      if (page === "judgeHist") state.judgeId = null;
+      state.drawerOpen = false;
+      state.page = page;
+      render();
+    }
+
+    function startCaseSession() {
+      state.llmSeq += 1;
+      const closed = state.caseLive ? finishCaseSession() : null;
+      state.assistant = "clinic";
+      state.page = "home";
+      state.chatMode = "case";
+      state.caseLive = true;
+      state.pendingSignal = null;
+      state.historyId = closed ? closed.id : null;
+      state.tips = [];
+      const lead = closed
+        ? `上一条（${closed.eth} · ${closed.topic}）已结束并写入对话记录。这是新的一条，请继续说接诊情况。说完再点一次「开始新对话」。`
+        : "对话已开始。在下方输入接诊情况（民族、病/药、现象）。说完再点一次「开始新对话」，这条会写入记录并开下一条。";
+      state.msgs = [{ role: "bot", html: lead }];
+      render();
+    }
+
+    function caseLiveAck(text, dims) {
+      const gotEth = !!dims.eth;
+      const gotTopic = !!dims.topic;
+      if (!gotEth && !gotTopic) {
+        return "记下了。请尽量带上<strong>哪个民族</strong>、和<strong>什么病/药</strong>有关。说完再点一次「开始新对话」。";
+      }
+      if (!gotEth) return "病/药相关信息有了。还差<strong>民族</strong>的话补一句；否则也可以再点一次「开始新对话」。";
+      if (!gotTopic) return "民族有了。还差<strong>病或药</strong>的话补一句；否则也可以再点一次「开始新对话」。";
+      return `收到：${dims.eth} · ${dims.topic}。可以继续补充现象，或再点一次「开始新对话」让我按整段记录总结。`;
+    }
+
+    function finishCaseSession() {
+      if (!state.caseLive) return null;
+      const doctorLines = state.msgs.filter((m) => m.role === "me").map((m) => m.text || "").filter(Boolean);
+      state.caseLive = false;
+      state.chatMode = "";
+      if (!doctorLines.length) return null;
+      const transcript = doctorLines.join("；");
+      const d = parse(transcript);
+      const dims = { eth: d.eth || "", topic: d.topic || "" };
+      if (d.eth) state.eth = d.eth;
+      if (d.topic) state.topic = d.topic;
+      const phen = extractPhen(transcript);
+      const n = match(dims.eth, dims.topic).length;
+      const ready = !!(dims.eth && dims.topic);
+      const isRed = false;
+      const gap = !ready ? "信息不全" : n === 0 ? "文献缺口" : n <= 2 ? "证据偏弱" : "已有若干";
+      const id = "c" + Date.now();
+      const record = {
+        id,
+        time: new Date().toISOString().slice(0, 10),
+        eth: dims.eth || "未点明",
+        topic: dims.topic || "未点明",
+        phen,
+        lit: n,
+        gap,
+        isRed,
+        uploaded: false,
+        uploadTime: null,
+        lines: doctorLines.slice(),
+        summaryHtml: ""
+      };
+      record.summaryHtml = caseReply(transcript, dims, match(dims.eth, dims.topic), id);
+      state.caseHistory.unshift(record);
+      persistCases();
+      state.historyTab = "talk";
+      return record;
+    }
+
+    function startJudgeSession() {
+      state.llmSeq += 1;
+      const closed = state.judgeLive ? finishJudgeSession() : null;
+      state.assistant = "research";
+      state.page = "home";
+      state.chatMode = "decide";
+      state.judgeLive = true;
+      state.caseLive = false;
+      state.judgeId = closed ? closed.id : null;
+      state.tips = [];
+      const lead = closed
+        ? `上一条（${closed.eth} · ${closed.topic}）已结束并写入研判记录。这是新的一条，请说明要判断的民族 + 病/药。说完再点一次「开始新对话」。`
+        : "研判对话已开始。请说明要判断的<strong>民族 + 病/药</strong>（例如：傣族华法林，做还是不做？）。说完再点一次「开始新对话」，这条会写入研判记录并开下一条。";
+      state.msgs = [{ role: "bot", html: lead }];
+      render();
+    }
+
+    function judgeLiveAck(text, dims) {
+      const gotEth = !!dims.eth;
+      const gotTopic = !!dims.topic;
+      if (!gotEth && !gotTopic) {
+        return "记下了。请带上<strong>哪个民族</strong>和<strong>什么病/药</strong>。说完再点一次「开始新对话」。";
+      }
+      if (!gotEth) return "主题有了。还差<strong>民族</strong>的话补一句；否则也可以再点一次「开始新对话」。";
+      if (!gotTopic) return "民族有了。还差<strong>病或药</strong>的话补一句；否则也可以再点一次「开始新对话」。";
+      return `收到：${dims.eth} · ${dims.topic}。可继续补充问题，或再点一次「开始新对话」生成研判结论。`;
+    }
+
+    function finishJudgeSession() {
+      if (!state.judgeLive) return null;
+      const lines = state.msgs.filter((m) => m.role === "me").map((m) => m.text || "").filter(Boolean);
+      state.judgeLive = false;
+      state.chatMode = "";
+      if (!lines.length) return null;
+      const transcript = lines.join("；");
+      const d = parse(transcript);
+      const dims = { eth: d.eth || "", topic: d.topic || "" };
+      if (d.eth) state.eth = d.eth;
+      if (d.topic) state.topic = d.topic;
+      const rows = matchResearch(dims.eth, dims.topic, transcript);
+      const summary = decideReply(dims, rows);
+      const choice = state.lastJudgement || "现在还说不清";
+      const sc = signalCount(dims.eth, dims.topic);
+      const lit = rows.length;
+      const id = "j" + Date.now();
+      const record = {
+        id,
+        time: new Date().toISOString().slice(0, 10),
+        eth: dims.eth || "未点明",
+        topic: dims.topic || "未点明",
+        choice,
+        sc,
+        lit,
+        lines: lines.slice(),
+        summaryHtml: summary
+      };
+      state.judgeHistory.unshift(record);
+      persistJudges();
+      return record;
+    }
+
+    function persistJudges() {
+      try { localStorage.setItem("minzheng-judges-v1", JSON.stringify(state.judgeHistory)); } catch (e) {}
+    }
+    (function loadJudges() {
+      try {
+        const raw = JSON.parse(localStorage.getItem("minzheng-judges-v1") || "null");
+        if (raw && raw.length) state.judgeHistory = raw;
+      } catch (e) {}
+    })();
+
+    function llmStatusLine() {
+      const s = state.llmStatus;
+      if (!s.checked) return `<div class="llm-status"><span class="llm-dot"></span>正在连接模型…</div>`;
+      if (s.ok && !s.mock) return `<div class="llm-status"><span class="llm-dot on"></span>${s.model || "deepseek-v4-flash"}</div>`;
+      if (s.ok && s.mock) return `<div class="llm-status"><span class="llm-dot"></span>未配置 Key，先用本地对照</div>`;
+      return `<div class="llm-status"><span class="llm-dot"></span>未连上模型，先用本地对照</div>`;
+    }
+
+    function probeLlm() {
+      fetch("/api/health").then((r) => r.json()).then((d) => {
+        state.llmStatus = {
+          checked: true,
+          ok: !!d.ok,
+          model: d.model || "deepseek-v4-flash",
+          mock: !!d.mock
+        };
+        const el = document.querySelector(".llm-status");
+        if (el) el.outerHTML = llmStatusLine();
+      }).catch(() => {
+        state.llmStatus = { checked: true, ok: false, model: "", mock: true };
+        const el = document.querySelector(".llm-status");
+        if (el) el.outerHTML = llmStatusLine();
+      });
+    }
+
+    function promptPack(kind) {
+      const p = kind === "research" ? RESEARCH_PROMPT : CLINIC_PROMPT;
+      const extra = kind === "research"
+        ? (p.structureDecide || p.structure || [])
+        : (p.structureJudge || p.structure || []);
+      return [
+        p.role,
+        "范围：" + p.scope,
+        "规则：\n- " + (p.rules || []).join("\n- "),
+        "禁止：\n- " + (p.bans || []).join("\n- "),
+        "结构：\n- " + extra.join("\n- "),
+        "输出要求：用简洁中文，可用 **加粗**。不要写 HTML。不要编造 MES 编号或文献结论。文末不要自己列来源编号（前端会附真实可点击来源）。不要给出诊疗方案、处方、剂量或立项批准。若命中为 0 条，只说库内没有对上的材料，不要用库外机制、基因名或全国结论来顶替。"
+      ].join("\n\n");
+    }
+
+    function litBrief(rows) {
+      if (!rows || !rows.length) return "无命中条目。禁止编造编号或结论。";
+      return rows.slice(0, 8).map((e, i) => {
+        return `[${i + 1}] ${citeLabel(e)}｜${e.ethnicity}｜${e.topic}｜类型:${e.type}｜结论:${e.conclusion}｜范围:${e.scope}｜边界:${e.boundary}`;
+      }).join("\n");
+    }
+
+    function modeTask(mode) {
+      return {
+        judge: "技能：辅助判断。只说明现有公开研究知道多少、够不够对照，不诊断、不开药。",
+        frontier: "技能：前沿研究。只说明库内这个方向有什么、脉络与边界。",
+        topic: "技能：开题对照。同时看文献条数与现场信号笔数，说明这题有没有人做过。",
+        decide: "技能：做不做研究。三选一：可以做成课题 / 已有积累暂不必再开同类描述题 / 现在还说不清。不批准立项。",
+        evidence: "技能：证据。只统计入库文献等级与设计；现场信号不算发表证据。",
+        lit: "技能：文献对照。根据命中条目说明现有材料覆盖与边界。"
+      }[mode] || "技能：文献对照。";
+    }
+
+    function llmInnerHtml(text) {
+      const esc = (s) => String(s || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+      let t = esc(String(text || "").trim());
+      t = t.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+      return t.split(/\n{2,}/).map((p) => `<p>${p.replace(/\n/g, "<br>")}</p>`).join("");
+    }
+
+    function callLlm(messages) {
+      const ctrl = typeof AbortController !== "undefined" ? new AbortController() : null;
+      const timer = ctrl ? setTimeout(() => ctrl.abort(), 55000) : null;
+      return fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages, temperature: 0.3, max_tokens: 4096 }),
+        signal: ctrl ? ctrl.signal : undefined
+      }).then((r) => r.json().then((d) => {
+        if (!r.ok) throw new Error(d.error || ("HTTP " + r.status));
+        if (!d.content) throw new Error("空回复");
+        return d;
+      })).finally(() => { if (timer) clearTimeout(timer); });
+    }
+
+    function fillWithLlm(opts) {
+      const { mode, text, dims, rows, sc, fallback, seq } = opts;
+      const kind = (state.assistant === "research" || mode === "topic" || mode === "decide" || mode === "evidence")
+        ? "research" : "clinic";
+      const userBlock = [
+        modeTask(mode),
+        "用户问题：" + text,
+        "已解析槽位：民族=" + (dims.eth || "未点明") + "；病/药=" + (dims.topic || "未点明"),
+        "命中入库文献（共 " + (rows || []).length + " 条）：\n" + litBrief(rows),
+        sc != null ? ("现场信号（脱敏计数，非证据）：" + sc + " 笔") : "",
+        "只根据以上入库摘要作答，不得引用论坛。"
+      ].filter(Boolean).join("\n\n");
+      callLlm([
+        { role: "system", content: promptPack(kind) },
+        { role: "user", content: userBlock }
+      ]).then((d) => {
+        if (seq !== state.llmSeq) return;
+        const pending = state.msgs.find((m) => m.pending);
+        const html = clinicReplyWrap(llmInnerHtml(d.content), rows, d.mock ? `<p class="note">当前为本地 mock。</p>` : "");
+        if (pending) { pending.pending = false; pending.html = html; }
+        else state.msgs.push({ role: "bot", html });
+        render();
+      }).catch(() => {
+        if (seq !== state.llmSeq) return;
+        const pending = state.msgs.find((m) => m.pending);
+        const html = fallback + `<p class="note">模型暂时不可用，已改用本地对照。</p>`;
+        if (pending) { pending.pending = false; pending.html = html; }
+        else state.msgs.push({ role: "bot", html });
+        render();
+      });
+    }
+
+    function resultCard(rows, mode) {
+      const n = rows.length;
+      const weak = n <= 2;
+      const items = rows.map((e) => `<div class="hit"><b>${e.topic} · ${e.ethnicity}</b><p>${e.conclusion}</p><div class="meta">${e.type} · ${e.rec}<br>只适用于：${e.scope}<br>${e.boundary}</div></div>`).join("");
+      return `<div class="statrow"><div class="stat"><em>找到的研究</em><strong>${n}</strong> 篇</div><div class="stat"><em>靠不靠谱</em><strong style="font-size:16px">${n === 0 ? "没有" : weak ? "不太靠谱" : "多为调查"}</strong></div></div>
+        ${n && weak ? `<div class="warn">只有 ${n} 篇，而且是调查或观察，不够拿来开药。</div>` : ""}
+        ${items || "<div class='hit'>一篇都没有。不能拿汉族或全国的结论来顶替。</div>"}`;
+    }
+
+    function ask(text, jump) {
+      text = (text || "").trim();
+      if (!text) return;
+      const d = parse(text);
+      if (d.eth) state.eth = d.eth;
+      if (d.topic) state.topic = d.topic;
+      if (jump === "lit") {
+        state.page = "lit";
+        state.query = text;
+        state.litShelf = shelfForQuery(d);
+        state.litDocTypes = [];
+        state.litFilterOpen = false;
+        state.litShowResults = !!(text || "").trim();
+        render();
+        return;
+      }
+      state.page = "home";
+      state.msgs = state.msgs.filter((m) => !m.pending);
+      state.msgs.push({ role: "me", text });
+      if (refuse(text)) {
+        state.msgs.push({ role: "bot", html: refuseHtml() });
+        state.input = "";
+        if (state.caseLive || state.judgeLive) state.tips = [];
+        render();
+        return;
+      }
+      const dims = { eth: d.eth || state.eth, topic: d.topic || state.topic };
+      const mode = state.caseLive ? "case" : state.judgeLive ? "decide" : (state.chatMode || "lit");
+      let rows = [];
+      let fallback = "";
+      let asked = dims;
+      let sc = null;
+      if (mode === "judge") {
+        if (d.eth) state.clinicAsk.eth = d.eth;
+        if (d.topic) state.clinicAsk.topic = d.topic;
+        asked = { eth: state.clinicAsk.eth, topic: state.clinicAsk.topic };
+        rows = (asked.eth && asked.topic) ? matchLit(asked.eth, asked.topic, text) : [];
+        fallback = judgeHtml(rows, asked);
+      } else if (mode === "topic" || mode === "evidence" || (mode === "decide" && !state.judgeLive)) {
+        if (d.eth) state.researchAsk.eth = d.eth;
+        if (d.topic) state.researchAsk.topic = d.topic;
+        asked = { eth: state.researchAsk.eth, topic: state.researchAsk.topic };
+        rows = (mode === "evidence" || (asked.eth && asked.topic))
+          ? matchResearch(asked.eth, asked.topic, text)
+          : [];
+        sc = signalCount(asked.eth, asked.topic);
+        if (mode === "topic") fallback = topicReply(asked, rows);
+        else if (mode === "decide") fallback = decideReply(asked, rows);
+        else fallback = evidenceReply(asked, rows);
+      } else {
+        rows = matchLit(dims.eth, dims.topic, text);
+        if (!rows.length && dims.eth) rows = matchLit(dims.eth, "", text);
+        if (!rows.length && dims.topic) rows = matchLit("", dims.topic, text);
+        if (mode === "frontier") fallback = frontierReply(dims, rows);
+        else if (mode === "case") {
+          fallback = state.caseLive
+            ? caseLiveAck(text, { eth: d.eth, topic: d.topic })
+            : "先点「开始新对话」，说完再点一次，才会按整段记录抽关键词总结并开下一条。";
+        } else if (mode === "decide") {
+          fallback = state.judgeLive
+            ? judgeLiveAck(text, { eth: d.eth, topic: d.topic })
+            : "先点「开始新对话」，说完再点一次，才会按整段对照文献与医生上传，写入研判记录并开下一条。";
+        } else fallback = resultCard(rows, "lit");
+      }
+      const liveAck = (mode === "case" && state.caseLive) || (mode === "decide" && state.judgeLive);
+      const missing = /尚缺关键维度/.test(fallback || "");
+      const useLlm = !liveAck && !missing && ["judge", "frontier", "topic", "decide", "evidence", "lit"].indexOf(mode) !== -1;
+      if (useLlm) {
+        const seq = ++state.llmSeq;
+        state.msgs.push({ role: "bot", pending: true, html: "<p class='note'>正在对照入库文献…</p>" });
+        state.input = "";
+        if (state.caseLive || state.judgeLive) state.tips = [];
+        render();
+        fillWithLlm({ mode, text, dims: asked, rows, sc, fallback, seq });
+        return;
+      }
+      state.msgs.push({ role: "bot", html: fallback });
+      state.input = "";
+      if (state.caseLive || state.judgeLive) state.tips = [];
+      render();
+    }
+
+    function caseReply(text, dims, rows, caseId) {
+      const n = rows.length;
+      const phen = extractPhen(text);
+      const ready = !!(dims.eth && dims.topic);
+      const gapLabel = !ready ? "信息不全" : n === 0 ? "文献缺口" : n <= 2 ? "证据偏弱" : "已有若干";
+      return `<div class="warn">本条已写入「对话记录」。我按整段抽关键词、对照文献缺不缺，不给这个人下诊断、不开药。</div>
+        <div class="hit"><b>从对话里抽出的关键词</b>
+          <div class="keys">
+            <span>${dims.eth || "民族未点明"}</span>
+            <span>${dims.topic || "病/药未点明"}</span>
+            <span>${phen}</span>
+            <span>${gapLabel}</span>
+          </div>
+        </div>
+        <div class="statrow">
+          <div class="stat"><em>文献里同类</em><strong>${n}</strong> 篇</div>
+          <div class="stat"><em>对照</em><strong style="font-size:14px">${gapLabel}</strong></div>
+        </div>
+        <div class="hit"><b>对照结论</b>
+          <p>${!ready
+            ? "还缺民族或病/药其中一项。可再开一条对话补全。"
+            : n === 0
+              ? `按现有库，${dims.eth}在「${dims.topic}」上几乎没有发表材料。不能据此说这个人有或没有某病；只能提醒：别直接套全国结论。`
+              : `文献里，${dims.eth}与「${dims.topic}」有过研究/描述。你可以对照像不像，最终判断仍是你来做。`}</p>
+        </div>
+        ${rows.slice(0, 3).map((e) => `<div class="hit"><b>${e.topic} · ${e.ethnicity}</b><p>${e.conclusion}</p><div class="meta">${e.rec}<br>${e.scope}<br>${e.boundary}</div></div>`).join("")}`;
+    }
+
+    function signalCount(eth, topic) {
+      return state.signals.filter((s) => (!eth || s.eth === eth) && (!topic || s.topic === topic)).length;
+    }
+
+    function signalBoard() {
+      const map = {};
+      state.signals.forEach((s) => {
+        const key = s.eth + "||" + s.topic;
+        if (!map[key]) map[key] = { eth: s.eth, topic: s.topic, n: 0, regions: {}, times: [], phens: [] };
+        map[key].n += 1;
+        if (s.region) map[key].regions[s.region] = true;
+        if (s.time) map[key].times.push(s.time);
+        if (s.phen) map[key].phens.push(s.phen);
+      });
+      return Object.values(map).map((g) => {
+        const lit = match(g.eth, g.topic).length;
+        const regions = Object.keys(g.regions).length;
+        let rank = "先再等等";
+        let tip = "医生报的还少，先别急着立项，继续看有没有人上传。";
+        let action = "再观察";
+        if (g.n >= 3 && lit <= 2) {
+          rank = "建议优先做";
+          tip = "多名医生碰到该类情况，而发表研究很少。更像「现场有、文献少」，适合考虑做成新研究。";
+          action = "问：做不做";
+        } else if (g.n >= 3 && lit > 2) {
+          rank = "不必急着新开";
+          tip = "现场仍在发生，但文献已有一定覆盖。宜先消化现有材料，不必再开同类描述题。";
+          action = "问：还要不要做";
+        } else if (g.n >= 2 && lit === 0) {
+          rank = "可以留意";
+          tip = "已有医生开始上报，库内几乎无发表材料。值得记下，观察后续是否继续增加。";
+          action = "问：做不做";
+        }
+        return {
+          eth: g.eth,
+          topic: g.topic,
+          n: g.n,
+          lit,
+          regions,
+          rank,
+          tip,
+          action,
+          latest: g.times.slice(-1)[0] || "—"
+        };
+      }).sort((a, b) => (b.n - a.n) || (a.lit - b.lit));
+    }
+
+    function persistSignals() {
+      try { localStorage.setItem("minzheng-signals-v1", JSON.stringify(state.signals)); } catch (e) {}
+    }
+    (function loadSignals() {
+      try {
+        const raw = JSON.parse(localStorage.getItem("minzheng-signals-v1") || "null");
+        if (raw && raw.length) state.signals = raw;
+      } catch (e) {}
+    })();
+
+    function persistCases() {
+      try { localStorage.setItem("minzheng-cases-v1", JSON.stringify(state.caseHistory)); } catch (e) {}
+    }
+    (function loadCases() {
+      try {
+        const raw = JSON.parse(localStorage.getItem("minzheng-cases-v1") || "null");
+        if (raw && raw.length) {
+          state.caseHistory = raw.map((c) => ({
+            ...c,
+            isRed: c.isRed != null ? c.isRed : (c.lit <= 2 && c.eth && c.eth !== "未点明" && c.topic && c.topic !== "未点明"),
+            uploaded: !!(c.uploaded || c.confirmed),
+            uploadTime: c.uploadTime || (c.confirmed ? c.time : null)
+          }));
+        }
+      } catch (e) {}
+    })();
+
+    function topicReply(dims, rows) {
+      const miss = missingDimsNote(dims, "开题对照只说明这题有没有人做过，不替代课题评审。");
+      if (miss) return miss;
+      const n = rows.length;
+      const sc = signalCount(dims.eth, dims.topic);
+      const weak = n <= 2;
+      const focus = `${dims.eth} · ${dims.topic}`;
+      let lead;
+      let detail;
+      if (n === 0 && sc === 0) {
+        lead = `关于<strong>${focus}</strong>，文献和现场信号<strong>都几乎为空</strong>。`;
+        detail = `<p>现在还说不清这题值不值得跟，不宜据此硬行开题。</p>`;
+      } else if (n === 0 && sc > 0) {
+        lead = `关于<strong>${focus}</strong>，库里几乎没有发表材料，但临床端已有 <strong>${sc}</strong> 笔现场信号。`;
+        detail = `<p>这更像「现场有、文献缺」的可探索方向。可作假说，<strong>不可作诊疗依据</strong>；现场信号不算发表证据。</p>`;
+      } else if (weak && sc >= 2) {
+        lead = `关于<strong>${focus}</strong>，发表材料只有 <strong>${n}</strong> 条，现场却已有 <strong>${sc}</strong> 笔上报。`;
+        detail = `<p>论文少、现场多——可以考虑做成课题假说，仍须自行完成设计与伦理审查。</p>`;
+      } else if (!weak && sc === 0) {
+        lead = `关于<strong>${focus}</strong>，库里已有 <strong>${n}</strong> 条材料，现场信号尚未攒起。`;
+        detail = `<p>宜先核对口径与能否跨民族横比，再决定是否重复做同类描述题。</p>`;
+      } else {
+        lead = `关于<strong>${focus}</strong>，文献 <strong>${n}</strong> 条、现场 <strong>${sc}</strong> 笔，两侧都有一些。`;
+        detail = `<p>请对照后决定：跟进、不重复开同类描述题，或仍不能下结论。</p>`;
+      }
+      const body = `<p class="reply-summary">${lead}</p>${detail}${n ? evidenceMiniHtml(rows, sc) : (sc ? evidenceMiniHtml([], sc) : "")}`;
+      return clinicReplyWrap(body, rows);
+    }
+
+    function evidenceReply(dims, rows) {
+      const miss = missingDimsNote(dims, "证据对照只统计入库文献，不替代系统评价或课题评审。");
+      if (miss) return miss;
+      const n = rows.length;
+      const sc = signalCount(dims.eth, dims.topic);
+      const g = evidenceGradeSummary(rows);
+      const focus = `${dims.eth} · ${dims.topic}`;
+      let body;
+      if (!n) {
+        body = `<p class="reply-summary">关于<strong>${focus}</strong>，库里<strong>没有</strong>可对上的发表条目。</p>
+          <p>就证据而言，目前<strong>不足以支撑立项结论</strong>。${sc ? `临床端虽有 ${sc} 笔现场信号，但<strong>现场上报不算发表证据</strong>，只能作选题参考。` : ""}</p>`;
+      } else {
+        body = `<p class="reply-summary">关于<strong>${focus}</strong>，入库 <strong>${n}</strong> 条，证据<strong>${g.level === "low" ? "整体偏低" : "有一定基础但仍须逐条核对"}</strong>。</p>
+          ${evidenceMiniHtml(rows, sc)}
+          <p>${g.verdict}。分布：${g.dist}。立项时须核对 PICOS、样本量与 GRADE 边界——单条观察性通常只够探索性假说，不够支撑强结论。</p>
+          ${sc ? `<p>临床端 ${sc} 笔现场信号<strong>不计入证据等级</strong>，仅说明「有人碰到过」。</p>` : ""}`;
+      }
+      return clinicReplyWrap(body, rows);
+    }
+
+    function decideReply(dims, rows) {
+      const miss = missingDimsNote(dims, "立项参考不等于课题获批。本助手不替代课题评审。");
+      if (miss) return miss;
+      const n = rows.length;
+      const sc = signalCount(dims.eth, dims.topic);
+      const weak = n <= 2;
+      const focus = `${dims.eth} · ${dims.topic}`;
+      let choice = "现在还说不清";
+      let reason = "现场信号与文献均不够，不能下结论。";
+      if (sc >= 3 && (n === 0 || weak)) {
+        choice = "可以做成课题";
+        reason = `现场同类已有 ${sc} 笔，入库条目却很少——更像「现场有、文献少」的缺口。可作课题假说，不可作诊疗依据。`;
+      } else if (sc >= 3 && !weak) {
+        choice = "已有积累，暂不必再开同类描述题";
+        reason = "现场仍在发生，但文献已有一定覆盖。宜先消化现有材料，不宜再开同类描述题。";
+      } else if (sc > 0 && n === 0) {
+        choice = "可以做成课题";
+        reason = "文献几乎空白，但现场已有信号。可考虑小范围研究设计，仍须自行完成伦理与方案。";
+      } else if (sc === 0 && !weak) {
+        choice = "已有积累，暂不必再开同类描述题";
+        reason = "现场信号尚未攒起，文献却已有若干。不宜仅因「感觉新」即立项。";
+      } else if (sc === 0 && (n === 0 || weak)) {
+        choice = "现在还说不清";
+        reason = "现场与文献均薄。可待临床端再确认若干笔后再判断。";
+      } else {
+        choice = "现在还说不清";
+        reason = "文献与现场均有一些，但尚未形成清晰对照。请自行权衡是否跟进。";
+      }
+      state.lastJudgement = choice;
+      const body = `<p class="reply-summary">关于<strong>${focus}</strong>，我的参考是：<strong>${choice}</strong>。</p>
+        <p>${reason}</p>
+        <p style="font-size:13px;color:#555">口诀：医生报得多且文献很少，更值得考虑新研究；反之不宜急于立项。</p>
+        ${evidenceMiniHtml(rows, sc)}
+        <p class="note" style="margin-top:8px">立项参考，不替代课题评审、伦理审查或研究设计。</p>`;
+      return clinicReplyWrap(body, rows);
+    }
+
+    function signalReply(dims, rows) {
+      if (!dims.eth && !dims.topic) {
+        return missingDimsNote(dims, "此处只说明有无医生上传过该类情况，不能据此改医嘱。");
+      }
+      const list = state.signals.filter((s) => (!dims.eth || s.eth === dims.eth) && (!dims.topic || s.topic === dims.topic));
+      const sc = list.length;
+      const n = rows.length;
+      const understand = sc === 0
+        ? "尚无医生上传过该类情况。"
+        : sc >= 3
+          ? "已有若干医生上报。可至「现场发现」继续判断是否值得做成研究。"
+          : "有零星上传，可继续观察。";
+      return `<div class="warn">此处只回答：有无医生上传过该类情况。不能据此改医嘱，亦不还原个案。</div>
+        <div>询问范围：<strong>${dims.eth || "不限民族"} · ${dims.topic || "不限主题"}</strong></div>
+        <div class="statrow" style="margin-top:8px">
+          <div class="stat"><em>医生上传</em><strong>${sc}</strong> 次</div>
+          <div class="stat"><em>库内文献</em><strong>${n}</strong> 条</div>
+        </div>
+        <div class="hit"><b>如何理解</b><p>${understand}</p></div>
+        ${list.slice().reverse().map((s) => `<div class="hit"><b>${s.eth} · ${s.topic}</b><p>${s.phen}</p><div class="meta">${s.region || ""} · ${s.time} · 不写病人是谁</div></div>`).join("") || "<div class='hit'>暂无上传。</div>"}`;
+    }
+
+    function startAgent(mode) {
+      state.llmSeq += 1;
+      state.chatMode = mode;
+      state.page = "home";
+      state.caseLive = false;
+      state.judgeLive = false;
+      state.clinicAsk = { eth: "", topic: "" };
+      state.researchAsk = { eth: "", topic: "" };
+      state.msgs = [];
+      state.tips = {
+        frontier: ["最新傣族代谢有什么研究？", "傣族G6PD变异，库里有没有？"],
+        judge: ["傣族用华法林后出血，现有研究够不够判断？", "傣族代谢问题，能不能套汉族结论？", "这个人该怎么治、开什么药？"],
+        case: ["傣族患者，华法林相关出血现象反复出现", "维吾尔族用华法林，接诊里看到抗凝相关现象"],
+        topic: ["傣族代谢这件事，已经有几篇研究？", "维吾尔族和华法林，还值不值得做成课题？"],
+        decide: ["傣族华法林这题，做还是不做？", "傣族代谢，跟不跟？"],
+        evidence: ["维吾尔族华法林，证据等级怎么样？", "傣族代谢，发表材料强不强？"]
+      }[mode] || [];
+      if (mode === "judge" || mode === "frontier") {
+        state.msgs = [{
+          role: "bot",
+          html: mode === "judge"
+            ? `${CLINIC_PROMPT.opening}请点下面的问题，或直接说明<strong>民族</strong>和<strong>病/药</strong>。对照入库研究，不替代诊疗。`
+            : `下面按库内已入库条目作答。请点提示问题，或说明民族和病/药。`
+        }];
+      }
+      if (mode === "topic" || mode === "decide" || mode === "evidence") {
+        const extra = {
+          topic: "对照入库文献与现场信号，说明这题有没有人做过。",
+          decide: "对照文献存量与现场信号，给出立项参考，不替代课题评审。",
+          evidence: "只统计入库文献的等级与设计；现场信号不算发表证据。"
+        }[mode];
+        state.msgs = [{
+          role: "bot",
+          html: `${RESEARCH_PROMPT.opening}请点下面的问题，或直接说明<strong>民族</strong>和<strong>病/药</strong>。${extra}`
+        }];
+      }
+      render();
+    }
+
+    function modeLabel() {
+      return {
+        frontier: "前沿研究",
+        judge: "辅助判断",
+        case: "病例对话",
+        topic: "开题对照",
+        decide: "做不做研究",
+        evidence: "证据"
+      }[state.chatMode] || "";
+    }
+
+    function modePlaceholder() {
+      if (state.chatMode === "frontier") return "问：最新××有什么研究";
+      if (state.chatMode === "judge") return "说：这个人什么情况";
+      if (state.chatMode === "case") return "描述民族 + 现象";
+      if (state.chatMode === "topic") return "问：这题有没有人做过";
+      if (state.chatMode === "decide") return "问：这题做还是不做";
+      if (state.chatMode === "evidence") return "问：这题证据等级如何";
+      return "发送消息或按住说话";
+    }
+
+    function wxHeader() {
+      const onClinic = state.assistant === "clinic" && state.page !== "forum";
+      const onResearch = state.assistant === "research" && state.page !== "forum";
+      const onForum = state.page === "forum";
+      return `
+        <div class="status"><span>9:41</span><span>100%</span></div>
+        <div class="wx-bar">
+          <div class="wx-left"><button type="button" class="menu-btn" id="open-drawer" aria-label="菜单">☰</button></div>
+          <div class="seg">
+            <button class="${onClinic ? "on" : ""}" data-as="clinic">临床助手</button>
+            <button class="${onResearch ? "on" : ""}" data-as="research">科研助手</button>
+            <button class="${onForum ? "on" : ""}" data-as="forum">我的论坛</button>
+          </div>
+          <div class="capsule"><span>···</span><span><i class="cap-dot"></i></span></div>
+        </div>`;
+    }
+
+    function forumActs(p) {
+      const liked = !!state.forumLiked[p.id];
+      return `<div class="forum-acts">
+        <button type="button" data-like="${p.id}" class="${liked ? "on" : ""}">${svg("heart")} ${liked ? p.likes + 1 : p.likes}</button>
+        <button type="button">${svg("comment")} ${p.comments}</button>
+        <button type="button">${svg("share")} ${p.shares}</button>
+      </div>`;
+    }
+
+    function forumDiscover() {
+      const q = (state.forumQuery || "").trim();
+      const posts = state.forumPosts.filter((p) => !q || (p.name + p.text).includes(q));
+      return `
+        <div class="forum-search">${svg("search")}<input id="forum-q" placeholder="搜索帖子" value="${q.replace(/"/g, "&quot;")}" /></div>
+        ${posts.map((p) => `
+          <article class="forum-card">
+            <div class="forum-user">
+              <div class="forum-av ${p.av}">${p.name.slice(0, 1)}</div>
+              <div><b>${p.name}</b><em>${p.meta}</em></div>
+            </div>
+            <p>${p.text}</p>
+            ${forumActs(p)}
+          </article>
+        `).join("") || `<div class="forum-card"><p>没有找到相关帖子。</p></div>`}`;
+    }
+
+    function forumCircle() {
+      return `
+        <div class="forum-banner"></div>
+        <article class="forum-card">
+          <div class="forum-user">
+            <div class="forum-av s2">圈</div>
+            <div><b>多民族健康观察圈</b><em>今天 · 现场信号</em></div>
+          </div>
+          <p>今天把脱敏观察整理了一版。先看现有研究知道多少，再决定值不值得跟。</p>
+          <div class="forum-photos"><i></i><i></i><i></i></div>
+          <div class="forum-like">${svg("heart")} 你和其他 17 人赞了 · 102 次</div>
+        </article>
+        <article class="forum-card">
+          <div class="forum-user">
+            <div class="forum-av s3">陈</div>
+            <div><b>陈研究员</b><em>2小时前</em></div>
+          </div>
+          <p>圈子里这条华法林题目，文献还薄。欢迎把同类观察放进来对照，不讨论怎么治。</p>
+          ${forumActs({ id: "circle1", likes: 36, comments: 9, shares: 4 })}
+        </article>`;
+    }
+
+    function forumChatList() {
+      return `
+        <div class="forum-search">${svg("search")}<input id="forum-q" placeholder="搜索聊天" value="${(state.forumQuery || "").replace(/"/g, "&quot;")}" /></div>
+        ${state.forumThreads.map((t) => `
+          <button type="button" class="forum-chat-item" data-forum-chat="${t.id}">
+            <div class="forum-av ${t.av}">${t.name.slice(0, 1)}</div>
+            <div style="min-width:0;flex:1"><b>${t.name}</b><span>${t.preview}</span></div>
+          </button>
+        `).join("")}`;
+    }
+
+    function forumChatThread() {
+      const t = state.forumThreads.find((x) => x.id === state.forumChatId);
+      if (!t) return forumChatList();
+      return `
+        <div class="forum-thread">
+          ${t.msgs.map((m) => `<div class="forum-bubble ${m.role === "me" ? "me" : ""}">${m.text}</div>`).join("")}
+          <div class="forum-time">22:30</div>
+        </div>
+        <div class="dock">
+          <div class="inputbar">
+            ${svg("mic")}
+            <input id="forum-chat-in" placeholder="发送消息" />
+            <button class="forum-chat-go" id="forum-chat-send">发送</button>
+          </div>
+        </div>`;
+    }
+
+    function forumPublish() {
+      return `
+        <p class="note" style="margin:0 0 10px">只发脱敏观察或选题想法。不写可识别病历，不讨论怎么治、开什么药。</p>
+        <div class="forum-compose">
+          <textarea id="forum-draft" placeholder="分享现场观察、对照想法，或想问圈子的问题…">${(state.forumDraft || "").replace(/</g, "&lt;")}</textarea>
+          <button type="button" class="forum-send" id="forum-publish">发布</button>
+        </div>`;
+    }
+
+    function forumMe() {
+      return `
+        <div class="forum-me-head">
+          <div class="forum-av lg">${(state.userName || "用").slice(0, 1)}</div>
+          <div>
+            <b>${state.userName}</b>
+            <span>${state.userTitle}</span>
+          </div>
+        </div>
+        <div class="forum-stats">
+          <div><strong>${state.forumPosts.filter((p) => p.name === state.userName).length}</strong><em>帖子</em></div>
+          <div><strong>2</strong><em>圈子</em></div>
+          <div><strong>${state.favorites.length}</strong><em>收藏</em></div>
+        </div>
+        <button type="button" class="forum-menu" data-forum-tab="discover">我的帖子<em>发现</em></button>
+        <button type="button" class="forum-menu" data-forum-tab="circle">我的圈子<em>观察圈</em></button>
+        <button type="button" class="forum-menu" data-go="favorites">我的知识库<em>文献收藏</em></button>`;
+    }
+
+    function forumPage() {
+      const tab = state.forumTab || "discover";
+      const inChat = tab === "chat" && state.forumChatId;
+      let body = "";
+      if (tab === "discover") body = forumDiscover();
+      else if (tab === "publish") body = forumPublish();
+      else if (tab === "chat") body = inChat ? forumChatThread() : forumChatList();
+      else if (tab === "circle") body = forumCircle();
+      else body = forumMe();
+      return `
+        ${wxHeader()}
+        ${inChat ? `<div class="nav" style="height:40px;display:flex;align-items:center;gap:8px;padding:0 12px;font-weight:700"><button type="button" id="forum-chat-back" style="border:0;background:none;font-size:22px;cursor:pointer;width:28px">‹</button>${state.forumThreads.find((x) => x.id === state.forumChatId)?.name || "聊天"}</div>` : ""}
+        <div class="forum">
+          ${inChat ? body : `<div class="forum-body">${body}</div>`}
+          ${inChat ? "" : `<nav class="forum-tabbar">
+            <button type="button" class="${tab === "discover" ? "on" : ""}" data-forum-tab="discover">${svg("home")}发现</button>
+            <button type="button" class="${tab === "publish" ? "on" : ""}" data-forum-tab="publish">${svg("plusbox")}发布</button>
+            <button type="button" class="${tab === "chat" ? "on" : ""}" data-forum-tab="chat">${svg("chat")}聊天</button>
+            <button type="button" class="${tab === "circle" ? "on" : ""}" data-forum-tab="circle">${svg("hash")}圈子</button>
+            <button type="button" class="${tab === "me" ? "on" : ""}" data-forum-tab="me">${svg("user")}我</button>
+          </nav>`}
+        </div>`;
+    }
+
+    function home() {
+      const clinic = state.assistant === "clinic";
+      const chatting = state.msgs.length > 0;
+      const modeOn = !!state.chatMode;
+      const sessionLive = clinic ? state.caseLive : state.judgeLive;
+      const body = `
+        <div class="hero">
+          <div class="doc"><img src="hero-doc.png" alt="" /></div>
+          <div class="hello">${hourGreet()}~<span>${clinic ? "先说民族和病/药，再看现有研究知道多少。" : "先说民族和病/药，再看这题值不值得做。"}</span></div>
+        </div>
+        <div class="mods" style="grid-template-columns:1fr 1fr;gap:8px">
+          <button class="mod" data-go="lit" style="text-align:left;padding:14px 10px"><div class="ico">${svg("book")}</div><b>文献速查</b><span style="display:block;font-size:11px;color:#6b7380;font-weight:400;margin-top:4px">查发表过的研究</span></button>
+          ${clinic
+            ? `<button class="mod" data-go="history" style="text-align:left;padding:14px 10px"><div class="ico">${svg("people")}</div><b>历史记录</b><span style="display:block;font-size:11px;color:#6b7380;font-weight:400;margin-top:4px">对话记录</span></button>`
+            : `<button class="mod" data-go="judgeHist" style="text-align:left;padding:14px 10px"><div class="ico">${svg("people")}</div><b>研判记录</b><span style="display:block;font-size:11px;color:#6b7380;font-weight:400;margin-top:4px">做过的课题判断</span></button>`}
+        </div>
+        <div class="sec">
+          <div class="sec-h">${clinic ? "病例对话" : "研判对话"}${sessionLive ? " · 进行中" : ""}</div>
+          <button class="new-chat" type="button" id="${clinic ? "start-case" : "start-judge"}"><span class="plus-mark">+</span><b>开始新对话</b></button>
+        </div>
+        ${chatting ? `<div class="home-chat" style="min-height:120px">${state.msgs.map((m) => `<div class="bubble ${m.role === "me" ? "me" : ""}${m.pending ? " pending" : ""}">${m.html || m.text}</div>`).join("")}</div>` : ""}`;
+      return `
+        ${wxHeader()}
+        <div class="body">${body}</div>
+        <div class="dock">
+          ${!modeOn || sessionLive ? `<div class="chips">
+            ${clinic ? `
+              <button data-agent="frontier">前沿研究</button>
+              <button data-agent="judge">辅助判断</button>
+            ` : `
+              <button data-agent="topic">开题对照</button>
+              <button data-agent="decide">做不做研究</button>
+              <button data-agent="evidence">证据</button>
+            `}
+          </div>` : ""}
+          ${modeOn && !sessionLive ? `<div class="mode-chip">${svg("book")} ${modeLabel()}<button type="button" class="x alone" id="clear-mode">×</button></div>` : ""}
+          ${modeOn && !sessionLive && state.tips && state.tips.length ? `<div class="suggest" style="margin-bottom:8px">${state.tips.map((t) => `<button type="button" data-ask="${t.replace(/"/g, "&quot;")}">${t}</button>`).join("")}</div>` : ""}
+          ${llmStatusLine()}
+          <div class="inputbar">
+            ${svg("mic")}
+            <input id="home-in" placeholder="${sessionLive ? (clinic ? "描述接诊情况，说完再点「开始新对话」" : "问民族+病/药，说完再点「开始新对话」") : modePlaceholder()}" value="${state.input.replace(/"/g, "&quot;")}" />
+            <button class="plus" id="home-send">+</button>
+          </div>
+        </div>`;
+    }
+
+    function sub(title, inner) {
+      return `
+        <div class="sub">
+          <div class="status"><span>9:41</span><span>100%</span></div>
+          <div class="nav"><button data-go="home">‹</button>${title}</div>
+          <div class="pad">${inner}</div>
+        </div>`;
+    }
+
+    function buildReport() {
+      const board = signalBoard();
+      const priority = board.filter((b) => b.rank === "建议优先做");
+      const watch = board.filter((b) => b.rank === "可以留意");
+      const covered = board.filter((b) => b.rank === "不必急着新开");
+      const wait = board.filter((b) => b.rank === "先再等等");
+      const shelves = SHELVES.map(([id, , name]) => ({
+        name,
+        n: ENTRIES.filter((e) => e.shelf === id).length
+      }));
+      const ethCover = countBy(ENTRIES, "ethnicity").sort((a, b) => b.n - a.n);
+      const judges = (state.judgeHistory || []).slice(0, 5);
+      const day = new Date().toISOString().slice(0, 10);
+      const lines = [
+        "多民族健康证据服务 · 选题对照报告",
+        "生成日期：" + day,
+        "说明：立项参考，不替代课题评审、伦理审查或研究设计。",
+        "",
+        "一、总体存量",
+        "入库条目 " + ENTRIES.length + " 条；医生上传 " + state.signals.length + " 次；涉及情况 " + board.length + " 种。",
+        "建议优先跟进 " + priority.length + " 项；可以留意 " + watch.length + " 项。",
+        "",
+        "二、建议优先跟进（现场多、文献少）"
+      ];
+      if (priority.length) {
+        priority.forEach((b) => lines.push("· " + b.eth + " · " + b.topic + "：上传 " + b.n + " 次，入库 " + b.lit + " 条。" + b.tip));
+      } else {
+        lines.push("· 当前没有达到「建议优先做」阈值的题目。");
+      }
+      lines.push("", "三、可以留意 / 宜先消化已有材料");
+      watch.forEach((b) => lines.push("· 可以留意：" + b.eth + " · " + b.topic + "（上传 " + b.n + "，入库 " + b.lit + "）"));
+      covered.forEach((b) => lines.push("· 已有积累，暂不必再开同类描述题：" + b.eth + " · " + b.topic));
+      wait.forEach((b) => lines.push("· 先再观察：" + b.eth + " · " + b.topic + "（上传 " + b.n + "，入库 " + b.lit + "）"));
+      if (!watch.length && !covered.length && !wait.length) lines.push("· 现场信号尚少，宜继续观察临床端上传。");
+      lines.push("", "四、入库覆盖（按四类）");
+      shelves.forEach((s) => lines.push("· " + s.name + "：" + s.n + " 条"));
+      lines.push("民族覆盖：" + ethCover.map((e) => e.name + e.n + "条").join("、"));
+      if (judges.length) {
+        lines.push("", "五、已有研判记录");
+        judges.forEach((j) => lines.push("· " + j.time + " " + j.eth + " · " + j.topic + " → " + j.choice));
+      }
+      lines.push("", "对照口诀：医生报得多且文献很少，更值得考虑新研究；反之不宜急于立项。");
+      return { board, priority, watch, covered, wait, shelves, ethCover, judges, day, text: lines.join("\n") };
+    }
+
+    function reportTopicLine(b) {
+      return `<div class="hit" style="margin-bottom:8px">
+        <b>${b.eth} · ${b.topic}</b>
+        <div class="statrow orbs" style="margin:8px 0">
+          <div class="stat stat-orb"><em>医生上传</em><strong>${b.n}</strong><span class="unit">次</span></div>
+          <div class="stat stat-orb"><em>入库条数</em><strong>${b.lit}</strong><span class="unit">条</span></div>
+        </div>
+        <p><strong>${b.rank}</strong> — ${b.tip}</p>
+      </div>`;
+    }
+
+    function reportPage() {
+      const r = buildReport();
+      const citeHits = r.priority.concat(r.watch).slice(0, 3).map((b) => match(b.eth, b.topic)[0]).filter(Boolean);
+      return sub("选题对照报告", `
+        <div class="report-body">
+        <button type="button" class="copy-bar" id="copy-report">复制报告文本</button>
+        <div class="prompt-sec">
+          <h3>多民族健康证据 · 选题对照报告</h3>
+          <p>生成日期：${r.day}。本报告由科研助手对照入库文献与临床端脱敏现场信号汇总，属立项参考，不替代课题评审、伦理审查或研究设计。</p>
+        </div>
+        <div class="statrow orbs" style="margin-bottom:10px">
+          <div class="stat stat-orb"><em>入库条目</em><strong>${ENTRIES.length}</strong><span class="unit">条</span></div>
+          <div class="stat stat-orb"><em>医生上传</em><strong>${state.signals.length}</strong><span class="unit">次</span></div>
+          <div class="stat stat-orb"><em>建议优先</em><strong>${r.priority.length}</strong><span class="unit">项</span></div>
+          <div class="stat stat-orb"><em>可以留意</em><strong>${r.watch.length}</strong><span class="unit">项</span></div>
+        </div>
+        <div class="prompt-sec">
+          <h3>建议优先跟进</h3>
+          <p>现场信号较多、入库条目很少。可作课题假说，不可作诊疗依据。</p>
+        </div>
+        ${r.priority.map(reportTopicLine).join("") || `<div class="hit" style="margin-bottom:10px"><b>暂无优先项</b><p>还没有达到「建议优先做」阈值。</p></div>`}
+        <div class="prompt-sec">
+          <h3>可以留意 / 已有积累</h3>
+          <p>已有上报但尚不足以立项，或文献已有一定覆盖、宜先消化现有材料。</p>
+        </div>
+        ${r.watch.concat(r.covered, r.wait).map(reportTopicLine).join("") || `<div class="hit" style="margin-bottom:10px"><p>现场信号尚少。宜待临床端再上传后复核。</p></div>`}
+        <div class="prompt-sec">
+          <h3>入库覆盖</h3>
+          <ul>${r.shelves.map((s) => `<li>${s.name}：${s.n} 条</li>`).join("")}</ul>
+          <p>民族覆盖：${r.ethCover.map((e) => e.name + e.n + "条").join("、")}。</p>
+        </div>
+        ${r.judges.length ? `<div class="prompt-sec">
+          <h3>已有研判记录</h3>
+          <ul>${r.judges.map((j) => `<li>${j.time}　${j.eth} · ${j.topic} → ${j.choice}</li>`).join("")}</ul>
+        </div>` : ""}
+        ${citeHits.length ? `<div class="prompt-sec"><h3>相关入库条目（出处只写编号）</h3></div>${citeHits.map(citeHit).join("")}` : ""}
+        <p class="note">对照口诀：医生报得多且文献很少，更值得考虑新研究；反之不宜急于立项。</p>
+        </div>
+      `);
+    }
+
+    function judgeHistPage() {
+      const list = state.judgeHistory;
+      const detail = list.find((c) => c.id === state.judgeId);
+      if (detail) {
+        return sub("研判详情", `
+          <button type="button" id="back-judge-hist" style="border:0;background:none;color:#3b82c4;font:inherit;font-size:13px;margin-bottom:10px;cursor:pointer">← 返回列表</button>
+          <div class="hit">
+            <b>${detail.eth} · ${detail.topic}</b>
+            <div class="keys" style="margin-top:6px"><span>${detail.choice}</span><span>上传 ${detail.sc}</span><span>文献 ${detail.lit}</span></div>
+            <div class="meta" style="margin-top:8px">${detail.time}</div>
+          </div>
+          <div class="sec-h" style="padding:0;margin:12px 0 8px">当时提问</div>
+          ${(detail.lines || []).map((t) => `<div class="hit"><p>${t}</p></div>`).join("") || "<div class='hit'>无原文</div>"}
+          <div class="sec-h" style="padding:0;margin:12px 0 8px">研判结论</div>
+          <div class="hit">${detail.summaryHtml || "无"}</div>
+        `);
+      }
+      return sub("研判记录", `
+        <p class="note" style="margin:0 0 10px">再点一次「开始新对话」就会结束并写入这里。与临床历史分开，这里只留课题判断结果。</p>
+        ${list.length ? list.map((c) => `
+          <button class="group" type="button" data-judge="${c.id}">
+            <span><b>${c.eth} · ${c.topic}</b><br>
+            <em style="font-style:normal;color:#6b7380;font-size:12px">${c.time} · ${c.choice} · 上传 ${c.sc} · 文献 ${c.lit}</em></span>
+            <em>查看 →</em>
+          </button>`).join("") : "<div class='hit'>还没有研判记录。回首页点「开始新对话」；再说完再点一次，就会写入这里。</div>"}
+      `);
+    }
+
+    function historyPage() {
+      const all = state.caseHistory;
+      const detail = all.find((c) => c.id === state.historyId);
+      if (detail) {
+        return sub("记录详情", `
+          <button type="button" id="back-history" style="border:0;background:none;color:#3b82c4;font:inherit;font-size:13px;margin-bottom:10px;cursor:pointer">← 返回列表</button>
+          <div class="hit">
+            <b>${detail.eth} · ${detail.topic}</b>
+            <div style="margin-top:6px">
+              <span class="tag-mute">${detail.gap}</span>
+              <span class="tag-mute">文献 ${detail.lit}</span>
+            </div>
+            <p style="margin-top:8px">${detail.phen}</p>
+            <div class="meta" style="margin-top:8px">${detail.time}</div>
+          </div>
+          <div class="sec-h" style="padding:0;margin:12px 0 8px">对话原文</div>
+          ${(detail.lines || []).map((t) => `<div class="hit"><p>${t}</p></div>`).join("") || "<div class='hit'>无原文</div>"}
+        `);
+      }
+      return sub("历史记录", `
+        <p class="note" style="margin:0 0 10px">再点一次「开始新对话」就会结束并写入这里。</p>
+        ${all.length ? all.map((c) => `
+          <button class="group" type="button" data-history="${c.id}">
+            <span><b>${c.eth} · ${c.topic}</b><br>
+            <em style="font-style:normal;font-size:12px;color:#6b7380">${c.time} · ${c.phen} · 文献 ${c.lit}</em></span>
+            <em>查看 →</em>
+          </button>`).join("") : "<div class='hit'>还没有对话记录。回首页点「开始新对话」；再说完再点一次，就会写入这里。</div>"}
+      `);
+    }
+
+    function litFilterPanelHtml() {
+      const pool = litRowsByShelf(state.litShelf);
+      const tags = DOC_TYPES.map(([id, , name]) => {
+        const n = pool.filter((e) => e.docType === id).length;
+        const on = state.litDocTypes.includes(id) ? " on" : "";
+        return `<button type="button" class="${on.trim()}" data-lit-dtype="${id}">${name}<em style="font-style:normal;color:#8a93a0;margin-left:4px">${n}</em></button>`;
+      }).join("");
+      return `
+        <div class="lit-filter-panel">
+          <h4>文献类型（可多选，不选则全部）</h4>
+          <div class="lit-filter-tags">${tags}</div>
+          <h4>证据等级</h4>
+          <div class="lit-filter-tags">
+            <button type="button" class="${state.litGrade === "mid" ? "on" : ""}" data-lit-grade="mid">中</button>
+            <button type="button" class="${state.litGrade === "low" ? "on" : ""}" data-lit-grade="low">低</button>
+          </div>
+          <div class="lit-filter-foot">
+            <button type="button" class="ghost" id="lit-filter-reset">重置</button>
+            <button type="button" class="primary" id="lit-filter-ok">确定</button>
+          </div>
+        </div>`;
+    }
+
+    function litPage() {
+      const hasKeyword = (state.query || "").trim().length > 0;
+      const hasShelf = !!state.litShelf;
+      const dropLabel = hasShelf ? shelfName(state.litShelf) : "文献";
+      const icons = { prev: "📊", risk: "⚠️", geno: "🧬", pgx: "💊" };
+      const pageTitle = state.litShowResults ? "搜索结果" : "搜索";
+      const catPanel = state.litDrop ? `
+        <div class="lit-cat-panel">
+          ${SHELVES.map(([id, , name]) => {
+            const n = litRowsByShelf(id).length;
+            const on = state.litShelf === id ? " on" : "";
+            return `<button type="button" class="${on.trim()}" data-lit-shelf="${id}">${icons[id] || "📄"} ${name}<em>${n} 条</em></button>`;
+          }).join("")}
+        </div>` : "";
+      const showFilterTab = hasKeyword && hasShelf;
+      let main = "";
+      if (state.litFilterOpen) {
+        main = litFilterPanelHtml();
+      } else if (state.litShowResults) {
+        const rows = litSearchRows();
+        main = `
+          <div class="lit-result-head">${litFilterSummary() || "全部"} · 共 ${rows.length} 条</div>
+          <div class="pad" style="padding-top:8px">
+            ${rows.length ? rows.map(litCard).join("") : `<div class="empty"><div class="folder"></div>没有找到匹配条目</div>`}
+          </div>`;
+      } else {
+        main = `<div class="lit-hint">${!hasShelf ? "点左上角「文献」，先选研究主题" : !hasKeyword ? "已选「" + shelfName(state.litShelf) + "」，请输入关键词" : "可点「筛选条件」进一步缩小，或直接按回车检索"}</div>`;
+      }
+      return `
+        <div class="sub" style="position:relative">
+          <div class="status"><span>9:41</span><span>100%</span></div>
+          <div class="nav"><button data-go="home">‹</button>${pageTitle}</div>
+          <div class="search-head">
+            <div class="sbar">
+              <button class="drop" type="button" id="lit-drop">${svg("book")} ${dropLabel} <span class="caret">${state.litDrop ? "▴" : "▾"}</span></button>
+              <input id="q-lit" placeholder="请输入搜索关键词" value="${(state.query || "").replace(/"/g, "&quot;")}" />
+            </div>
+            ${catPanel}
+          </div>
+          ${state.litDrop ? `<div class="mask" id="lit-mask"></div>` : ""}
+          ${showFilterTab ? `
+            <div class="lit-tabs">
+              <button type="button" class="${state.litFilterOpen ? "on" : ""}" id="lit-toggle-filter">筛选条件 ${state.litFilterOpen ? "▴" : "▾"}</button>
+            </div>` : ""}
+          ${main}
+        </div>`;
+    }
+
+    function promptPage() {
+      const kind = state.promptKind === "research" ? "research" : "clinic";
+      const p = kind === "research" ? RESEARCH_PROMPT : CLINIC_PROMPT;
+      const title = kind === "research" ? "科研助手提示词" : "临床助手提示词";
+      const note = kind === "research"
+        ? "演示用系统提示词。开题对照与做不做研究按此约束作答。"
+        : "演示用系统提示词。辅助判断按此约束作答。";
+      const researchStruct = kind === "research" ? `
+        <div class="prompt-sec">
+          <h3>回复结构 · 开题对照</h3>
+          <ol>${p.structureTopic.map((r) => `<li>${r}</li>`).join("")}</ol>
+        </div>
+        <div class="prompt-sec">
+          <h3>回复结构 · 做不做研究</h3>
+          <ol>${p.structureDecide.map((r) => `<li>${r}</li>`).join("")}</ol>
+        </div>
+        <div class="prompt-sec">
+          <h3>回复结构 · 证据</h3>
+          <ol>${p.structureEvidence.map((r) => `<li>${r}</li>`).join("")}</ol>
+        </div>` : "";
+      const structTitle = kind === "research" ? "回复结构（三个技能）" : "回复结构（两个技能）";
+      const clinicStruct = kind === "clinic" ? `
+        <div class="prompt-sec">
+          <h3>回复结构 · 辅助判断</h3>
+          <ol>${p.structureJudge.map((r) => `<li>${r}</li>`).join("")}</ol>
+        </div>
+        <div class="prompt-sec">
+          <h3>回复结构 · 前沿研究</h3>
+          <ol>${p.structureFrontier.map((r) => `<li>${r}</li>`).join("")}</ol>
+        </div>` : "";
+      return sub(title, `
+        <p class="note" style="margin:0 0 10px">${note}</p>
+        <div class="prompt-sec">
+          <h3>角色</h3>
+          <p>${p.role}</p>
+        </div>
+        <div class="prompt-sec">
+          <h3>任务范围</h3>
+          <p>${p.scope}</p>
+        </div>
+        <div class="prompt-sec">
+          <h3>对话要求</h3>
+          <ol>${p.rules.map((r) => `<li>${r}</li>`).join("")}</ol>
+        </div>
+        <div class="prompt-sec">
+          <h3>禁止</h3>
+          <ul>${p.bans.map((r) => `<li>${r}</li>`).join("")}</ul>
+        </div>
+        <div class="prompt-sec">
+          <h3>${structTitle}</h3>
+          <ol>${p.structure.map((r) => `<li>${r}</li>`).join("")}</ol>
+        </div>
+        ${clinicStruct}
+        ${researchStruct}
+        <div class="prompt-sec">
+          <p>开场：${p.opening}</p>
+        </div>
+      `);
+    }
+
+    function favoritesPage() {
+      const axis = state.favAxis || "all";
+      let rows = LIT_ENTRIES.concat(ENTRIES).filter((e) => isFav(e.id));
+      if (SHELVES.some((s) => s[0] === axis)) {
+        rows = rows.filter((e) => e.shelf === axis);
+      }
+      const tabs = [["all", "全部"]].concat(SHELVES.map(([id, , name]) => [id, name]));
+      let body = "";
+      if (!rows.length) {
+        body = `<div class="empty"><div class="folder"></div>还没有收藏<br>去文献速查看完后点星星即可</div>`;
+      } else if (axis === "all") {
+        body = rows.map(litCard).join("");
+      } else {
+        const items = countBy(rows, "ethnicity");
+        if (!state.favPick) {
+          body = items.map((g) => `<button class="group" data-fav-pick="${g.name}"><b>${g.name}</b><em>${g.n} 篇收藏</em></button>`).join("") || `<div class="hit">这一类暂无收藏</div>`;
+        } else {
+          const list = rows.filter((e) => e.ethnicity === state.favPick);
+          body = `<div class="sec-h" style="padding:0;margin-bottom:8px">${state.favPick}<button type="button" id="back-fav-pick">返回</button></div>${list.map(litCard).join("")}`;
+        }
+      }
+      return sub("我的知识库", `
+        <p class="note" style="margin:0 0 10px">这里是你收藏的文献，可按与入库素材相同的四类方式浏览。</p>
+        <div class="filters" style="margin-bottom:10px">
+          ${tabs.map(([id, name]) => `<button type="button" data-fav-axis="${id}" class="${axis === id ? "on" : ""}">${name}</button>`).join("")}
+        </div>
+        ${body}
+      `);
+    }
+
+    function chatPage() {
+      const titles = { frontier: "前沿研究", judge: "辅助判断", case: "病例对话", lit: "对话", "": "对话" };
+      const title = titles[state.chatMode] || "对话";
+      const tips = state.tips || [];
+      const msgs = state.msgs.map((m) =>
+        `<div class="bubble ${m.role === "me" ? "me" : ""}${m.pending ? " pending" : ""}">${m.html || m.text}</div>`
+      ).join("");
+      return `
+        <div class="sub">
+          <div class="status"><span>9:41</span><span>100%</span></div>
+          <div class="nav"><button data-go="home">‹</button>${title}</div>
+          <div class="pad">
+            <div class="chat">${msgs}</div>
+            ${tips.length ? `<div class="suggest" style="padding:0 4px 8px">${tips.map((t) => `<button type="button" data-ask="${t.replace(/"/g, "&quot;")}">${t}</button>`).join("")}</div>` : ""}
+          </div>
+          <div class="dock">
+            <div class="inputbar">
+              ${svg("mic")}
+              <input id="chat-in" placeholder="${state.chatMode === "frontier" ? "问：最新××有什么研究" : state.chatMode === "judge" ? "说：这个人什么情况" : state.chatMode === "case" ? "描述民族+现象" : "发送消息或按住说话"}" />
+              <button class="plus" id="chat-send">+</button>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    let litComposing = false;
+
+    function render() {
+      if (state.page === "board") state.page = "home";
+      const oldLit = document.getElementById("q-lit");
+      const keepLit = !!(oldLit && document.activeElement === oldLit);
+      const litCaret = keepLit ? oldLit.selectionStart : 0;
+      const root = document.getElementById("app");
+      let html = "";
+      if (state.page === "home") html = home();
+      if (state.page === "forum") html = forumPage();
+      if (state.page === "lit") html = litPage();
+      if (state.page === "litDetail") html = litDetailPage();
+      if (state.page === "judgeHist") html = judgeHistPage();
+      if (state.page === "history") html = historyPage();
+      if (state.page === "favorites") html = favoritesPage();
+      if (state.page === "prompt") html = promptPage();
+      if (state.page === "chat") html = chatPage();
+      root.innerHTML = html + drawerHtml();
+      bind();
+      if (keepLit) {
+        const ql = document.getElementById("q-lit");
+        if (ql) {
+          ql.focus();
+          const pos = Math.min(litCaret, ql.value.length);
+          try { ql.setSelectionRange(pos, pos); } catch (e) {}
+        }
+      }
+    }
+
+    function bind() {
+      const openDrawer = document.getElementById("open-drawer");
+      if (openDrawer) openDrawer.onclick = () => { state.drawerOpen = true; render(); };
+      const drawerMask = document.getElementById("drawer-mask");
+      if (drawerMask) drawerMask.onclick = () => { state.drawerOpen = false; render(); };
+      const goFavs = document.getElementById("go-favs");
+      if (goFavs) {
+        goFavs.onclick = () => {
+          state.drawerOpen = false;
+          state.page = "favorites";
+          state.favAxis = "all";
+          state.favPick = "";
+          render();
+        };
+      }
+      const goPrompt = document.getElementById("go-prompt");
+      if (goPrompt) {
+        goPrompt.onclick = () => {
+          state.drawerOpen = false;
+          state.promptKind = "clinic";
+          state.page = "prompt";
+          render();
+        };
+      }
+      const goResearchPrompt = document.getElementById("go-research-prompt");
+      if (goResearchPrompt) {
+        goResearchPrompt.onclick = () => {
+          state.drawerOpen = false;
+          state.promptKind = "research";
+          state.page = "prompt";
+          render();
+        };
+      }
+      document.querySelectorAll("[data-fav]").forEach((b) => {
+        b.onclick = (e) => {
+          e.stopPropagation();
+          toggleFav(b.dataset.fav);
+        };
+      });
+      document.querySelectorAll("[data-lit-open]").forEach((b) => {
+        b.onclick = (e) => {
+          if (e.target.closest("[data-fav]")) return;
+          state.litReturnPage = state.page;
+          state.litDetailId = Number(b.dataset.litOpen);
+          state.page = "litDetail";
+          render();
+        };
+      });
+      const backLit = document.getElementById("back-lit");
+      if (backLit) {
+        backLit.onclick = () => {
+          state.litDetailId = null;
+          state.page = state.litReturnPage || "lit";
+          render();
+        };
+      }
+      const copyDoi = document.getElementById("copy-doi");
+      if (copyDoi) {
+        copyDoi.onclick = () => {
+          const t = copyDoi.dataset.doi || "";
+          if (navigator.clipboard && t) navigator.clipboard.writeText(t).catch(() => {});
+          copyDoi.textContent = "已复制";
+          setTimeout(() => { copyDoi.textContent = "复制"; }, 1200);
+        };
+      }
+      const copyReport = document.getElementById("copy-report");
+      if (copyReport) {
+        copyReport.onclick = () => {
+          const t = buildReport().text;
+          if (navigator.clipboard && t) navigator.clipboard.writeText(t).catch(() => {});
+          copyReport.textContent = "已复制";
+          setTimeout(() => { copyReport.textContent = "复制报告文本"; }, 1200);
+        };
+      }
+      document.querySelectorAll("[data-fav-axis]").forEach((b) => {
+        b.onclick = () => {
+          state.favAxis = b.dataset.favAxis;
+          state.favPick = "";
+          render();
+        };
+      });
+      document.querySelectorAll("[data-fav-pick]").forEach((b) => {
+        b.onclick = () => { state.favPick = b.dataset.favPick; render(); };
+      });
+      const backFavPick = document.getElementById("back-fav-pick");
+      if (backFavPick) backFavPick.onclick = () => { state.favPick = ""; render(); };
+      document.querySelectorAll("[data-as]").forEach((b) => {
+        b.onclick = () => {
+          state.drawerOpen = false;
+          if (b.dataset.as === "forum") {
+            state.page = "forum";
+            state.forumChatId = null;
+            render();
+            return;
+          }
+          state.assistant = b.dataset.as;
+          state.page = "home";
+          state.chatMode = "";
+          state.caseLive = false;
+          state.judgeLive = false;
+          state.msgs = [];
+          state.tips = [];
+          state.pendingSignal = null;
+          render();
+        };
+      });
+      document.querySelectorAll("[data-forum-tab]").forEach((b) => {
+        b.onclick = () => {
+          state.forumTab = b.dataset.forumTab;
+          state.forumChatId = null;
+          state.forumQuery = "";
+          render();
+        };
+      });
+      document.querySelectorAll("[data-forum-chat]").forEach((b) => {
+        b.onclick = () => {
+          state.forumChatId = b.dataset.forumChat;
+          render();
+        };
+      });
+      document.querySelectorAll("[data-like]").forEach((b) => {
+        b.onclick = () => {
+          const id = b.dataset.like;
+          state.forumLiked[id] = !state.forumLiked[id];
+          render();
+        };
+      });
+      const forumChatBack = document.getElementById("forum-chat-back");
+      if (forumChatBack) forumChatBack.onclick = () => { state.forumChatId = null; render(); };
+      const forumQ = document.getElementById("forum-q");
+      if (forumQ) {
+        forumQ.onkeydown = (e) => {
+          if (e.key !== "Enter") return;
+          state.forumQuery = forumQ.value;
+          render();
+        };
+      }
+      const forumDraft = document.getElementById("forum-draft");
+      if (forumDraft) {
+        forumDraft.oninput = () => { state.forumDraft = forumDraft.value; };
+      }
+      const forumPublishBtn = document.getElementById("forum-publish");
+      if (forumPublishBtn) {
+        forumPublishBtn.onclick = () => {
+          const text = (state.forumDraft || "").trim();
+          if (!text) return;
+          state.forumPosts.unshift({
+            id: "p" + Date.now(),
+            av: "s4",
+            name: state.userName,
+            meta: "刚刚 · 0个回复",
+            text,
+            likes: 0,
+            comments: 0,
+            shares: 0
+          });
+          state.forumDraft = "";
+          state.forumTab = "discover";
+          render();
+        };
+      }
+      const forumChatIn = document.getElementById("forum-chat-in");
+      const forumChatSend = document.getElementById("forum-chat-send");
+      if (forumChatIn && forumChatSend) {
+        const sendForum = () => {
+          const text = forumChatIn.value.trim();
+          if (!text) return;
+          const t = state.forumThreads.find((x) => x.id === state.forumChatId);
+          if (!t) return;
+          t.msgs.push({ role: "me", text });
+          t.preview = text;
+          render();
+        };
+        forumChatSend.onclick = sendForum;
+        forumChatIn.onkeydown = (e) => { if (e.key === "Enter") sendForum(); };
+      }
+      document.querySelectorAll("[data-go]").forEach((b) => {
+        b.onclick = () => go(b.dataset.go);
+      });
+      document.querySelectorAll("[data-agent]").forEach((b) => {
+        b.onclick = () => startAgent(b.dataset.agent);
+      });
+      const startCaseBtn = document.getElementById("start-case");
+      if (startCaseBtn) startCaseBtn.onclick = () => startCaseSession();
+      const startJudgeBtn = document.getElementById("start-judge");
+      if (startJudgeBtn) startJudgeBtn.onclick = () => startJudgeSession();
+      const clearMode = document.getElementById("clear-mode");
+      if (clearMode) {
+        clearMode.onclick = () => {
+          state.llmSeq += 1;
+          state.chatMode = "";
+          state.caseLive = false;
+          state.judgeLive = false;
+          state.msgs = [];
+          state.tips = [];
+          state.pendingSignal = null;
+          render();
+        };
+      }
+      document.querySelectorAll("[data-ask]").forEach((b) => {
+        b.onclick = () => ask(b.dataset.ask, b.dataset.jump);
+      });
+      const sh = document.getElementById("shuffle");
+      if (sh) sh.onclick = () => {
+        const cur = Q[state.assistant];
+        cur.push(cur.shift());
+        render();
+      };
+      document.querySelectorAll("[data-eth]").forEach((b) => {
+        b.onclick = () => { state.eth = b.dataset.eth; render(); };
+      });
+      document.querySelectorAll("[data-topic]").forEach((b) => {
+        b.onclick = () => { state.topic = b.dataset.topic; render(); };
+      });
+      const hi = document.getElementById("home-in");
+      const hs = document.getElementById("home-send");
+      if (hi && hs) {
+        hs.onclick = () => ask(hi.value);
+        hi.onkeydown = (e) => { if (e.key === "Enter") ask(hi.value); };
+      }
+      const ci = document.getElementById("chat-in");
+      const cs = document.getElementById("chat-send");
+      if (ci && cs) {
+        cs.onclick = () => ask(ci.value);
+        ci.onkeydown = (e) => { if (e.key === "Enter") ask(ci.value); };
+      }
+      const copyLit = document.getElementById("copy-lit-src");
+      if (copyLit) {
+        copyLit.onclick = () => {
+          const t = copyLit.dataset.copy || "";
+          if (navigator.clipboard && t) navigator.clipboard.writeText(t).catch(() => {});
+          copyLit.textContent = "已复制";
+          setTimeout(() => { copyLit.textContent = "复制出处"; }, 1200);
+        };
+      }
+      document.querySelectorAll("[data-lit-shelf]").forEach((b) => {
+        b.onclick = () => {
+          state.litShelf = b.dataset.litShelf;
+          state.litDrop = false;
+          state.litShowResults = false;
+          state.litFilterOpen = false;
+          render();
+        };
+      });
+      document.querySelectorAll("[data-lit-dtype]").forEach((b) => {
+        b.onclick = () => {
+          const id = b.dataset.litDtype;
+          if (state.litDocTypes.includes(id)) state.litDocTypes = state.litDocTypes.filter((x) => x !== id);
+          else state.litDocTypes = state.litDocTypes.concat(id);
+          render();
+        };
+      });
+      document.querySelectorAll("[data-lit-grade]").forEach((b) => {
+        b.onclick = () => {
+          const g = b.dataset.litGrade;
+          state.litGrade = state.litGrade === g ? "" : g;
+          render();
+        };
+      });
+      const drop = document.getElementById("lit-drop");
+      if (drop) drop.onclick = () => { state.litDrop = !state.litDrop; render(); };
+      const mask = document.getElementById("lit-mask");
+      if (mask) mask.onclick = () => { state.litDrop = false; render(); };
+      const litToggleFilter = document.getElementById("lit-toggle-filter");
+      if (litToggleFilter) {
+        litToggleFilter.onclick = () => {
+          state.litFilterOpen = !state.litFilterOpen;
+          render();
+        };
+      }
+      const litFilterReset = document.getElementById("lit-filter-reset");
+      if (litFilterReset) {
+        litFilterReset.onclick = () => {
+          state.litDocTypes = [];
+          state.litGrade = "";
+          render();
+        };
+      }
+      const litFilterOk = document.getElementById("lit-filter-ok");
+      if (litFilterOk) {
+        litFilterOk.onclick = () => {
+          state.litFilterOpen = false;
+          state.litShowResults = true;
+          render();
+        };
+      }
+      const ql = document.getElementById("q-lit");
+      if (ql) {
+        ql.addEventListener("compositionstart", () => { litComposing = true; });
+        ql.addEventListener("compositionend", () => {
+          litComposing = false;
+          const wasEmpty = !(state.query || "").trim();
+          state.query = ql.value;
+          const nowEmpty = !(state.query || "").trim();
+          if (wasEmpty !== nowEmpty) render();
+        });
+        ql.oninput = () => {
+          if (litComposing) {
+            state.query = ql.value;
+            return;
+          }
+          const wasEmpty = !(state.query || "").trim();
+          state.query = ql.value;
+          const nowEmpty = !(state.query || "").trim();
+          if (wasEmpty !== nowEmpty) render();
+        };
+        ql.onkeydown = (e) => {
+          if (e.key !== "Enter") return;
+          if (litComposing) return;
+          if (!(ql.value || "").trim() || !state.litShelf) return;
+          state.query = ql.value;
+          state.litShowResults = true;
+          state.litFilterOpen = false;
+          render();
+        };
+      }
+      document.querySelectorAll("[data-history]").forEach((b) => {
+        b.onclick = () => {
+          state.historyId = b.dataset.history;
+          state.page = "history";
+          render();
+        };
+      });
+      const backHist = document.getElementById("back-history");
+      if (backHist) {
+        backHist.onclick = () => {
+          state.historyId = null;
+          state.page = "history";
+          render();
+        };
+      }
+      document.querySelectorAll("[data-judge]").forEach((b) => {
+        b.onclick = () => {
+          state.judgeId = b.dataset.judge;
+          state.page = "judgeHist";
+          render();
+        };
+      });
+      const backJudge = document.getElementById("back-judge-hist");
+      if (backJudge) {
+        backJudge.onclick = () => {
+          state.judgeId = null;
+          state.page = "judgeHist";
+          render();
+        };
+      }
+    }
+
+    probeLlm();
+    render();
+  </script>
+</body>
+</html>

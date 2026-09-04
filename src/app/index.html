@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>多民族健康证据服务</title>
+  <!-- 张鸣：全局样式 -->
+  <link rel="stylesheet" href="css/app.css" />
+  <!-- 张璨 -->
+  <link rel="stylesheet" href="../literature/css/search.css" />
+  <!-- 何权 -->
+  <link rel="stylesheet" href="../agents/css/agents.css" />
+  <!-- 张鸣 -->
+  <link rel="stylesheet" href="../forum/css/forum.css" />
+</head>
+<body>
+  <div class="page">
+    <div class="phone"><div class="screen" id="app"></div></div>
+  </div>
+  <!-- 加载顺序不要改：shared → 文献 → 助手 → 论坛 → 外壳 -->
+  <script src="../shared/contracts.js"></script>
+  <script src="../shared/storage.js"></script>
+  <script src="../shared/state.js"></script>
+  <script src="../literature/data/shelves.js"></script>
+  <script src="../literature/data/entries.js"></script>
+  <script src="../literature/js/search.js"></script>
+  <script src="../literature/js/pages.js"></script>
+  <script src="../agents/shared/parse.js"></script>
+  <script src="../agents/shared/refuse.js"></script>
+  <script src="../agents/shared/signals.js"></script>
+  <script src="../agents/clinic/prompt.js"></script>
+  <script src="../agents/clinic/agent.js"></script>
+  <script src="../agents/research/prompt.js"></script>
+  <script src="../agents/research/agent.js"></script>
+  <script src="../agents/js/pages.js"></script>
+  <script src="../forum/data/seed-posts.js"></script>
+  <script src="../forum/js/store.js"></script>
+  <script src="../forum/js/pages.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

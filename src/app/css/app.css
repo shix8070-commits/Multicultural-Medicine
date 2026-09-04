@@ -1,0 +1,43 @@
+/* src/app/css/app.css  【张鸣】全局与手机框 */
+:root {
+  --ink: #1d2430;
+  --muted: #6b7380;
+  --blue: #3b82c4;
+  --purple: #6b6ad6;
+  --page-grad: linear-gradient(180deg, #c9e8ff 0%, #d5e2ff 38%, #e4dcff 72%, #ddd0ff 100%);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+  background: #d8e4f0;
+  color: var(--ink);
+  min-height: 100vh;
+}
+.page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px 16px; }
+.phone {
+  width: 390px; height: 844px; background: #111; border-radius: 44px; padding: 12px;
+  box-shadow: 0 24px 60px rgba(30, 50, 80, .28);
+}
+.screen {
+  height: 100%; border-radius: 34px; overflow: hidden; background: var(--page-grad);
+  display: flex; flex-direction: column; position: relative;
+}
+.wx-bar {
+  height: 44px; display: grid; grid-template-columns: 36px 1fr 88px; align-items: center; padding: 0 8px;
+}
+.seg { display: flex; background: rgba(255,255,255,.4); border-radius: 18px; padding: 3px; }
+.seg button {
+  flex: 1; border: 0; background: transparent; font: inherit; font-size: 12px;
+  padding: 6px 2px; border-radius: 15px; cursor: pointer; white-space: nowrap;
+}
+.seg button.on { background: #fff; font-weight: 700; }
+.capsule {
+  justify-self: end; width: 86px; height: 30px; border: 1px solid rgba(0,0,0,.08);
+  border-radius: 15px; background: rgba(255,255,255,.88); display: flex; align-items: center;
+}
+.capsule span { flex: 1; display: grid; place-items: center; font-size: 14px; }
+.capsule span + span { border-left: 1px solid rgba(0,0,0,.1); }
+.note { font-size: 13px; color: var(--muted); padding: 12px 14px; }
+.pad { padding: 12px 14px; flex: 1; overflow: auto; }
+.forum-card { background: rgba(255,255,255,.88); border-radius: 14px; padding: 12px; margin-bottom: 8px; }
+.forum-body { padding: 10px 12px; overflow: auto; flex: 1; }

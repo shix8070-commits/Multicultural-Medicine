@@ -1,0 +1,22 @@
+# secrets / local env
+.env
+.env.local
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# local runtime data（只忽略仓库根目录，不要挡住 src/*/data）
+/data/
+*.db
+*.sqlite3
+
+# ide / os
+.idea/
+.vscode/
+.cursor/
+*.swp
+Thumbs.db
+.DS_Store
