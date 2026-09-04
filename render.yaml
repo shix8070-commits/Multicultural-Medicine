@@ -1,0 +1,23 @@
+# Render Blueprint：Dashboard → New → Blueprint，选本仓库
+# 免费 Web Service；Key 在 Environment 填写，不要写进 GitHub
+services:
+  - type: web
+    name: multicultural-medicine
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python demo/server.py
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.9"
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: LLM_API_KEY
+        sync: false
+      - key: LLM_BASE_URL
+        value: https://api.deepseek.com
+      - key: LLM_MODEL
+        value: deepseek-v4-flash
+      - key: LLM_TIMEOUT
+        value: "60"

@@ -23,7 +23,9 @@ from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
 DEMO_DIR = Path(__file__).resolve().parent / "dual-agent"
-PORT = int(os.getenv("DEMO_PORT") or "8767")
+# 本地默认 8767；Render 会注入 PORT，必须监听 0.0.0.0
+HOST = os.getenv("HOST") or "0.0.0.0"
+PORT = int(os.getenv("PORT") or os.getenv("DEMO_PORT") or "8767")
 
 
 def _load_dotenv(path: Path) -> None:
@@ -141,7 +143,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         path = urlparse(self.path).path
-        if path == "/api/health":
+        if path in {"/api/health", "/health"}:
             cfg = _settings()
             return self._json(200, {"ok": True, "model": cfg["model"], "mock": cfg["mock"]})
         if path in {"/", "/index.html"}:
@@ -231,10 +233,10 @@ def main() -> None:
         raise SystemExit("找不到 demo/dual-agent/")
     cfg = _settings()
     try:
-        httpd = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
+        httpd = ThreadingHTTPServer((HOST, PORT), Handler)
     except OSError as exc:
         raise SystemExit(f"端口 {PORT} 无法绑定: {exc}") from exc
-    print(f"Demo  http://127.0.0.1:{PORT}/", flush=True)
+    print(f"Demo  http://{HOST}:{PORT}/", flush=True)
     print(f"模型  {cfg['model']}  mock={cfg['mock']}", flush=True)
     if cfg["mock"]:
         print("未读到 LLM_API_KEY，对话会走本地 mock。把 Key 写入仓库根目录 .env 后重启。", flush=True)

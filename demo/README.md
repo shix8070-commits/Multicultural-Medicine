@@ -16,6 +16,23 @@ py -3 demo/server.py
 
 直接双击打开 HTML **不会**走到模型；没有 Key 或服务没开时，助手仍用原来的本地对照模板。
 
+## 部署到 Render
+
+1. 打开 https://dashboard.render.com ，用 GitHub 登录。
+2. **New → Blueprint**，选仓库 `Multicultural-Medicine`（会读根目录 `render.yaml`）。
+   或 **New → Web Service**，连同一个仓库，Runtime 选 **Python**，Start Command 填 `python demo/server.py`。
+3. Environment 填写（**不要写进 GitHub**）：
+
+| 变量 | 值 |
+| --- | --- |
+| `LLM_API_KEY` | 你的 DeepSeek Key |
+| `LLM_BASE_URL` | `https://api.deepseek.com` |
+| `LLM_MODEL` | `deepseek-v4-flash` |
+
+4. 部署完成后打开 `https://你的服务名.onrender.com/`。
+
+免费实例大约 15 分钟没人访问会休眠，下次打开要等几十秒冷启动。没有 Key 时页面能开，对话走本地对照。
+
 | 变量 | 说明 |
 | --- | --- |
 | `LLM_API_KEY` | DeepSeek Key；空则 mock |
