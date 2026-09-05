@@ -383,6 +383,10 @@
       cursor: pointer;
       color: #334;
     }
+    .chips button.on {
+      background: #dbeafe;
+      color: #1e40af;
+    }
     .inputbar {
       display: flex;
       align-items: center;
@@ -582,12 +586,35 @@
     .hit b { display: block; font-size: 14px; margin-bottom: 4px; }
     .hit p { font-size: 13px; color: #333; line-height: 1.45; }
     .hit .meta { font-size: 12px; color: var(--muted); margin-top: 6px; }
-    .reply-prose { font-size: 14px; line-height: 1.55; color: #333; }
-    .reply-prose p { margin: 0 0 8px; }
+    .reply-prose { font-size: 14px; line-height: 1.7; color: #333; }
+    .reply-prose p { margin: 0 0 12px; }
     .reply-prose p:last-child { margin-bottom: 0; }
-    .reply-summary { font-size: 15px; line-height: 1.55; margin-bottom: 4px; }
+    .reply-prose h4 {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      color: #64748b;
+      margin: 16px 0 8px;
+    }
+    .reply-prose h4:first-child { margin-top: 0; }
+    .reply-prose strong { color: #1e293b; }
+    .reply-summary {
+      font-size: 15px;
+      line-height: 1.65;
+      margin: 0 0 12px;
+      padding: 10px 12px;
+      background: #f8fafc;
+      border-radius: 10px;
+      border-left: 3px solid #93c5fd;
+    }
+    .reply-point {
+      font-size: 13.5px;
+      line-height: 1.7;
+      color: #334155;
+      margin: 0 0 12px;
+    }
     .cite-foot {
-      margin-top: 12px;
+      margin-top: 14px;
       padding-top: 10px;
       border-top: 1px solid rgba(180, 190, 210, .35);
     }
@@ -1228,136 +1255,840 @@
       return "—";
     }
 
-    /* 组员文档：文献数据规范与示例库（MES 编号） */
+    /* 入库文献：从 dual-agent-v5 导入 L001–L052，字段对齐现有速查/详情 */
     const LIT_ENTRIES = [
       {
-        id: 101, mes: "MES-PGx-001", shelf: "pgx", docType: "observational", grade: "L5",
-        title: "VKORC1 and CYP2C9 polymorphisms in Uyghur patients: impact on warfarin sensitivity",
-        ethnicity: "维吾尔族", topic: "华法林、CYP2C9、VKORC1、出血风险",
+        id: 201, mes: "L001", shelf: "geno", docType: "observational", grade: "L6",
+        title: "广西地区各民族地中海贫血基因类型分析",
+        ethnicity: "壮族、汉族、瑶族、苗族", topic: "地中海贫血",
         picos: {
-          P: "诊断为血栓性疾病且需长期抗凝治疗的维吾尔族患者",
-          I: "使用常规剂量华法林",
-          C: "患有同类血栓性疾病、使用相同常规剂量华法林的非维吾尔族人群",
-          O: "华法林稳态剂量差异、出血事件发生率",
-          S: "新疆地区医疗机构"
+          P: "广西地区受检者 8 960 例（壮、汉、瑶、苗等）",
+          I: "Gap-PCR + PCR 探针法地贫基因检测",
+          C: "各民族间相互比较",
+          O: "地贫基因检出率与基因型构成",
+          S: "横断面研究"
         },
-        conclusion: "新疆维吾尔族人群中 CYP2C9*3 突变频率约 3.5%，VKORC1 -1639A 等位基因频率约 78%，显著低于汉族人群（~91%），提示维吾尔族患者华法林稳态剂量可能高于汉族人群。",
-        source: "PubMed (PMID: 25123456)；Zhonghua Yi Xue Yi Chuan Xue Za Zhi, 2014",
-        boundary: "样本来源：新疆地区维吾尔族健康志愿者及华法林用药患者共 186 例；基因因素仅解释约 40-50% 的个体间剂量差异，需结合临床因素和 INR 监测。",
-        gradeName: "L5 观察性研究", gradeNote: "GRADE 初始等级：低"
+        conclusion: "广西为地贫基因高发区，缺失型多于非缺失型；壮族检出率最高、汉族次之，瑶族、苗族等显著较低，提示南方少数民族地贫基因谱存在显著民族异质性，筛查策略应按民族分层。",
+        source: "CNKI；临床血液学杂志, 2018；DOI: 10.13201/j.issn.1004-2806.2018.09.010",
+        boundary: "单中心实验室连续检测数据，非人群随机抽样；未报告各民族人口分母，故为构成比而非患病率；未做年龄性别标准化。",
+        gradeName: "C 低 · 横断面研究", gradeNote: "观察性横断面研究，GRADE 起点为低质量(C)；设计为单中心连续样本，无严重偏倚风险，不降级。"
       },
       {
-        id: 102, mes: "MES-PGx-002", shelf: "pgx", docType: "case", grade: "L7",
-        title: "广西壮族人群 CYP2C9 和 VKORC1 基因多态性对华法林剂量的影响",
-        ethnicity: "壮族", topic: "华法林、CYP2C9、VKORC1、稳定剂量",
+        id: 202, mes: "L002", shelf: "geno", docType: "observational", grade: "L6",
+        title: "广西崇左市中学生地中海贫血流行病学调查及基因突变类型分析",
+        ethnicity: "壮族、汉族、瑶族", topic: "地中海贫血",
         picos: {
-          P: "广西壮族自治区壮族华法林用药患者",
-          I: "华法林抗凝治疗",
-          C: "同地区汉族华法林用药患者（回顾性比较）",
-          O: "华法林稳定剂量、基因型分布",
-          S: "广西壮族自治区医疗机构"
+          P: "广西崇左市 12-16 岁中学生 1 097 名",
+          I: "血细胞分析 + HbA2/HbF 定量 + 基因型检测",
+          C: "壮族 vs 汉族",
+          O: "地贫检出率、突变类型构成",
+          S: "横断面调查"
         },
-        conclusion: "广西壮族人群 VKORC1 -1639G>A 基因型分布为 AA 型约 67.2%、GA 型约 29.8%、GG 型约 3.0%；CYP2C9*3 突变频率约 2.8%；基于基因型构建的华法林稳定剂量预测模型可解释约 52% 的个体间变异。",
-        source: "中国知网 (CNKI)；广西医科大学学报, 2019",
-        boundary: "样本来源：广西壮族自治区壮族人群 152 例；未包含其他民族对照；仅为回顾性数据，需前瞻性验证。",
-        gradeName: "L7 病例对照研究", gradeNote: "GRADE 初始等级：低"
+        conclusion: "广西崇左市中学生地贫基因携带率高，壮族显著高于汉族；ααWS 突变检出率高，β 地贫以 CD41-42 为主，提示壮族人群地贫筛查需采用民族特异的基因型谱与筛查阈值。",
+        source: "CBM；中华流行病学杂志, 2009",
+        boundary: "仅覆盖 12-16 岁在校学生，不能外推全人群；汉族样本仅 128 例、瑶族 1 例，稀有民族估计不稳定。",
+        gradeName: "C 低 · 横断面研究", gradeNote: "观察性横断面研究，起点低质量(C)；样本量充足、检测规范，但不精确性（汉族样本少）不足以降级。"
       },
       {
-        id: 103, mes: "MES-Prev-001", shelf: "prev", docType: "observational", grade: "L5",
-        title: "新疆维吾尔自治区维吾尔族人群高血压流行病学调查",
-        ethnicity: "维吾尔族", topic: "高血压、患病率",
+        id: 203, mes: "L003", shelf: "geno", docType: "case", grade: "L8",
+        title: "广西各民族地中海贫血基因型分布及产前诊断分析",
+        ethnicity: "壮族、汉族、瑶族", topic: "地中海贫血",
         picos: {
-          P: "新疆地区35岁以上维吾尔族居民",
-          I: "无（横断面调查）",
-          C: "无（横断面调查）",
-          O: "高血压患病率、知晓率、治疗率、控制率",
-          S: "新疆7个地区社区调查"
+          P: "广西籍同型地贫基因携带者夫妇 2 415 对",
+          I: "产前基因诊断",
+          C: "壮/汉/瑶/其他民族",
+          O: "基因型构成比",
+          S: "回顾性病例系列"
         },
-        conclusion: "新疆地区 35 岁以上维吾尔族人群高血压患病率为 37.2%（标化率 33.8%），男性 40.1%、女性 34.6%；知晓率、治疗率和控制率分别为 48.3%、30.1% 和 8.7%，均低于全国平均水平。",
-        source: "中国知网 (CNKI)；中华高血压杂志, 2017",
-        boundary: "样本来源：新疆 7 个地区 5,832 名维吾尔族居民（2014-2015 年调查）；限于新疆维吾尔族，不能直接推及其他民族。",
-        gradeName: "L5 观察性研究", gradeNote: "GRADE 初始等级：低"
+        conclusion: "广西以 α-地贫和 β-地贫为主，地贫基因型分布在民族间存在显著差异，壮族 α-地贫负担最重，产前诊断资源应向壮族聚居区倾斜。",
+        source: "CNKI；中国妇幼保健, 2014",
+        boundary: "回顾性产前诊断人群，存在转诊选择偏倚，不能代表一般人群患病率；瑶族等样本量小。",
+        gradeName: "D 极低 · 回顾性病例系列", gradeNote: "回顾性无对照病例系列，起点极低质量(D)；存在明显选择偏倚（均为转诊高危夫妇）。"
       },
       {
-        id: 104, mes: "MES-Prev-002", shelf: "prev", docType: "observational", grade: "L5",
-        title: "云南省傣族居民代谢综合征患病率及影响因素分析",
-        ethnicity: "傣族", topic: "代谢综合征、患病率",
+        id: 204, mes: "L004", shelf: "geno", docType: "observational", grade: "L6",
+        title: "武鸣地区壮族人群地中海贫血筛查及基因型特点分析",
+        ethnicity: "壮族", topic: "地中海贫血",
         picos: {
-          P: "云南西双版纳傣族居民",
-          I: "无（横断面调查）",
-          C: "无（横断面调查）",
-          O: "代谢综合征患病率",
-          S: "云南西双版纳社区调查"
+          P: "武鸣地区壮族新生儿及成人",
+          I: "脐带血/外周血地贫筛查 + 基因检测",
+          C: "无（描述性）",
+          O: "筛查阳性率、基因型构成、少见型检出",
+          S: "横断面研究"
         },
-        conclusion: "云南省西双版纳地区傣族居民代谢综合征患病率为 21.8%（IDF 标准），其中男性 19.3%、女性 24.6%；60 岁以上人群达 38.5%。",
-        source: "中国知网 (CNKI)；中华流行病学杂志, 2020",
-        boundary: "样本来源：云南西双版纳 2,156 名傣族居民（2018 年）；农村和城镇比例约 6:4。",
-        gradeName: "L5 观察性研究", gradeNote: "GRADE 初始等级：低"
+        conclusion: "武鸣壮族为地贫高发人群，α-地贫 CS 突变率高且以静止型与轻型为主，同时存在一定比例少见基因型，临床应采用覆盖少见突变的检测方案以防漏检。",
+        source: "万方；右江民族医学院学报, 2019",
+        boundary: "筛查阳性率不等同于确诊患病率；新生儿与成人两个样本来源不一致，未做统一人群分母。",
+        gradeName: "C 低 · 横断面研究", gradeNote: "观察性横断面研究，起点低质量(C)；样本量大、检测方法明确，无降级理由。"
       },
       {
-        id: 105, mes: "MES-Risk-001", shelf: "risk", docType: "case", grade: "L7",
-        title: "蒙古族人群高血压危险因素的病例对照研究",
-        ethnicity: "蒙古族", topic: "高血压、危险因素、盐摄入",
+        id: 205, mes: "L005", shelf: "prev", docType: "observational", grade: "L6",
+        title: "乌鲁木齐市健康体检人群非酒精性脂肪肝的分布特征以及与代谢综合征及其各组分的关联性",
+        ethnicity: "汉族、维吾尔族、哈萨克族、回族", topic: "非酒精性脂肪肝",
         picos: {
-          P: "内蒙古地区蒙古族人群",
-          I: "高盐饮食、饮酒、运动（作为暴露因素分析）",
-          C: "无高血压的蒙古族人群",
-          O: "高血压发病风险（OR值）",
-          S: "内蒙古通辽市医院"
+          P: "乌鲁木齐市健康体检者 7 913 例",
+          I: "腹部 B 超诊断 NAFLD",
+          C: "汉/维/哈/回四民族比较",
+          O: "NAFLD 患病率、MetS 组分患病率",
+          S: "横断面研究"
         },
-        conclusion: "内蒙古地区蒙古族高血压独立危险因素：高盐饮食（OR=2.34）、BMI≥28（OR=1.89）、饮酒史≥10年（OR=1.56）、高血压家族史（OR=2.01）；规律运动为保护因素（OR=0.62）。",
-        source: "PubMed (PMID: 31252147)；J Hum Hypertens, 2019",
-        boundary: "样本来源：内蒙古通辽市蒙古族病例 320 例、对照 320 例；基于医院病例，存在选择偏倚。",
-        gradeName: "L7 病例对照研究", gradeNote: "GRADE 初始等级：低"
+        conclusion: "乌鲁木齐市 NAFLD 患病率男性高于女性；维吾尔族(40%)显著高于汉族(30%)、哈萨克族与回族，提示新疆多民族 NAFLD 负担存在民族差异，干预应优先针对维吾尔族与男性人群。",
+        source: "万方；心脏杂志, 2016；DOI: 10.13191/j.chj.2016.0047",
+        boundary: "为体检人群而非随机人群抽样，存在健康体检者选择偏倚；未做年龄标准化；未校正社会经济与饮食因素。",
+        gradeName: "C 低 · 横断面研究", gradeNote: "观察性横断面研究，起点低质量(C)；未校正混杂且为体检人群，存在选择偏倚风险，但因样本量大、指标客观不降级。"
       },
       {
-        id: 106, mes: "MES-Risk-002", shelf: "risk", docType: "observational", grade: "L5",
-        title: "西藏藏族人群高尿酸血症相关因素分析",
-        ethnicity: "藏族", topic: "高尿酸血症、危险因素、高原",
+        id: 206, mes: "L006", shelf: "risk", docType: "observational", grade: "L6",
+        title: "维吾尔族人群血尿酸水平与非酒精性脂肪性肝病的关系研究",
+        ethnicity: "维吾尔族", topic: "非酒精性脂肪肝",
         picos: {
-          P: "西藏拉萨地区藏族居民",
-          I: "无（横断面研究）",
-          C: "无（横断面研究）",
-          O: "高尿酸血症相关因素（OR值）",
-          S: "西藏拉萨社区调查"
+          P: "维吾尔族体检者 2 241 例",
+          I: "血尿酸水平分层（高尿酸血症 vs 正常）",
+          C: "非高尿酸血症人群",
+          O: "NAFLD 检出率",
+          S: "横断面研究"
         },
-        conclusion: "西藏拉萨地区藏族人群高尿酸血症相关因素：男性（OR=2.21）、高海拔居住年限（每增加10年 OR=1.31）、高脂饮食（OR=1.67）、饮茶习惯（OR=0.71）。",
-        source: "中国知网 (CNKI)；中国慢性病预防与控制, 2021",
-        boundary: "样本来源：拉萨市 2,100 名藏族居民（2019 年）；长期居留高原人群，结论不适用于移居低海拔后的代谢变化。",
-        gradeName: "L5 观察性研究", gradeNote: "GRADE 初始等级：低"
+        conclusion: "维吾尔族人群血尿酸水平与 NAFLD 密切相关，高尿酸血症是 NAFLD 的独立危险因素(OR≈2.09)，可作为该民族 NAFLD 早期识别的简便指标。",
+        source: "CNKI；中国全科医学, 2013",
+        boundary: "横断面设计不能确立因果；单中心体检人群；未校正饮食（维吾尔族高嘌呤、高脂膳食）与饮酒等混杂。",
+        gradeName: "C 低 · 横断面研究", gradeNote: "观察性横断面研究，起点低质量(C)；存在残余混杂（膳食、饮酒）但未达严重级别，不降级。"
       },
       {
-        id: 107, mes: "MES-Geno-001", shelf: "geno", docType: "observational", grade: "L5",
-        title: "新疆哈萨克族人群 ABCA1 基因多态性与血脂水平的关联",
-        ethnicity: "哈萨克族", topic: "ABCA1、基因多态性、血脂、HDL-C",
+        id: 207, mes: "L007", shelf: "risk", docType: "observational", grade: "L4",
+        title: "新疆生产建设兵团农村维吾尔族居民非酒精性脂肪肝的发病情况和影响因素分析",
+        ethnicity: "维吾尔族", topic: "非酒精性脂肪肝",
         picos: {
-          P: "新疆伊犁地区哈萨克族人群",
-          I: "无（候选基因关联研究）",
-          C: "无（候选基因关联研究）",
-          O: "HDL-C水平差异",
-          S: "新疆伊犁地区社区调查"
+          P: "新疆兵团农村维吾尔族居民 10 158 人",
+          I: "危险因素暴露（BMI、血压、血脂、eGFR、ALT 等）",
+          C: "无暴露/低危险因素组",
+          O: "NAFLD 累积发病率与发病密度",
+          S: "前瞻性队列研究"
         },
-        conclusion: "新疆哈萨克族人群 ABCA1 rs2230806（R219K）位点多态性分布：KK 型 23.5%、RK 型 49.8%、RR 型 26.7%；KK 型携带者 HDL-C 水平显著高于 RR 型（P=0.007）。",
-        source: "PubMed (PMID: 29873214)；Mol Genet Genomics, 2018",
-        boundary: "样本来源：新疆伊犁地区哈萨克族 518 例（2016 年）；仅为单基因多态性，需功能验证。",
-        gradeName: "L5 观察性研究", gradeNote: "GRADE 初始等级：低"
+        conclusion: "新疆兵团农村维吾尔族 NAFLD 发病率相对较低，但八成居民携带至少一种危险因素，仍需重点防控；年龄大、离异/丧偶、低文化程度、超重肥胖及代谢指标异常者为重点人群。",
+        source: "CBM；中华流行病学杂志, 2024；DOI: 10.3760/cma.j.cn112338-20240318-00142",
+        boundary: "队列限于兵团农村维吾尔族，不能外推城市或其他民族；随访时间有限，累积事件数相对较少。",
+        gradeName: "B 中 · 前瞻性队列研究", gradeNote: "前瞻性队列研究，GRADE 起点为低质量(C)；存在大效应量（多危险因素梯度显著）且具剂量-反应关系，升级一档至中等质量(B)。"
       },
       {
-        id: 108, mes: "MES-Geno-002", shelf: "geno", docType: "observational", grade: "L5",
-        title: "贵州布依族人群 CYP2D6 基因多态性分布特征",
-        ethnicity: "布依族", topic: "CYP2D6、基因多态性、慢代谢型",
+        id: 208, mes: "L008", shelf: "prev", docType: "observational", grade: "L6",
+        title: "Prevalence and Risk Factors of Hyperuricemia and Gout: A Cross-sectional Survey from 31 Provinces in Mainland China",
+        ethnicity: "汉族、藏族、维吾尔族、回族、蒙古族、满族、壮族", topic: "高尿酸血症 / 痛风",
         picos: {
-          P: "贵州黔南州布依族人群",
-          I: "无（基因频率调查）",
-          C: "汉族人群（文献比较）",
-          O: "CYP2D6代谢型频率分布",
-          S: "贵州黔南州社区调查"
+          P: "中国大陆 31 省 ≥18 岁成人 78 130 名",
+          I: "按民族、性别、年龄分层",
+          C: "汉族为参照",
+          O: "HUA 与痛风加权患病率",
+          S: "全国性横断面调查"
         },
-        conclusion: "贵州布依族人群 CYP2D6 慢代谢型（PM）频率约为 8.2%，快代谢型（EM）约为 69.3%，中间代谢型（IM）约为 22.5%；与汉族人群（PM ~1-2%）相比差异显著。",
-        source: "中国知网 (CNKI)；中国药理学通报, 2020",
-        boundary: "样本来源：贵州黔南州布依族 312 例（2018-2019 年）；仅包含单一地区布依族，未进行体内代谢验证。",
-        gradeName: "L5 观察性研究", gradeNote: "GRADE 初始等级：低"
-      }
+        conclusion: "中国成人 HUA(17.7%) 与痛风(3.2%) 患病率处于较高水平，且民族是独立相关因素——藏族痛风患病率居首，汉族男性 HUA 最高，提示需按民族与性别制定分层防控策略。",
+        source: "Medline；Journal of Translational Internal Medicine, 2022",
+        boundary: "横断面设计无法确立因果；民族分层样本量不均衡（部分少数民族样本较少），民族别估计精度有限。",
+        gradeName: "C 低 · 横断面研究", gradeNote: "观察性横断面研究，起点低质量(C)；抽样设计严谨、样本量极大，但不精确性（少数民族亚组样本少）不足以降级。"
+      },
+      {
+        id: 209, mes: "L009", shelf: "prev", docType: "observational", grade: "L6",
+        title: "Prevalence and Risk Factors of Hyperuricemia in the Urban Health Checkup Population in Xinjiang, China: A Cross-Sectional Study",
+        ethnicity: "汉族、回族、满族、维吾尔族、哈萨克族", topic: "高尿酸血症",
+        picos: {
+          P: "乌鲁木齐城市体检人群",
+          I: "民族/性别/代谢指标分层",
+          C: "各民族间比较",
+          O: "HUA 患病率",
+          S: "横断面研究"
+        },
+        conclusion: "乌鲁木齐城市体检人群 HUA 患病率高（26.96%），男性与青年人群尤为突出，且满族、汉族、回族患病率显著高于其他民族，应针对民族与性别开展早期干预。",
+        source: "Medline；Risk Management and Healthcare Policy, 2023；DOI: 10.2147/RMHP.S420896",
+        boundary: "单中心体检人群，存在选择偏倚；为城市人群，不能外推农牧区；部分民族样本量极小（如满族）。",
+        gradeName: "C 低 · 横断面研究", gradeNote: "观察性横断面研究，起点低质量(C)；单中心体检人群存在选择偏倚风险但未达严重级别。"
+      },
+      {
+        id: 210, mes: "L010", shelf: "prev", docType: "observational", grade: "L6",
+        title: "新疆吐鲁番地区维吾尔族人群高尿酸血症与痛风流行病学研究",
+        ethnicity: "维吾尔族", topic: "高尿酸血症 / 痛风",
+        picos: {
+          P: "吐鲁番 ≥14 岁维吾尔族居民 3 982 名",
+          I: "血尿酸检测 + 痛风问卷/诊断",
+          C: "无（与国内其他地区文献比较）",
+          O: "HUA 与痛风患病率",
+          S: "横断面调查"
+        },
+        conclusion: "新疆吐鲁番地区维吾尔族人群 HUA(3.97%) 与痛风(0.025%) 患病率均显著低于国内其他地区，提示遗传背景（维吾尔族尿酸代谢相关基因频率）与膳食结构共同决定民族间差异。",
+        source: "Medline；中华风湿病学杂志, 2012",
+        boundary: "单一地区横断面；痛风仅 1 例，估计极不精确；未做年龄标准化。",
+        gradeName: "C 低 · 横断面研究", gradeNote: "观察性横断面研究，起点低质量(C)；痛风仅 1 例存在严重不精确性，但因非主要结局（主要结局 HUA 样本充足）不整体降级。"
+      },
+      {
+        id: 211, mes: "L011", shelf: "risk", docType: "observational", grade: "L6",
+        title: "新疆汉、维吾尔、哈萨克族成年人高尿酸血症及痛风的流行病学调查",
+        ethnicity: "汉族、维吾尔族、哈萨克族", topic: "高尿酸血症 / 痛风",
+        picos: {
+          P: "新疆汉、维、哈成年人 13 559 名",
+          I: "民族分层 + 膳食/代谢因素",
+          C: "以汉族为参照",
+          O: "HUA 与痛风标化患病率",
+          S: "横断面调查"
+        },
+        conclusion: "新疆汉族高尿酸血症与痛风患病率显著高于维吾尔族与哈萨克族；危险因素存在民族特异性（汉族以海鲜与内脏摄入为主，哈萨克族以内脏与饮酒为主），干预措施需民族定制。",
+        source: "CBM；中国临床新医学, 2013",
+        boundary: "横断面设计；膳食暴露为自我报告，存在回忆偏倚；未检测尿酸转运相关基因（如 SLC2A9、ABCG2）。",
+        gradeName: "C 低 · 横断面研究", gradeNote: "观察性横断面研究，起点低质量(C)；采用四阶段整群随机抽样、年龄标化，设计严谨，不降级。"
+      },
+      {
+        id: 212, mes: "L012", shelf: "risk", docType: "observational", grade: "L6",
+        title: "The prevalence of gout and hyperuricemia in middle-aged and elderly people in Tibet Autonomous Region, China",
+        ethnicity: "藏族", topic: "痛风 / 高尿酸血症",
+        picos: {
+          P: "西藏自治区中老年藏族常住居民",
+          I: "血清尿酸检测 + 痛风诊断",
+          C: "与国内其他地区文献数据比较",
+          O: "痛风与 HUA 年龄标化患病率",
+          S: "横断面研究"
+        },
+        conclusion: "西藏自治区藏族中老年人群痛风(0.26%)与高尿酸血症患病率处于较低水平，低于全国多数地区；提示在强膳食危险因素存在下，遗传背景对环境风险具有显著的修饰作用。",
+        source: "Medline；Medicine (Baltimore), 2020；DOI: 10.1097/MD.0000000000018564",
+        boundary: "横断面设计；研究对象以游牧农牧民为主，与既往含大量汉族/彝族样本（如甘孜州调查 HUA 37.2%）不可直接比较；未空腹采血可能引入假阳性。",
+        gradeName: "C 低 · 横断面研究", gradeNote: "观察性横断面研究，起点低质量(C)；未强制空腹采血存在测量偏倚风险，但结论方向稳健，不降级。"
+      },
+      {
+        id: 213, mes: "L013", shelf: "prev", docType: "observational", grade: "L6",
+        title: "2014—2023年西藏自治区肺结核报告发病流行特征和变化趋势分析",
+        ethnicity: "藏族", topic: "肺结核",
+        picos: {
+          P: "西藏自治区 2014-2023 年报告的肺结核患者 51 872 例",
+          I: "时间趋势与人群分层描述",
+          C: "性别/年龄/职业/地区间比较",
+          O: "报告发病率、病原学阳性率及其变化趋势",
+          S: "监测数据时间序列分析"
+        },
+        conclusion: "西藏肺结核报告发病率总体下降但仍显著高于全国平均水平，昌都市与学生、牧民、老年人群为重点；需加强农牧区防控、学生主动筛查与分子诊断推广。",
+        source: "CBM；疾病监测, 2025；DOI: 10.3784/jbjc.202502260131",
+        boundary: "基于传染病报告系统的被动监测数据，受就诊率与诊断能力影响，存在漏报与诊断水平变化的偏倚；报告发病率不等同于真实发病率。",
+        gradeName: "C 低 · 监测数据分析（时间序列）", gradeNote: "观察性监测数据分析，起点低质量(C)；数据覆盖全自治区 10 年、样本量巨大，诊断标准统一，不降级。"
+      },
+      {
+        id: 214, mes: "L014", shelf: "prev", docType: "observational", grade: "L6",
+        title: "西藏地区肺结核病流行特征",
+        ethnicity: "藏族", topic: "肺结核",
+        picos: {
+          P: "西藏自治区 ≥15 岁常住人群",
+          I: "体格检查 + X 线 + 痰涂片/培养筛查",
+          C: "性别/城乡/年龄组比较",
+          O: "活动性、涂阳、菌阳肺结核加权患病率",
+          S: "横断面抽样调查"
+        },
+        conclusion: "西藏地区肺结核患病率 35 年间由 1 203/10 万降至 758/10 万，防控成效显著，但仍是全国最高负担地区之一；男性、乡村、高年龄组为高危人群，高原居住条件与室内聚集是重要传播因素。",
+        source: "CNKI；中国公共卫生, 2019",
+        boundary: "横断面抽样调查；仅覆盖 ≥15 岁人群，儿童负担未纳入；乡村与城镇样本比例不均衡。",
+        gradeName: "C 低 · 横断面研究", gradeNote: "观察性横断面研究，起点低质量(C)；采用分层整群等比例随机抽样、加权估计，设计严谨，不降级。"
+      },
+      {
+        id: 215, mes: "L015", shelf: "prev", docType: "review", grade: "L6",
+        title: "中国结核病疾病负担现状",
+        ethnicity: "汉族、维吾尔族、藏族、苗族、彝族、回族、朝鲜族", topic: "结核病",
+        picos: {
+          P: "中国全人群及西部少数民族聚居区人群",
+          I: "—（综述，无干预）",
+          C: "地区/民族/性别/年龄比较（描述性）",
+          O: "发病率、患病率、耐药比例、治疗成功率、DALY 率",
+          S: "叙述性综述"
+        },
+        conclusion: "中国结核病负担仍重、下降缓慢，西部少数民族聚居区（新疆、西藏、贵州）负担最高，耐药结核治疗成功率低；作者明确指出目前尚缺乏按民族分组的发病率与患病率数据，是重要研究缺口。",
+        source: "CBM；中华流行病学杂志, 2024；DOI: 10.3760/cma.j.cn112338-20240311-00111",
+        boundary: "为叙述性综述，未做系统检索与偏倚评价；民族维度仅有患者构成比而无率，无法直接进行民族间风险比较。",
+        gradeName: "C 低 · 叙述性综述", gradeNote: "叙述性综述，起点低质量(C)；纳入 WHO、国家监测系统及 GBD 等高可信数据源但不满足系统评价方法学要求，不升级。"
+      },
+      {
+        id: 216, mes: "L016", shelf: "prev", docType: "observational", grade: "L8",
+        title: "1979年全国结核病流行病学抽样调查——部分少数民族患病率与涂阳患病率",
+        ethnicity: "维吾尔族、藏族、回族、蒙古族、苗族、朝鲜族、彝族", topic: "肺结核",
+        picos: {
+          P: "全国 29 省抽样人群 1 338 080 人（含维、藏、回、蒙、苗、朝鲜、彝等民族）",
+          I: "X 线 + 痰涂片筛查",
+          C: "各民族间比较（全国平均为参照）",
+          O: "活动性与涂阳肺结核标化患病率",
+          S: "全国横断面抽样调查（历史数据）"
+        },
+        conclusion: "维吾尔族、藏族是我国结核病负担最重的两个民族，彝族、苗族次之，蒙古族、朝鲜族最低；民族间差异与居住环境、居住密度、营养状况及医疗可及性密切相关，是后续民族定向防控的依据。",
+        source: "CNKI；中国公共卫生, 1985",
+        boundary: "1979 年历史数据，诊断手段（X 线 + 涂片）与现行分子诊断不可比；部分少数民族调查点数少（彝族 2 个点、朝鲜族 2 个点），估计不稳定。",
+        gradeName: "D 极低 · 横断面调查（历史数据）", gradeNote: "观察性横断面研究起点低质量(C)，因年代久远、诊断方法与现行标准不可比（间接性严重）降级一档至极低质量(D)。"
+      },
+      {
+        id: 217, mes: "L017", shelf: "pgx", docType: "original", grade: "L6",
+        title: "Pilot work of the 10K Chinese People Genomic Diversity Project along the Silk Road suggests a complex east-west admixture landscape and biological adaptations",
+        ethnicity: "汉族、东乡族、土族、撒拉族、裕固族、藏族、蒙古族", topic: "人群遗传结构 / 药物基因组学基础",
+        picos: {
+          P: "中国北方 10K_CPGDP 队列 1 207 例多民族个体",
+          I: "全基因组测序/高密度芯片分型",
+          C: "汉语族 vs 西北少数民族；各民族间比较",
+          O: "祖源比例、群体分化时间、选择信号(PBS/CMS)",
+          S: "群体遗传学观察性研究"
+        },
+        conclusion: "中国西北少数民族与汉族存在深度遗传分化且携带显著西方欧亚祖源，这意味着以汉族为主体的药物基因组学参考数据（如 CYP450 等位频率、HLA 频率）不能直接外推至这些民族，必须建立民族特异的用药基因基线数据库。",
+        source: "Medline；Science China Life Sciences, 2025；DOI: 10.1007/s11427-024-2748-4",
+        boundary: "部分语族样本量较小（突厥语族 40 例、藏缅语族 30 例），群体频率估计精度有限；为遗传结构研究，未直接测量药物表型。",
+        gradeName: "C 低 · 全基因组测序/芯片分型（群体遗传学）", gradeNote: "观察性群体遗传学研究，起点低质量(C)；高通量测序数据质量高、分析方法标准，但部分民族样本量小且无表型验证，不升级。"
+      },
+      {
+        id: 218, mes: "L018", shelf: "geno", docType: "original", grade: "L6",
+        title: "Evolutionary history of Tibetans inferred from whole-genome sequencing",
+        ethnicity: "藏族、汉族", topic: "高原适应 / 人群遗传结构",
+        picos: {
+          P: "藏族个体 27 例",
+          I: "高深度全基因组测序 + CMS 选择信号检验",
+          C: "汉族参考人群(CHB/CHS)、丹尼索瓦基因组",
+          O: "群体分化时间、正选择基因排序、单倍型分歧时间",
+          S: "群体遗传学观察性研究"
+        },
+        conclusion: "藏族与汉族存在深远的遗传分化且 EPAS1/EGLN1 等缺氧通路基因受到强正选择；这也提示高原世居民族在药物代谢、血氧调节相关通路上可能具有与平原人群不同的基线，用药需民族差异化考量。",
+        source: "Medline；PLOS Genetics, 2017；DOI: 10.1371/journal.pgen.1006675",
+        boundary: "测序样本仅 27 例，等位频率估计精度有限；为遗传学研究，未直接关联临床用药表型。",
+        gradeName: "C 低 · 全基因组测序（群体遗传学）", gradeNote: "观察性群体遗传学研究，起点低质量(C)；样本量小(27 例)存在一定不精确性，但核心发现（EPAS1 选择信号）效应量极大且被多项研究重复，不降级。"
+      },
+      {
+        id: 219, mes: "L019", shelf: "pgx", docType: "opinion", grade: "L4",
+        title: "他汀类药物相关基因多态性检测与临床应用专家共识",
+        ethnicity: "汉族、东亚人群", topic: "他汀类药物个体化用药",
+        picos: {
+          P: "拟接受他汀类药物治疗的中国患者",
+          I: "用药前 SLCO1B1/ApoE 基因多态性检测",
+          C: "常规不予基因检测的经验性用药",
+          O: "肌病/肝酶异常发生率、LDL-C 降幅",
+          S: "专家共识"
+        },
+        conclusion: "建议首次服用他汀类药物前检测 SLCO1B1 与 ApoE 基因多态性，以减少不良反应并评估疗效；本共识主要基于汉族/东亚人群数据，对其他民族的适用性尚需更多证据。",
+        source: "CBM；中华检验医学杂志, 2023；DOI: 10.3760/cma.j.cn114452-20230215-00086",
+        boundary: "专家共识（非系统评价），证据分级方法学不如 GRADE 严格；等位频率数据主要来自汉族与东亚人群，中国少数民族数据缺乏。",
+        gradeName: "B 中 · 专家共识 / 临床实践指南", gradeNote: "基于系统证据的权威学会共识，引用 CPIC A 级证据与 PharmGKB 1A 级证据，起点按临床实践指南处理为中等质量(B)；但民族覆盖不足，不进一步升级。"
+      },
+      {
+        id: 220, mes: "L020", shelf: "pgx", docType: "original", grade: "L4",
+        title: "The effect of SLCO1B1 polymorphism on the pharmacokinetics of atorvastatin and 2-hydroxyatorvastatin in healthy Chinese people",
+        ethnicity: "汉族", topic: "他汀类药物个体化用药",
+        picos: {
+          P: "中国汉族健康志愿者 132 例",
+          I: "SLCO1B1 521C 携带状态（521TT vs 521TC/CC）",
+          C: "521TT 野生型",
+          O: "阿托伐他汀酸与 2-羟基阿托伐他汀酸的 Cmax、AUC、CL",
+          S: "药代动力学研究"
+        },
+        conclusion: "在中国汉族人群中，SLCO1B1 c.521T>C 显著影响阿托伐他汀及其活性代谢产物的药代动力学，521C 携带者系统暴露量升高、毒性风险增加，支持按 SLCO1B1 基因型调整他汀剂量。",
+        source: "Medline；European Journal of Clinical Pharmacology / 中南大学学报(医学版) 系列研究, 2018",
+        boundary: "健康志愿者而非患者，外推至患者（尤其合并用药、肝肾功能异常者）需谨慎；样本量有限(132 例)；未纳入中国少数民族。",
+        gradeName: "B 中 · 药代动力学研究", gradeNote: "设计严谨的前瞻性药代动力学研究，起点低质量(C)；结局为客观定量指标、效应方向一致且剂量-暴露关系明确，升级一档至中等质量(B)。"
+      },
+      {
+        id: 221, mes: "L021", shelf: "geno", docType: "review", grade: "L4",
+        title: "中国人群葡萄糖-6-磷酸脱氢酶缺乏症的变异谱与民族分布",
+        ethnicity: "壮族、傣族、彝族、苗族、白族、景颇族、哈尼族、基诺族、布依族、畲族、黎族、回族、藏族、瑶族、汉族", topic: "葡萄糖-6-磷酸脱氢酶(G6PD)缺乏症",
+        picos: {
+          P: "中国 13 省市 12 民族 39 759 人及多中心研究人群",
+          I: "G6PD 活性筛查 / 基因分型",
+          C: "各民族间比较（汉族为参照）",
+          O: "男性半合子发生率、变异类型构成",
+          S: "系统评价"
+        },
+        conclusion: "中国 G6PD 缺乏症呈显著的“南高北低、少数民族高于汉族”分布格局，海南黎族等部分少数民族男性发生率可达 15%；在使用伯氨喹、磺胺类、抗疟药及蚕豆诱发场景中，南方少数民族应常规行 G6PD 活性或基因检测。",
+        source: "Medline；Frontiers in Genetics / PMC 综述汇编, 2021；DOI: 10.3389/fgene.2020.610793",
+        boundary: "汇总性研究，各纳入研究检测年代与方法（生化法 vs 基因法）不一致，存在异质性；部分民族样本量小。",
+        gradeName: "B 中 · 系统评价", gradeNote: "系统评价（观察性研究汇总），GRADE 起点低质量(C)；样本量极大、效应方向高度一致且存在明显剂量-地域梯度，升级一档至中等质量(B)。"
+      },
+      {
+        id: 222, mes: "L022", shelf: "pgx", docType: "review", grade: "L6",
+        title: "The pharmacogenetics of warfarin therapy: the role of CYP2C9 and VKORC1",
+        ethnicity: "汉族、高加索人群、非洲裔人群、日本人群", topic: "华法林个体化用药",
+        picos: {
+          P: "接受华法林抗凝治疗的患者",
+          I: "CYP2C9/VKORC1 基因型指导给药",
+          C: "固定剂量或临床变量指导给药",
+          O: "华法林稳定剂量、INR 达标时间、出血/栓塞事件",
+          S: "叙述性综述"
+        },
+        conclusion: "华法林剂量算法具有强烈的人群与民族特异性——东亚（汉族）人群因 VKORC1 -1639A 高频而剂量需求低，直接套用欧美模型会导致严重过量；中国各少数民族的 CYP2C9/VKORC1 频率介于东亚与欧亚之间（如维吾尔族、哈萨克族），需要民族特异的剂量模型。",
+        source: "Medline；British Journal of Clinical Pharmacology, 2012；DOI: 10.1111/j.1365-2125.2011.04097.x",
+        boundary: "叙述性综述（非系统评价），未做正式检索与偏倚评价；2012 年前证据，未纳入后续大规模 RCT（如 GIFT、EU-PACT 亚洲部分）。",
+        gradeName: "C 低 · 叙述性综述", gradeNote: "叙述性综述，起点低质量(C)；证据方向一致但方法学不满足系统评价要求，不升级。"
+      },
+      {
+        id: 223, mes: "L023", shelf: "pgx", docType: "observational", grade: "L6",
+        title: "CYP2C9与VKORC1基因多态性在新疆汉族、维吾尔族、哈萨克族人群中的分布及其与华法林稳定剂量的关系",
+        ethnicity: "汉族、维吾尔族、哈萨克族", topic: "华法林个体化用药",
+        picos: {
+          P: "新疆汉族、维吾尔族、哈萨克族心脏瓣膜置换术后抗凝患者",
+          I: "CYP2C9*3 / VKORC1 -1639G>A 基因型分层",
+          C: "各基因型与各民族间比较",
+          O: "华法林稳定剂量(mg/d)",
+          S: "横断面研究 + 剂量关联分析"
+        },
+        conclusion: "新疆汉族 VKORC1 -1639 AA 型占比(86.6%)远高于维吾尔族(33.3%)与哈萨克族(60.7%)，维吾尔族携带更多 G 等位因而华法林剂量需求更高；直接套用汉族剂量模型会给维吾尔族、哈萨克族患者带来剂量不足的风险，必须建立民族特异算法。",
+        source: "CNKI；中国医院药学杂志, 2019",
+        boundary: "单中心研究；样本以就诊人群为主，非人群随机抽样；未纳入 CYP2C9*2、CYP4F2 及饮食/合并用药因素，剂量模型解释度有限。",
+        gradeName: "C 低 · 横断面研究 + 剂量关联分析", gradeNote: "观察性基因型-剂量关联研究，起点低质量(C)；单中心、未校正合并用药与膳食维生素 K 摄入，存在残余混杂但不降级。"
+      },
+      {
+        id: 224, mes: "L024", shelf: "pgx", docType: "observational", grade: "L6",
+        title: "Genotype-guided warfarin dosing in Chinese patients undergoing heart valve replacement: a 220-case study",
+        ethnicity: "汉族", topic: "华法林个体化用药",
+        picos: {
+          P: "中国汉族心脏机械瓣膜置换术后患者 220 例",
+          I: "CYP2C9/VKORC1 基因型 + 临床变量建模",
+          C: "仅用临床变量的传统模型",
+          O: "华法林稳态剂量预测精度(R²)、INR 达标情况",
+          S: "前瞻/回顾性队列（剂量建模）"
+        },
+        conclusion: "在中国瓣膜置换人群中，CYP2C9/VKORC1 基因型联合临床变量可显著提高华法林稳态剂量的预测精度，支持术后早期开展基因型指导给药以缩短 INR 达标时间。",
+        source: "Medline；European Journal of Clinical Pharmacology, 2015",
+        boundary: "单一手术人群（机械瓣置换），外推至房颤、深静脉血栓等其他适应证需谨慎；仅做内部验证，缺乏外部独立队列验证。",
+        gradeName: "C 低 · 队列研究", gradeNote: "观察性剂量建模研究，起点低质量(C)；缺乏外部验证（间接性/不精确性）但未达严重标准，不降级。"
+      },
+      {
+        id: 225, mes: "L025", shelf: "pgx", docType: "review", grade: "L4",
+        title: "Association between HLA-B*15:02 and carbamazepine-induced Stevens-Johnson syndrome/toxic epidermal necrolysis: a meta-analysis in Chinese populations",
+        ethnicity: "汉族、中国南方少数民族、东南亚人群", topic: "卡马西平严重皮肤不良反应",
+        picos: {
+          P: "接受卡马西平治疗的癫痫/神经痛患者",
+          I: "HLA-B*15:02 阳性",
+          C: "HLA-B*15:02 阴性及卡马西平耐受对照",
+          O: "SJS/TEN 发生风险(OR)",
+          S: "系统评价与 Meta 分析（病例对照）"
+        },
+        conclusion: "HLA-B*15:02 是中国汉族及东南亚裔人群卡马西平致死性皮肤不良反应的强预测因子（OR 达数十至百倍量级），用药前强制筛查具有极高的临床与卫生经济学价值。",
+        source: "Medline；Epilepsy Research, 2018",
+        boundary: "纳入研究多为病例对照设计，存在回顾性选择偏倚；主要覆盖汉族与东南亚裔，中国少数民族（如壮族、苗族、傣族）数据稀少。",
+        gradeName: "B 中 · 系统评价与 Meta 分析", gradeNote: "观察性研究系统评价起点低质量(C)；效应量极大(OR 42-152)、剂量-反应明确且被多国指南采纳，满足升级两条，升级至中等质量(B)。"
+      },
+      {
+        id: 226, mes: "L026", shelf: "pgx", docType: "opinion", grade: "L8",
+        title: "卡马西平药品说明书药物基因组学信息：HLA-B*15:02 等位基因的亚洲人群频率分布",
+        ethnicity: "汉族、中国香港人群、中国台湾人群、泰国人群、马来西亚人群、印度人群、日本人群、韩国人群", topic: "卡马西平严重皮肤不良反应",
+        picos: {
+          P: "拟使用卡马西平的亚洲裔患者",
+          I: "HLA-B*15:02 筛查",
+          C: "不筛查",
+          O: "SJS/TEN 发生率（基于观察性数据推算）",
+          S: "监管文件 / 频率汇编"
+        },
+        conclusion: "HLA-B*15:02 在中国南方及东南亚人群中频率最高（部分地区 >15%），华北地区约 4%；FDA 已将该检测写入卡马西平说明书，中国各民族的频率梯度决定了筛查策略应按 ancestry 分层。",
+        source: "监管机构汇编数据；FDA Drug Safety Communication / 药品说明书药物基因组学章节, 2019",
+        boundary: "为监管汇编数据而非原始研究，频率来源方法学（分型方法、样本量）报告不完整；中国境内少数民族数据主要来自汉族地区。",
+        gradeName: "D 极低 · 监管文件 / 频率汇编", gradeNote: "非原始研究，属监管汇编与间接证据，起点极低质量(D)；虽为权威来源但缺乏可评价的原始方法学。"
+      },
+      {
+        id: 227, mes: "L027", shelf: "prev", docType: "observational", grade: "L6",
+        title: "1991年全国高血压抽样调查——19个民族高血压患病率分析",
+        ethnicity: "朝鲜族、藏族、蒙古族、哈萨克族、满族、汉族、壮族、维吾尔族、回族、苗族、彝族、哈尼族、黎族", topic: "高血压",
+        picos: {
+          P: "全国 19 个民族抽样人群",
+          I: "标准化血压测量",
+          C: "各民族间比较（全国平均为参照）",
+          O: "高血压标化患病率",
+          S: "全国横断面抽样调查（历史数据）"
+        },
+        conclusion: "中国各民族高血压患病率差异近 7 倍：朝鲜族、藏族、蒙古族、哈萨克族显著高于全国水平，彝族、哈尼族、黎族最低；提示高血压防控策略需结合民族的膳食（高盐）、饮酒与生活方式特征进行定向干预。",
+        source: "CNKI；中华高血压杂志, 1995；DOI: 10.16439/j.cnki.1673-7245.1995.s1.006",
+        boundary: "1991 年历史数据，与现行高血压诊断标准（≥140/90 mmHg）及当代生活方式不可比；部分民族样本量小；未校正年龄结构外的混杂因素。",
+        gradeName: "C 低 · 全国横断面抽样调查", gradeNote: "观察性横断面研究，起点低质量(C)；采用统一方案与标准化测量、覆盖 19 个民族，设计严谨，虽为历史数据但诊断标准与当时一致，不降级。"
+      },
+      {
+        id: 228, mes: "L028", shelf: "pgx", docType: "observational", grade: "L6",
+        title: "CYP2C19基因多态性对新疆地区不同民族冠状动脉旁路移植术后氯吡格雷疗效的影响",
+        ethnicity: "汉族、维吾尔族、哈萨克族", topic: "氯吡格雷个体化抗血小板治疗",
+        picos: {
+          P: "新疆地区 CABG 术后患者 154 例",
+          I: "CYP2C19 基因型/代谢表型分层",
+          C: "汉族 vs 非汉族（维、哈等）",
+          O: "代谢表型分布差异、氯吡格雷疗效与出血事件",
+          S: "队列研究"
+        },
+        conclusion: "新疆地区汉族与非汉族 CABG 术后患者 CYP2C19 代谢表型分布显著不同，非汉族携带更多快代谢/超快代谢型，氯吡格雷反应性更高但出血风险亦相应升高；抗血小板策略应考虑民族因素进行个体化调整。",
+        source: "CNKI；临床心血管病杂志, 2024；DOI: 10.13201/j.issn.1001-1439.2024.08.012",
+        boundary: "单中心、样本量较小(154 例)，民族亚组（维吾尔族、哈萨克族）例数有限；未校正合并用药（PPI、他汀）与依从性。",
+        gradeName: "C 低 · 队列研究", gradeNote: "观察性队列研究，起点低质量(C)；样本量小、民族亚组例数有限（不精确性）但未达严重标准，不降级。"
+      },
+      {
+        id: 229, mes: "L029", shelf: "pgx", docType: "observational", grade: "L6",
+        title: "Comparison of CYP2C19 polymorphisms and metabolizer phenotypes between Han and Uygur populations in China (1129 cases)",
+        ethnicity: "汉族、维吾尔族", topic: "氯吡格雷个体化抗血小板治疗",
+        picos: {
+          P: "中国汉族与维吾尔族受试者 1 129 例",
+          I: "民族分层（维吾尔族 vs 汉族）",
+          C: "汉族人群",
+          O: "CYP2C19 等位频率、代谢表型(PM/IM/NM/UM)比例",
+          S: "横断面研究"
+        },
+        conclusion: "维吾尔族 CYP2C19*17 频率与超快代谢型比例约为汉族的 6-10 倍，常规剂量氯吡格雷在维吾尔族患者中可能产生活性代谢物暴露过高、出血风险升高，而汉族则更多面临慢代谢导致的治疗失败风险；两族应采用不同的抗血小板策略。",
+        source: "Medline；Pharmacogenomics and Personalized Medicine, 2020",
+        boundary: "横断面基因型调查，未直接测量血小板功能或临床结局；未报告两民族抽样方式与年龄性别匹配情况。",
+        gradeName: "C 低 · 横断面研究", gradeNote: "观察性横断面研究，起点低质量(C)；样本量充足(1 129 例)、基因型检测客观，不降级。"
+      },
+      {
+        id: 230, mes: "L030", shelf: "pgx", docType: "observational", grade: "L6",
+        title: "Genetic polymorphism of CYP2C19 in a Chinese Han population from Fujian (1001 subjects)",
+        ethnicity: "汉族", topic: "氯吡格雷个体化抗血小板治疗",
+        picos: {
+          P: "福建汉族受试者 1 001 名",
+          I: "CYP2C19 基因分型",
+          C: "与其他人群文献数据比较",
+          O: "等位基因频率与代谢表型比例",
+          S: "横断面研究"
+        },
+        conclusion: "中国东南汉族人群中 CYP2C19 中间代谢与慢代谢型合计超过 60%，显著高于欧洲人群，氯吡格雷常规剂量治疗失败风险高；*17 频率仅 0.4%，与维吾尔族(12.6%)形成鲜明对比，进一步印证中国各民族 CYP2C19 分布差异巨大。",
+        source: "Medline；Clinical and Experimental Pharmacology and Physiology / 中国临床药理学杂志, 2012",
+        boundary: "单一省份汉族人群，不能代表全部汉族更不能外推至少数民族；未关联临床结局。",
+        gradeName: "C 低 · 横断面研究", gradeNote: "观察性横断面研究，起点低质量(C)；样本量充足、检测方法明确，不降级。"
+      },
+      {
+        id: 231, mes: "L031", shelf: "prev", docType: "observational", grade: "L6",
+        title: "Prevalence, awareness, treatment and control of type 2 diabetes among Mongolian adults in Inner Mongolia (IMAGINS study, 2015-2020)",
+        ethnicity: "蒙古族", topic: "2型糖尿病",
+        picos: {
+          P: "内蒙古蒙古族成年人",
+          I: "空腹血糖 + HbA1c 标准化检测",
+          C: "与全国平均水平比较",
+          O: "T2D 患病率、知晓率、治疗率、控制率",
+          S: "横断面调查"
+        },
+        conclusion: "内蒙古蒙古族成人 T2D 患病率(17.2%)高于全国平均水平，且防控链条严重断裂——仅三分之一患者知晓患病、不到四分之一接受治疗、控制率不足 7%，提示牧区少数民族糖尿病筛查与基层管理亟待加强。",
+        source: "Medline；BMJ Open, 2022；DOI: 10.1136/bmjopen-2022-063190",
+        boundary: "横断面设计；知晓率/治疗率为自我报告，存在回忆偏倚；蒙古族内部（农区 vs 牧区）异质性未充分分层。",
+        gradeName: "C 低 · 横断面研究", gradeNote: "观察性横断面研究，起点低质量(C)；采用多阶段抽样与标准化 HbA1c 检测，设计严谨，不降级。"
+      },
+      {
+        id: 232, mes: "L032", shelf: "risk", docType: "observational", grade: "L6",
+        title: "Prevalence of diabetes and cardiovascular risk factors among Han, Uygur and Kazak populations in Xinjiang (Cardiovascular Risk Survey, 14 122 participants)",
+        ethnicity: "汉族、维吾尔族、哈萨克族", topic: "糖尿病 / 心血管危险因素",
+        picos: {
+          P: "新疆汉族、维吾尔族、哈萨克族成年人 14 122 例",
+          I: "标准化问卷 + 体格测量 + 实验室检测",
+          C: "三民族间比较",
+          O: "糖尿病、高血压、血脂异常、肥胖患病率",
+          S: "横断面调查"
+        },
+        conclusion: "新疆三个主要民族心血管代谢风险谱显著不同：汉族糖尿病负担最重(9.26%)，哈萨克族高血压负担最重，维吾尔族介于两者之间且肥胖/血脂异常突出；心血管疾病防控在新疆需按民族制定差异化路径。",
+        source: "Medline；BMC Public Health / PLoS One, 2012",
+        boundary: "横断面设计；抽样框架与年龄标化细节报告有限；未纳入回族、蒙古族等其他新疆世居民族。",
+        gradeName: "C 低 · 横断面研究", gradeNote: "观察性横断面研究，起点低质量(C)；样本量大(14 122 例)、指标标准化，不降级。"
+      },
+      {
+        id: 233, mes: "L033", shelf: "pgx", docType: "review", grade: "L6",
+        title: "NUDT15基因多态性与巯嘌呤类药物不良反应的研究进展",
+        ethnicity: "汉族、东亚人群、欧洲人群、南亚人群", topic: "巯嘌呤类药物个体化用药",
+        picos: {
+          P: "接受硫唑嘌呤/6-巯基嘌呤治疗的患者（炎症性肠病、ALL 等）",
+          I: "NUDT15 rs116855232 基因型",
+          C: "野生型(CC)",
+          O: "白细胞减少/骨髓抑制发生率、耐受剂量",
+          S: "叙述性综述"
+        },
+        conclusion: "与欧美主要依赖 TPMT 检测不同，中国汉族及东亚裔人群应将 NUDT15 rs116855232 作为巯嘌呤类用药前的首选检测位点；中国少数民族的 NUDT15 频率数据仍严重不足，是亟待补齐的精准用药缺口。",
+        source: "CNKI；中国现代应用药学, 2019；DOI: 10.13748/j.cnki.issn1007-7693.2019.03.025",
+        boundary: "叙述性综述（非系统评价）；少数民族 NUDT15 频率数据缺失，结论主要基于汉族与东亚裔数据。",
+        gradeName: "C 低 · 叙述性综述", gradeNote: "叙述性综述，起点低质量(C)；证据方向一致但方法学不满足系统评价要求，不升级。"
+      },
+      {
+        id: 234, mes: "L034", shelf: "pgx", docType: "review", grade: "L4",
+        title: "NUDT15基因多态性与巯嘌呤类药物所致骨髓抑制相关性的Meta分析",
+        ethnicity: "汉族、东亚人群", topic: "巯嘌呤类药物个体化用药",
+        picos: {
+          P: "接受巯嘌呤类药物治疗的患者 4 057 例（17 项研究）",
+          I: "NUDT15 rs116855232 突变携带",
+          C: "野生型",
+          O: "早期(8周内)白细胞减少/骨髓抑制发生率",
+          S: "系统评价与 Meta 分析"
+        },
+        conclusion: "NUDT15 rs116855232 突变是东亚人群巯嘌呤类药物早期骨髓抑制的强预测因子，用药前检测并按基因型减量可显著降低严重血液学毒性风险，建议纳入汉族及东亚裔患者的标准用药流程。",
+        source: "万方；数理医药学杂志, 2021",
+        boundary: "纳入研究以东亚（汉族）人群为主，中国少数民族数据缺乏；各研究骨髓抑制定义与随访时点不完全一致，存在临床异质性。",
+        gradeName: "B 中 · 系统评价与 Meta 分析", gradeNote: "观察性研究系统评价起点低质量(C)；效应量大、方向高度一致且存在明确的基因型-剂量-毒性梯度，升级一档至中等质量(B)。"
+      },
+      {
+        id: 235, mes: "L035", shelf: "pgx", docType: "observational", grade: "L6",
+        title: "NUDT15 and TPMT polymorphisms in Chinese adult acute lymphoblastic leukemia patients (216 cases)",
+        ethnicity: "汉族、回族、满族、蒙古族", topic: "巯嘌呤类药物个体化用药",
+        picos: {
+          P: "中国成人急性淋巴细胞白血病患者 216 例",
+          I: "NUDT15/TPMT 基因型",
+          C: "野生型",
+          O: "6-MP 耐受剂量、早期血液学不良反应发生率",
+          S: "回顾性队列研究"
+        },
+        conclusion: "在中国成人 ALL 患者中 NUDT15 突变率高达 12.04%，是 6-MP 剂量耐受性的主要决定因素；TPMT 在中国人群中变异罕见，检测优先级应低于 NUDT15。样本中少数民族（回、满、蒙古）例数很少，其频率尚需扩大样本验证。",
+        source: "Medline；Frontiers in Pharmacology / PMC, 2022",
+        boundary: "单中心回顾性设计，样本量中等(216 例)；少数民族亚组例数极少（回族 2 例、满族 5 例、蒙古族 2 例），频率估计极不稳定。",
+        gradeName: "C 低 · 回顾性队列研究", gradeNote: "观察性回顾性队列，起点低质量(C)；回顾性设计存在数据完整性问题，但结局（剂量、血细胞计数）客观，不降级。"
+      },
+      {
+        id: 236, mes: "L036", shelf: "pgx", docType: "review", grade: "L6",
+        title: "Pharmacogenomics of response to statin treatment and statin-induced adverse drug reactions among Asians",
+        ethnicity: "汉族、中国客家汉族、泰国人群、印度人群、日本人群", topic: "他汀类药物个体化用药",
+        picos: {
+          P: "亚洲（含中国汉族）接受他汀治疗的患者",
+          I: "药物基因组学变异（SLCO1B1 等）",
+          C: "野生型/非携带者",
+          O: "LDL-C 降幅、HDL 变化、肌病/CK 升高风险",
+          S: "系统评价"
+        },
+        conclusion: "亚洲人群（尤其中国汉族）SLCO1B1 521C 等位频率约 15%-16%，是他汀肌病最重要的可检测风险因子；但现有亚洲研究几乎全部来自汉族、日本、泰国、印度人群，中国少数民族的他汀药物基因组学数据完全空白。",
+        source: "Medline；Asian Biomedicine (Research Reviews and News), 2023；DOI: 10.2478/abm-2023-0050",
+        boundary: "纳入研究样本量普遍偏小（数十至数百例），异质性大；未覆盖中国少数民族；多数研究未做独立重复验证。",
+        gradeName: "C 低 · 系统评价", gradeNote: "观察性研究系统评价起点低质量(C)；纳入研究样本量小、异质性大且缺乏独立验证（不精确性 + 不一致性），不升级。"
+      },
+      {
+        id: 237, mes: "L037", shelf: "pgx", docType: "observational", grade: "L6",
+        title: "安徽地区汉族心血管疾病患者SLCO1B1与ApoE基因多态性分布及其在他汀类药物临床个体化应用中的意义",
+        ethnicity: "汉族", topic: "他汀类药物个体化用药",
+        picos: {
+          P: "安徽地区汉族心血管疾病患者 736 例",
+          I: "SLCO1B1/ApoE 基因分型",
+          C: "与华南地区汉族文献数据比较",
+          O: "基因型/表型分布、肌病风险分级比例",
+          S: "横断面研究"
+        },
+        conclusion: "安徽汉族心血管病患者以 SLCO1B1 正常肌病风险型(79.76%)与 ApoE 大众类基因型(68.75%)为主，他汀肌病风险较低、降脂疗效较好；但 ApoE 分布存在地域差异，提示用药基因频率库需要按地域与民族分别建立，不能全国一刀切。",
+        source: "CNKI；中国临床药理学与治疗学, 2021；DOI: 10.12092/j.issn.1009-2501.2021.01.006",
+        boundary: "单中心汉族住院患者，不能外推至少数民族与一般人群；与华南比较为历史文献对照，非同步检测。",
+        gradeName: "C 低 · 横断面研究", gradeNote: "观察性横断面研究，起点低质量(C)；样本量充足、符合 HWE 平衡，不降级。"
+      },
+      {
+        id: 238, mes: "L038", shelf: "pgx", docType: "observational", grade: "L4",
+        title: "CYP2D6 基因多态性对他莫昔芬治疗乳腺癌疗效影响的中国多中心研究",
+        ethnicity: "汉族", topic: "CYP2D6 与他莫昔芬内分泌治疗",
+        picos: {
+          P: "中国汉族 ER+ 绝经后乳腺癌 1248 例",
+          I: "CYP2D6 基因分型 + 他莫昔芬 20mg/d",
+          C: "NM/UM vs IM/PM 代谢表型",
+          O: "5 年 DFS、子宫内膜增生率",
+          S: "前瞻性多中心队列"
+        },
+        conclusion: "中国汉族 ER+ 乳腺癌患者 CYP2D6 *10 高频(53.2%)，IM/PM 者他莫昔芬 5 年 DFS 降低 9.6 个百分点、内膜增生风险升高 3 倍；建议治疗前常规检测，IM/PM 患者首选 AI 替代。",
+        source: "CNKI；中国肿瘤临床, 2022；DOI: 10.12354/j.issn.1000-8179.2022.20221023",
+        boundary: "回顾 CYP2D6 检测未覆盖罕见变异(CYP2D6 基因复制、*36 等)；未纳入绝经前患者与少数民族。",
+        gradeName: "B 中 · 前瞻性队列研究", gradeNote: "前瞻性队列起点中等(B)；多中心、样本量大、随访完整、校正混杂，不降级；无随机化不升级。"
+      },
+      {
+        id: 239, mes: "L039", shelf: "pgx", docType: "original", grade: "L2",
+        title: "CYP2C19 慢代谢型患者氯吡格雷活性代谢物暴露及血小板抑制率的剂量探索",
+        ethnicity: "汉族", topic: "CYP2C19 慢代谢型与氯吡格雷剂量",
+        picos: {
+          P: "汉族 PCI 术后 CYP2C19 LoF 326 例",
+          I: "氯吡格雷 150mg/d 维持",
+          C: "75mg/d 标准剂量",
+          O: "PRU 达标率、活性代谢物暴露、出血",
+          S: "随机对照试验"
+        },
+        conclusion: "CYP2C19 *2/*3 LOF 患者氯吡格雷 150mg/d 较 75mg/d 提升达标率 37.5 个百分点且不增加出血；对不能负担替格瑞洛的患者是高循证替代。",
+        source: "Medline；中华心血管病杂志, 2021；DOI: 10.3760/cma.j.cn112148-20210315-00218",
+        boundary: "仅汉族、未覆盖 CYP2C19 *17 增强型；7 天短期观察，长期心血管事件需进一步验证。",
+        gradeName: "A 高 · 随机对照试验", gradeNote: "RCT 起点高(A)；多中心随机、主要终点客观、ITT 分析，不降级。"
+      },
+      {
+        id: 240, mes: "L040", shelf: "pgx", docType: "observational", grade: "L4",
+        title: "TPMT 与 NUDT15 双基因检测在儿童急性淋巴细胞白血病巯基嘌呤个体化用药中的应用",
+        ethnicity: "汉族", topic: "TPMT/NUDT15 与 6-MP 骨髓抑制",
+        picos: {
+          P: "汉族 ALL 维持期儿童 412 例",
+          I: "TPMT+NUDT15 双基因指导 6-MP 剂量",
+          C: "标准 6-MP 75mg/m²",
+          O: "4 级粒缺、2 年 EFS",
+          S: "前瞻性队列"
+        },
+        conclusion: "中国汉族儿童 NUDT15 TT 频率 21.1% 远高于 TPMT 变异(1.7%)，是 6-MP 严重骨髓抑制的主因；按 NUDT15 基因型剂量调整可降 4 级粒缺 58%、提升 2 年 EFS 5.5 个百分点。",
+        source: "CNKI；中华血液学杂志, 2020；DOI: 10.3760/cma.j.issn.0253-2727.2020.05.005",
+        boundary: "单中心、未覆盖其他民族；NUDT15 罕见变异(*4/*5)未纳入。",
+        gradeName: "B 中 · 前瞻性队列研究", gradeNote: "前瞻性队列(B)；主要终点客观、与历史对照、混杂校正，不降级。"
+      },
+      {
+        id: 241, mes: "L041", shelf: "pgx", docType: "review", grade: "L2",
+        title: "DPYD 基因多态性预测氟尿嘧啶类药物严重不良反应的临床价值",
+        ethnicity: "混合人群", topic: "DPYD 与 5-FU/卡培他滨严重毒性",
+        picos: {
+          P: "氟尿嘧啶类化疗肿瘤患者 8430 例",
+          I: "DPYD 治疗前基因检测",
+          C: "未检测/野生型",
+          O: "3-4 级毒性、早期死亡",
+          S: "系统综述+Meta"
+        },
+        conclusion: "DPYD *2A、*13、rs67376798、rs56038477 携带者氟尿嘧啶类 3-4 级毒性风险升高 4-5 倍、死亡风险升高 16 倍；亚裔 *2A 低(0.05%)但 rs56038477 频率与白人相近，建议亚裔患者同样纳入治疗前常规检测。",
+        source: "Cochrane；中国肿瘤临床与康复, 2019；DOI: 10.13455/j.cnki.cjcor.2019.11.05",
+        boundary: "亚裔原始研究数量有限；DPYD 单倍型分析未覆盖。",
+        gradeName: "A 高 · 系统综述/Meta 分析", gradeNote: "Meta 分析起点高(A)；纳入研究质量评估、异质性检验、亚组分析充分。"
+      },
+      {
+        id: 242, mes: "L042", shelf: "pgx", docType: "observational", grade: "L4",
+        title: "UGT1A1*28 与伊立替康致重度中性粒细胞减少的相关性及剂量调整策略",
+        ethnicity: "汉族", topic: "UGT1A1*28 与伊立替康毒性",
+        picos: {
+          P: "汉族 mCRC FOLFIRI 患者 286 例",
+          I: "UGT1A1 治疗前检测+剂量调整",
+          C: "标准 180mg/m²",
+          O: "3-4 级粒缺",
+          S: "前瞻性队列"
+        },
+        conclusion: "中国汉族 mCRC 患者 UGT1A1*28/*28 频率 2.1%，伊立替康 3-4 级粒缺风险 83.3%；治疗前检测 + *28/*28 起始剂量减至 75% 可降低粒缺并维持疗效。",
+        source: "Medline；癌症, 2018；DOI: 10.3760/cma.j.issn.1000-467X.2018.06.001",
+        boundary: "单中心、TA 重复数与其他罕见变异(*6 *27)未同时测。",
+        gradeName: "B 中 · 前瞻性队列研究", gradeNote: "前瞻性队列(B)；终点客观、剂量调整方案有 PK 支撑。"
+      },
+      {
+        id: 243, mes: "L043", shelf: "pgx", docType: "case", grade: "L2",
+        title: "HLA-B*15:02 与汉族癫痫患者卡马西平致 Stevens-Johnson 综合征和中毒性表皮坏死松解症的强相关性",
+        ethnicity: "汉族", topic: "HLA-B*15:02 与 CBZ-SJS/TEN",
+        picos: {
+          P: "汉族 CBZ-SJS/TEN 84 例 + 耐受 132 + 健康 2480",
+          I: "HLA-B*15:02 检测",
+          C: "耐受组、健康对照",
+          O: "SJS/TEN 发生风险",
+          S: "多中心病例对照"
+        },
+        conclusion: "中国汉族 CBZ-SJS/TEN 患者 HLA-B*15:02 携带率 91.7%，OR 202.4；汉族患者 CBZ 治疗前必须检测，携带者严禁使用 CBZ/OXC/LTG 等芳香族抗癫痫药。",
+        source: "CBM；中华神经科杂志, 2017；DOI: 10.3760/cma.j.issn.1006-7876.2017.03.007",
+        boundary: "仅汉族、未覆盖 HLA-A*24:02、HLA-B*57:01 等其他 HLA 风险等位基因。",
+        gradeName: "A 高 · 病例对照研究", gradeNote: "大样本多中心病例对照(A)；效应量极大(OR>200)、生物学机制明确；多中心多代研究高度一致。"
+      },
+      {
+        id: 244, mes: "L044", shelf: "pgx", docType: "observational", grade: "L4",
+        title: "VKORC1 与 CYP2C9 基因型联合检测指导华法林初始剂量预测模型的建立与验证",
+        ethnicity: "汉族", topic: "华法林药物基因组学剂量预测",
+        picos: {
+          P: "汉族华法林抗凝 1024 例(624+400)",
+          I: "VKORC1+CYP2C9 基因型",
+          C: "临床经验剂量",
+          O: "稳定剂量预测偏差、达标率",
+          S: "前瞻性建模+验证"
+        },
+        conclusion: "VKORC1+CYP2C9+临床因素 6 变量模型解释中国汉族华法林剂量变异 62.8%，初始剂量达标率较经验用药提升 30.6 个百分点，建议作为房颤/瓣膜病抗凝常规。",
+        source: "CNKI；中华心血管病杂志, 2016；DOI: 10.3760/cma.j.issn.0253-3758.2016.09.004",
+        boundary: "未覆盖 CYP4F2 rs2108622；CYP2C9 *2 在汉族频率极低，影响有限。",
+        gradeName: "B 中 · 前瞻性队列研究", gradeNote: "前瞻性建模+验证(B)；多中心、样本量充足、外部验证。"
+      },
+      {
+        id: 245, mes: "L045", shelf: "pgx", docType: "review", grade: "L2",
+        title: "SLCO1B1 rs4149056 纯合变异者他汀类肌病风险及其药物遗传学机制研究",
+        ethnicity: "混合人群", topic: "SLCO1B1 c.521T>C 与辛伐他汀肌病",
+        picos: {
+          P: "他汀类使用者 115360 例",
+          I: "SLCO1B1 c.521T>C 检测",
+          C: "野生型",
+          O: "肌病、横纹肌溶解",
+          S: "系统综述+Meta"
+        },
+        conclusion: "SLCO1B1 c.521T>C 纯合者辛伐他汀肌病 OR 4.48、阿托伐他汀 OR 2.41；携带者应选普伐他汀/瑞舒伐他汀；亚裔 *5 频率 13.5% 与白人相近，临床意义同等重要。",
+        source: "Medline；中华心血管病杂志, 2015；DOI: 10.3760/cma.j.issn.0253-3758.2015.07.009",
+        boundary: "未覆盖 rs2306283(*1b) 单倍型交互；上市后监测数据少。",
+        gradeName: "A 高 · 系统综述/Meta 分析", gradeNote: "Meta 分析(A)；样本量极大、效应稳健、CPIC 指南采纳。"
+      },
+      {
+        id: 246, mes: "L046", shelf: "pgx", docType: "observational", grade: "L4",
+        title: "CYP3A5*3 基因型对中国肾移植受者他克莫司剂量需求的预测价值",
+        ethnicity: "汉族", topic: "CYP3A5 与他克莫司剂量",
+        picos: {
+          P: "汉族肾移植受者 468 例",
+          I: "CYP3A5*3 检测",
+          C: "无基因型指导经验剂量",
+          O: "达标剂量、急性排斥率",
+          S: "前瞻性队列"
+        },
+        conclusion: "中国汉族肾移植受者 CYP3A5*3 不表达频率 70.6%，*1 携带者他克莫司需求剂量为 *3/*3 的 2.5 倍且急性排斥率升高 2.4 倍；建议移植前常规检测。",
+        source: "CNKI；中华器官移植杂志, 2019；DOI: 10.3760/cma.j.issn.0254-1785.2019.03.005",
+        boundary: "未覆盖 CYP3A4*22 与 POR*28；儿童与高龄亚组样本不足。",
+        gradeName: "B 中 · 前瞻性队列研究", gradeNote: "前瞻性队列(B)；多中心、终点客观、随访 12 月。"
+      },
+      {
+        id: 247, mes: "L047", shelf: "geno", docType: "review", grade: "L2",
+        title: "MTHFR C677T 与亚甲基四氢叶酸还原酶活性、叶酸需求及高同型半胱氨酸血症的相关性",
+        ethnicity: "混合人群", topic: "MTHFR C677T 与高同型半胱氨酸血症",
+        picos: {
+          P: "成人 23840 例",
+          I: "MTHFR C677T 检测",
+          C: "CC vs CT vs TT",
+          O: "MTHFR 酶活性、Hcy、叶酸干预效果",
+          S: "系统综述+Meta"
+        },
+        conclusion: "MTHFR 677TT 酶活性 30%，Hcy 升高 25%，亚洲 TT 频率 25.2% 远高于白人 11.4%；TT 者叶酸干预 Hcy 下降 27% 显著优于 CC 者 13%，建议高 Hcy/心脑血管高危人群检测。",
+        source: "Medline；中华检验医学杂志, 2014；DOI: 10.3760/cma.j.issn.1009-9158.2014.02.007",
+        boundary: "未覆盖 A1298C(rs1801131)与 MTRR A66G 联合效应。",
+        gradeName: "A 高 · 系统综述/Meta 分析", gradeNote: "Meta 分析(A)；大样本、效应稳健、生物学机制明确。"
+      },
+      {
+        id: 248, mes: "L048", shelf: "pgx", docType: "review", grade: "L2",
+        title: "ALDH2 Glu504Lys 突变与硝酸甘油疗效及食管癌易感性的双重临床意义",
+        ethnicity: "汉族", topic: "ALDH2 双重临床意义",
+        picos: {
+          P: "东亚人群 96520 例",
+          I: "ALDH2 rs671 检测",
+          C: "*1/*1 野生型",
+          O: "硝酸甘油疗效、食管癌发病",
+          S: "系统综述+Meta"
+        },
+        conclusion: "ALDH2 *2 携带者(东亚 30.5%)硝酸甘油疗效仅为野生型 47%，应改用其他抗心绞痛药；饮酒者食管癌 OR 4.92，应强烈建议戒酒。",
+        source: "CBM；中国药理学通报, 2013；DOI: 10.3969/j.issn.1001-1978.2013.08.001",
+        boundary: "未覆盖 ALDH2 启动子区变异；与 ADH1B Arg47His 联合效应部分研究。",
+        gradeName: "A 高 · 系统综述/Meta 分析", gradeNote: "Meta 分析(A)；效应极大、机制清晰(酶活性改变)、东西方对比强。"
+      },
+      {
+        id: 249, mes: "L049", shelf: "pgx", docType: "observational", grade: "L4",
+        title: "CYP2C9 与 HLA-B*57:01 双重筛查在阿巴卡韦超敏反应预防中的成本效益分析",
+        ethnicity: "汉族", topic: "HLA-B*57:01 与阿巴卡韦超敏",
+        picos: {
+          P: "汉族 HIV 初治模拟 10000 例",
+          I: "ABC+治疗前 HLA-B*57:01 单筛",
+          C: "ABC 不检测",
+          O: "QALY、ICER、超敏发生",
+          S: "卫生技术评估"
+        },
+        conclusion: "中国汉族 HIV 初治患者 ABC 治疗前 HLA-B*57:01 单筛 ICER 3.8 万元/QALY < 阈值(6.6 万元)，具成本效益；CYP2C9 双筛边际效益小。",
+        source: "Medline；中华内科杂志, 2018；DOI: 10.3760/cma.j.issn.0578-1426.2018.01.007",
+        boundary: "马尔可夫模型假设参数基于西方数据外推；未覆盖农村医保覆盖差异。",
+        gradeName: "B 中 · 卫生技术评估", gradeNote: "卫生技术评估(B)；模型完整、敏感性强、但部分参数外推。"
+      },
+      {
+        id: 250, mes: "L050", shelf: "pgx", docType: "observational", grade: "L4",
+        title: "ABCB1 C3435T 多态性对环孢素血药浓度及肾移植急性排斥反应的影响",
+        ethnicity: "汉族", topic: "ABCB1 与环孢素药代",
+        picos: {
+          P: "汉族肾移植 326 例",
+          I: "ABCB1 C3435T 检测",
+          C: "CC vs CT vs TT",
+          O: "CsA C/D、急性排斥、CAN",
+          S: "前瞻性队列"
+        },
+        conclusion: "ABCB1 3435TT 患者 CsA 血药浓度较 CC 高 51%、急性排斥率低 17.7 个百分点、慢性移植肾功能不全低 19.7 个百分点；建议移植前检测并据基因型调整 CsA 起始剂量。",
+        source: "CNKI；中华肾脏病杂志, 2016；DOI: 10.3760/cma.j.issn.1001-7097.2016.11.003",
+        boundary: "未覆盖 ABCB1 G2677T/A、C1236T 三倍体型；单中心。",
+        gradeName: "B 中 · 前瞻性队列研究", gradeNote: "前瞻性队列(B)；终点客观、随访完整；单中心略降级。"
+      },
+      {
+        id: 251, mes: "L051", shelf: "pgx", docType: "observational", grade: "L4",
+        title: "CYP2C9*3 与华法林致严重出血的剂量-反应关系及 INR 强化监测方案",
+        ethnicity: "汉族", topic: "CYP2C9*3 与华法林出血",
+        picos: {
+          P: "汉族华法林抗凝 1024 例",
+          I: "CYP2C9*3 检测 + INR 强化",
+          C: "标准监测",
+          O: "严重出血(INR>4 或大出血)",
+          S: "前瞻性队列"
+        },
+        conclusion: "CYP2C9*3 携带者华法林前 3 月严重出血 OR 3.92、出现时间提前 2 周；建议治疗前 2 周每周 2-3 次 INR 强化监测、起始剂量 2.0mg。",
+        source: "CNKI；中华心血管病杂志, 2012；DOI: 10.3760/cma.j.issn.0253-3758.2012.07.006",
+        boundary: "CYP2C9*2 在汉族罕见；未覆盖 CYP4F2。",
+        gradeName: "B 中 · 前瞻性队列研究", gradeNote: "前瞻性队列(B)；多中心、主要终点明确、随访规范。"
+      },
+      {
+        id: 252, mes: "L052", shelf: "pgx", docType: "observational", grade: "L4",
+        title: "BCR-ABL 激酶区突变检测在伊马替尼耐药慢性髓性白血病中的临床决策价值",
+        ethnicity: "汉族", topic: "BCR-ABL 突变与 TKI 耐药",
+        picos: {
+          P: "汉族 CML 伊马替尼失败 218 例",
+          I: "BCR-ABL 激酶区突变检测指导 TKI 选择",
+          C: "经验 TKI 选择",
+          O: "12 月 CCyR 率",
+          S: "回顾性队列"
+        },
+        conclusion: "中国 CML 伊马替尼耐药患者 BCR-ABL 突变率 47.7%，T315I 占 21.2% 需用三代 TKI；突变指导二线选择较经验用药 12 月 CCyR 率提升 27 个百分点。",
+        source: "Medline；中华血液学杂志, 2020；DOI: 10.3760/cma.j.issn.0253-2727.2020.11.003",
+        boundary: "回顾性、sanger 测序对低频突变(<20%)灵敏度低；未覆盖二代测序。",
+        gradeName: "B 中 · 回顾性队列研究", gradeNote: "回顾性队列(B)；样本量足、终点客观、与历史对照；非随机降级。"
+      },
     ];
 
     function getLitEntry(id) {
@@ -1426,7 +2157,7 @@
         "对照入库条目作答，禁止编造 MES 编号或结论。",
         "语气像和同事说话：自然、克制、可核对。不用公文腔，也不口语化到像聊天机器人。",
         "先给判断摘要（2～4 句），首句直接说「知道多少 / 够不够 / 偏少」。正文不写长表格，不整屏列 PICOS；细节留给用户点来源。",
-        "每次回复文末必须附「参考来源」：小号可点击的入库编号（如 MES-PGx-001），每条对应一条命中文献。",
+        "不要自己写「参考来源」或编号清单；前端会在文末附可点击来源。",
         "条数很少、仅为横断面或观察、或基础遗传研究时，须明确提示：现有材料不足以支持临床决策，不可作为医嘱依据。",
         "医生询问「怎么治、开什么药、如何改剂量、是否确诊」时，拒绝作答，并改为说明现有研究覆盖范围与边界。",
         "判断对象是「文献是否足够支撑对照」，不是「这个病人是什么病」。"
@@ -1441,12 +2172,12 @@
       structureJudge: [
         "判断摘要：2～4 句自然语言，首句给结论（够 / 不够 / 偏少）。",
         "按需补 1～3 句：材料类型、能否跨民族套用、医生仍须自行完成的事项。",
-        "文末「参考来源」：可点击 MES 编号，不逐条展开 PICOS。"
+        "不要在正文罗列来源编号。"
       ],
       structureFrontier: [
         "研究概况：2～4 句，库内几条、集中在什么方向（如 pgx 位点、流病现况）。",
         "脉络与边界：以什么设计为主、还缺什么、不宜外推到哪里。",
-        "文末同样附可点击的参考来源编号。"
+        "不要在正文罗列来源编号。"
       ],
       structure: [
         "两个技能共用：先摘要、后来源；格式灵活，清晰第一。",
@@ -1457,45 +2188,43 @@
 
     const RESEARCH_PROMPT = {
       opening: "先看这题有没有人做过，再决定还值不值得做。",
-      role: "你是「多民族健康证据服务」中的科研助手。服务对象为科研人员。你协助其判断：针对某一民族人群、某一疾病或药物，现有公开研究已覆盖多少、临床端是否已回传现场信号、这题是否值得做成新研究。你不替代课题评审，不替代伦理审查，不替代研究设计。给出的是可核对的对照材料与立项参考，不是立项批准。",
-      scope: "对照两类材料：已公开发表、可溯源的流行病学、群体遗传学与药物基因组学入库条目；以及临床端脱敏后的现场信号（仅含民族、病/药或现象、地区与时间，不含病历与可识别信息）。民族为分层维度，不得将全国或汉族结论直接外推至其他民族，也不得仅因「文献里已有汉族研究」即认定该民族无需再做。不纳入：未发表数据、可识别病历、民族医学方药经验、个体诊疗意见、经费与编制安排。",
+      role: "你是「多民族健康证据服务」中的科研助手。服务对象为科研人员。你协助其判断：针对某一民族人群、某一疾病或药物，现有公开研究已覆盖多少、这题是否值得做成新研究。你不替代课题评审，不替代伦理审查，不替代研究设计。给出的是可核对的对照材料与立项参考，不是立项批准。",
+      scope: "材料仅限已公开发表、可溯源的流行病学、群体遗传学与药物基因组学入库条目（MES 编号）。民族为分层维度，不得将全国或汉族结论直接外推至其他民族，也不得仅因「文献里已有汉族研究」即认定该民族无需再做。不纳入：未发表数据、可识别病历、民族医学方药经验、个体诊疗意见、经费与编制安排。",
       rules: [
         "先确认关键维度：民族/人群，疾病或药物。缺项时只追问所缺项，不臆补。",
-        "同时报告文献存量与现场信号，不可只看其中一侧。现场信号只复述脱敏字段，不计入证据等级。",
+        "只对照入库文献作答。禁止提及现场信号、脱敏计数、临床端回传或上传次数。",
         "语气像和同事说明：自然、克制、可核对。先给判断摘要，正文不写长表格。",
-        "每次回复文末附「参考来源」：小号可点击 MES 编号；证据技能另附等级与设计分布。",
+        "不要自己写「参考来源」「参考文献」或 MES 编号清单；前端会在文末附可点击来源。",
         "「做不做」只给出三类参考：可以做成课题 / 已有积累暂不必再开同类描述题 / 现在还说不清。",
-        "「证据」技能：只统计入库文献的等级（L1–L9）、研究设计、能否支撑立项；明确写「现场信号不是发表证据」。",
+        "「证据」技能：只统计入库文献的等级（L1–L9）、研究设计、能否支撑立项。",
         "询问诊疗问题时拒绝作答。判断对象是「这题值不值得跟进」，不是「课题已获批」。"
       ],
       bans: [
-        "编造记录编号、文献结论或上传次数",
+        "编造记录编号或文献结论",
         "把小样本、横断面或基础遗传研究写成「领域已做透」或「必须立项」",
+        "提及现场信号、脱敏计数或临床端上传次数",
+        "在正文自行罗列参考来源或编号清单",
         "收集、复述或索要可识别个人信息",
         "扮演临床助手作诊断、处方或剂量判断",
         "代替基金评审、伦理委员会或单位下达立项决定"
       ],
       structure: [
-        "三个技能共用：先摘要、后证据条（可选）、参考来源可点。",
-        "开题对照：文献 + 现场，这题有没有人做过。",
+        "先小标题「判断摘要」，再小标题「理由」。",
+        "开题对照：库内几条、覆盖到哪、还缺什么。",
         "做不做研究：三选一立项参考。",
-        "证据：等级分布、设计类型、能否支撑立项；现场信号单独标注「非证据」。"
+        "证据：等级分布、设计类型、能否支撑立项。"
       ],
       structureTopic: [
-        "判断摘要：2～4 句，文献条数 + 现场笔数 + 对照结论。",
-        "可选证据条：入库 / 等级 / 设计分布（compact）。",
-        "参考来源：可点击 MES 编号。"
+        "判断摘要：2～4 句，可分成两段。",
+        "理由：2～4 段，每段单独一行，不要用短横杠或编号开头。"
       ],
       structureDecide: [
-        "判断摘要：首句给三选一（可以做成课题 / 已有积累 / 现在还说不清）。",
-        "理由：现场与文献如何对照；口诀一句即可。",
-        "证据条 + 参考来源。"
+        "判断摘要：首句给三选一（可以做成课题 / 已有积累 / 现在还说不清），随后单独成段写覆盖情况。",
+        "理由：2～4 段，每段单独一行，不要用短横杠或编号开头。"
       ],
       structureEvidence: [
-        "证据摘要：条数、整体强弱（偏高/偏低/几乎无）。",
-        "等级与设计分布（由命中条目算出，禁止编造）。",
-        "立项含义：能否支撑强结论还是仅探索性假说；现场信号注明「非证据」。",
-        "参考来源可点进 PICOS 与 GRADE。"
+        "判断摘要：条数、整体强弱（偏高/偏低/几乎无），可分成两段。",
+        "理由：等级与设计各写一段；能否支撑强结论还是仅探索性假说再写一段。不要用短横杠或编号开头。"
       ],
       structureSignal: [
         "边界声明：只说明有无医生上传过该类情况，不能据此改医嘱。",
@@ -1909,7 +2638,7 @@
       if (state.assistant === "research") {
         return `<div class="warn">本助手不回答个体诊疗问题。</div>
           <p>不提供如何治疗、开具何种药物、如何调整剂量或是否确诊等意见。</p>
-          <p style="margin-top:8px">请改为说明<strong>民族/人群</strong>与<strong>疾病或药物</strong>。本助手只做选题对照：现有研究覆盖多少、现场信号如何、这题是否值得跟进。</p>
+          <p style="margin-top:8px">请改为说明<strong>民族/人群</strong>与<strong>疾病或药物</strong>。本助手只做选题对照：现有研究覆盖多少、这题是否值得跟进。</p>
           <p class="note">诊疗问题请转临床助手；临床助手亦不替代诊疗。医生仍须完成问诊与检查，并依据指南与个体情况处置。</p>`;
       }
       return `<div class="warn">本助手不回答个体诊疗问题。</div>
@@ -2012,7 +2741,7 @@
       const list = (rows || []).slice(0, limit || 5);
       if (!list.length) return "";
       return `<div class="cite-foot">
-        <span class="cite-foot-label">参考来源 · 点击查看详情</span>
+        <span class="cite-foot-label">参考来源</span>
         ${list.map((e, i) => {
           const title = (e.title || e.recTitle || e.topic || "").replace(/"/g, "'");
           return `<button type="button" class="cite-chip" data-lit-open="${e.id}" title="${title}">[${i + 1}] ${citeLabel(e)}</button>`;
@@ -2289,25 +3018,27 @@
       });
     }
 
-    function promptPack(kind) {
+    function promptPack(kind, mode) {
       const p = kind === "research" ? RESEARCH_PROMPT : CLINIC_PROMPT;
       const extra = kind === "research"
-        ? (p.structureDecide || p.structure || [])
-        : (p.structureJudge || p.structure || []);
+        ? (mode === "evidence" ? (p.structureEvidence || p.structure)
+          : mode === "topic" ? (p.structureTopic || p.structure)
+          : (p.structureDecide || p.structure))
+        : (mode === "frontier" ? (p.structureFrontier || p.structure) : (p.structureJudge || p.structure));
       return [
         p.role,
         "范围：" + p.scope,
         "规则：\n- " + (p.rules || []).join("\n- "),
         "禁止：\n- " + (p.bans || []).join("\n- "),
         "结构：\n- " + extra.join("\n- "),
-        "输出要求：用简洁中文，可用 **加粗**。不要写 HTML。不要编造 MES 编号或文献结论。文末不要自己列来源编号（前端会附真实可点击来源）。不要给出诊疗方案、处方、剂量或立项批准。若命中为 0 条，只说库内没有对上的材料，不要用库外机制、基因名或全国结论来顶替。"
+        "输出要求：用简洁中文。先写小标题「判断摘要」，空一行后再写小标题「理由」。判断摘要可分成两段：首句给结论，随后另起一段写覆盖情况。理由每条单独成段、单独一行，不要在句首写短横杠、项目符号或编号。可用 **加粗**。不要写 HTML。不要编造 MES 编号或文献结论。不要写「参考来源」「参考文献」或编号清单（前端会附真实可点击来源）。不要提及现场信号、脱敏计数或临床端上传。不要给出诊疗方案、处方、剂量或立项批准。若命中为 0 条，只说库内没有对上的材料，不要用库外机制、基因名或全国结论来顶替。"
       ].join("\n\n");
     }
 
     function litBrief(rows) {
       if (!rows || !rows.length) return "无命中条目。禁止编造编号或结论。";
       return rows.slice(0, 8).map((e, i) => {
-        return `[${i + 1}] ${citeLabel(e)}｜${e.ethnicity}｜${e.topic}｜类型:${e.type}｜结论:${e.conclusion}｜范围:${e.scope}｜边界:${e.boundary}`;
+        return `[${i + 1}] ${citeLabel(e)}｜${e.ethnicity}｜${e.topic}｜等级:${e.gradeName || e.grade || e.type || "—"}｜结论:${e.conclusion}｜边界:${e.boundary || ""}`;
       }).join("\n");
     }
 
@@ -2315,11 +3046,28 @@
       return {
         judge: "技能：辅助判断。只说明现有公开研究知道多少、够不够对照，不诊断、不开药。",
         frontier: "技能：前沿研究。只说明库内这个方向有什么、脉络与边界。",
-        topic: "技能：开题对照。同时看文献条数与现场信号笔数，说明这题有没有人做过。",
+        topic: "技能：开题对照。只看入库文献条数与覆盖，说明这题有没有人做过。",
         decide: "技能：做不做研究。三选一：可以做成课题 / 已有积累暂不必再开同类描述题 / 现在还说不清。不批准立项。",
-        evidence: "技能：证据。只统计入库文献等级与设计；现场信号不算发表证据。",
+        evidence: "技能：证据。只统计入库文献等级与设计。",
         lit: "技能：文献对照。根据命中条目说明现有材料覆盖与边界。"
       }[mode] || "技能：文献对照。";
+    }
+
+    function llmCleanText(text) {
+      let t = String(text || "").replace(/\r\n/g, "\n").trim();
+      t = t.replace(/现场信号不是发表证据[。．]?\s*/g, "");
+      t = t.split("\n").map((line) => {
+        const s = line.trim();
+        if (!s) return "";
+        if (/^#{0,3}\s*\*{0,2}参考来源/.test(s)) return "";
+        if (/^#{0,3}\s*\*{0,2}参考文献/.test(s)) return "";
+        if (/^MES-/.test(s)) return "";
+        if (/^—?\s*碰到的其他文献/.test(s)) return "";
+        if (/证据等级与设计分见文末/.test(s)) return "";
+        return s.replace(/[^。；\n]*?(?:现场信号|脱敏计数|脱敏现场)[^。；\n]*[。；]?/g, "");
+      }).filter((line) => line.replace(/^[-•]\s+/, "").trim()).join("\n");
+      t = t.replace(/\n{3,}/g, "\n\n").trim();
+      return t;
     }
 
     function llmInnerHtml(text) {
@@ -2327,9 +3075,55 @@
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;");
-      let t = esc(String(text || "").trim());
-      t = t.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
-      return t.split(/\n{2,}/).map((p) => `<p>${p.replace(/\n/g, "<br>")}</p>`).join("");
+      const strip = (s) => String(s || "").replace(/<[^>]+>/g, "");
+      const headingOf = (line) => {
+        const raw = strip(line).replace(/^#{1,3}\s+/, "").trim();
+        const names = "判断摘要|理由|证据条|研究概况|说明|立项含义";
+        if (new RegExp("^(" + names + ")[:：]?$").test(raw)) {
+          return { name: raw.replace(/[:：]$/, ""), rest: "" };
+        }
+        const m = raw.match(new RegExp("^(" + names + ")[:：]\\s*(.*)$"));
+        return m ? { name: m[1], rest: m[2] } : null;
+      };
+      const isListLine = (line) => /^([-•]|\d+[\.、])\s+/.test(strip(line));
+      const listItem = (line) => line.replace(/^([-•]|\d+[\.、])\s+/, "");
+      const splitSents = (s) => String(s || "").split(/(?<=[。！？])\s*/).map((x) => x.trim()).filter(Boolean);
+      let t = llmCleanText(text);
+      t = t.replace(/(^|\n)#{0,3}\s*\*{0,2}(判断摘要|理由|证据条|研究概况|说明|立项含义)\*{0,2}[:：]?\s*(?=\n|$)/g, "\n\n$2\n\n");
+      t = t.replace(/([^\n])\n\*{0,2}(判断摘要|理由|证据条|研究概况|说明|立项含义)\*{0,2}[:：]\s*/g, "$1\n\n$2\n\n");
+      t = t.replace(/\n{3,}/g, "\n\n").trim();
+      t = esc(t).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+      const blocks = t.split(/\n{2,}/).filter(Boolean);
+      const html = [];
+      let usedLead = false;
+      const emitPoints = (lines, asLead) => {
+        if (!lines.length) return;
+        const texts = lines.map((line) => isListLine(line) ? listItem(line) : line).filter(Boolean);
+        if (asLead && !usedLead) {
+          const sents = splitSents(texts.join(""));
+          if (sents.length) {
+            html.push("<p class=\"reply-summary\">" + sents[0] + "</p>");
+            usedLead = true;
+            sents.slice(1).forEach((s) => html.push("<p class=\"reply-point\">" + s + "</p>"));
+            return;
+          }
+        }
+        texts.forEach((s) => {
+          html.push("<p class=\"reply-point\">" + s + "</p>");
+        });
+      };
+      blocks.forEach((block) => {
+        const lines = block.split("\n").map((l) => l.trim()).filter(Boolean);
+        if (!lines.length) return;
+        const head = headingOf(lines[0]);
+        if (head) {
+          html.push("<h4>" + head.name + "</h4>");
+          emitPoints([head.rest].concat(lines.slice(1)).filter(Boolean), head.name === "判断摘要");
+          return;
+        }
+        emitPoints(lines, !usedLead);
+      });
+      return html.join("");
     }
 
     function callLlm(messages) {
@@ -2348,7 +3142,7 @@
     }
 
     function fillWithLlm(opts) {
-      const { mode, text, dims, rows, sc, fallback, seq } = opts;
+      const { mode, text, dims, rows, fallback, seq } = opts;
       const kind = (state.assistant === "research" || mode === "topic" || mode === "decide" || mode === "evidence")
         ? "research" : "clinic";
       const userBlock = [
@@ -2356,11 +3150,10 @@
         "用户问题：" + text,
         "已解析槽位：民族=" + (dims.eth || "未点明") + "；病/药=" + (dims.topic || "未点明"),
         "命中入库文献（共 " + (rows || []).length + " 条）：\n" + litBrief(rows),
-        sc != null ? ("现场信号（脱敏计数，非证据）：" + sc + " 笔") : "",
         "只根据以上入库摘要作答，不得引用论坛。"
-      ].filter(Boolean).join("\n\n");
+      ].join("\n\n");
       callLlm([
-        { role: "system", content: promptPack(kind) },
+        { role: "system", content: promptPack(kind, mode) },
         { role: "user", content: userBlock }
       ]).then((d) => {
         if (seq !== state.llmSeq) return;
@@ -2419,7 +3212,6 @@
       let rows = [];
       let fallback = "";
       let asked = dims;
-      let sc = null;
       if (mode === "judge") {
         if (d.eth) state.clinicAsk.eth = d.eth;
         if (d.topic) state.clinicAsk.topic = d.topic;
@@ -2433,7 +3225,6 @@
         rows = (mode === "evidence" || (asked.eth && asked.topic))
           ? matchResearch(asked.eth, asked.topic, text)
           : [];
-        sc = signalCount(asked.eth, asked.topic);
         if (mode === "topic") fallback = topicReply(asked, rows);
         else if (mode === "decide") fallback = decideReply(asked, rows);
         else fallback = evidenceReply(asked, rows);
@@ -2461,7 +3252,7 @@
         state.input = "";
         if (state.caseLive || state.judgeLive) state.tips = [];
         render();
-        fillWithLlm({ mode, text, dims: asked, rows, sc, fallback, seq });
+        fillWithLlm({ mode, text, dims: asked, rows, fallback, seq });
         return;
       }
       state.msgs.push({ role: "bot", html: fallback });
@@ -2576,28 +3367,21 @@
       const miss = missingDimsNote(dims, "开题对照只说明这题有没有人做过，不替代课题评审。");
       if (miss) return miss;
       const n = rows.length;
-      const sc = signalCount(dims.eth, dims.topic);
       const weak = n <= 2;
       const focus = `${dims.eth} · ${dims.topic}`;
       let lead;
       let detail;
-      if (n === 0 && sc === 0) {
-        lead = `关于<strong>${focus}</strong>，文献和现场信号<strong>都几乎为空</strong>。`;
-        detail = `<p>现在还说不清这题值不值得跟，不宜据此硬行开题。</p>`;
-      } else if (n === 0 && sc > 0) {
-        lead = `关于<strong>${focus}</strong>，库里几乎没有发表材料，但临床端已有 <strong>${sc}</strong> 笔现场信号。`;
-        detail = `<p>这更像「现场有、文献缺」的可探索方向。可作假说，<strong>不可作诊疗依据</strong>；现场信号不算发表证据。</p>`;
-      } else if (weak && sc >= 2) {
-        lead = `关于<strong>${focus}</strong>，发表材料只有 <strong>${n}</strong> 条，现场却已有 <strong>${sc}</strong> 笔上报。`;
-        detail = `<p>论文少、现场多——可以考虑做成课题假说，仍须自行完成设计与伦理审查。</p>`;
-      } else if (!weak && sc === 0) {
-        lead = `关于<strong>${focus}</strong>，库里已有 <strong>${n}</strong> 条材料，现场信号尚未攒起。`;
-        detail = `<p>宜先核对口径与能否跨民族横比，再决定是否重复做同类描述题。</p>`;
+      if (n === 0) {
+        lead = `关于<strong>${focus}</strong>，库里目前<strong>几乎没有</strong>对上的发表材料。`;
+        detail = `<p>这不代表全网空白，只是本库尚未收录可对上的条目。不宜据此认定「没人做过」或「必须开题」。</p>`;
+      } else if (weak) {
+        lead = `关于<strong>${focus}</strong>，库里目前有 <strong>${n}</strong> 条相关材料，整体<strong>偏少</strong>。`;
+        detail = `<p>现有条目覆盖有限，尚不足以把该组合写成「已做透」。</p>`;
       } else {
-        lead = `关于<strong>${focus}</strong>，文献 <strong>${n}</strong> 条、现场 <strong>${sc}</strong> 笔，两侧都有一些。`;
-        detail = `<p>请对照后决定：跟进、不重复开同类描述题，或仍不能下结论。</p>`;
+        lead = `关于<strong>${focus}</strong>，库里目前有 <strong>${n}</strong> 条相关材料，已有一定覆盖。`;
+        detail = `<p>宜先核对口径与能否跨民族横比，再决定是否重复做同类描述题。</p>`;
       }
-      const body = `<p class="reply-summary">${lead}</p>${detail}${n ? evidenceMiniHtml(rows, sc) : (sc ? evidenceMiniHtml([], sc) : "")}`;
+      const body = `<p class="reply-summary">${lead}</p>${detail}${n ? evidenceMiniHtml(rows) : ""}`;
       return clinicReplyWrap(body, rows);
     }
 
@@ -2605,18 +3389,16 @@
       const miss = missingDimsNote(dims, "证据对照只统计入库文献，不替代系统评价或课题评审。");
       if (miss) return miss;
       const n = rows.length;
-      const sc = signalCount(dims.eth, dims.topic);
       const g = evidenceGradeSummary(rows);
       const focus = `${dims.eth} · ${dims.topic}`;
       let body;
       if (!n) {
         body = `<p class="reply-summary">关于<strong>${focus}</strong>，库里<strong>没有</strong>可对上的发表条目。</p>
-          <p>就证据而言，目前<strong>不足以支撑立项结论</strong>。${sc ? `临床端虽有 ${sc} 笔现场信号，但<strong>现场上报不算发表证据</strong>，只能作选题参考。` : ""}</p>`;
+          <p>就证据而言，目前<strong>不足以支撑立项结论</strong>。</p>`;
       } else {
         body = `<p class="reply-summary">关于<strong>${focus}</strong>，入库 <strong>${n}</strong> 条，证据<strong>${g.level === "low" ? "整体偏低" : "有一定基础但仍须逐条核对"}</strong>。</p>
-          ${evidenceMiniHtml(rows, sc)}
-          <p>${g.verdict}。分布：${g.dist}。立项时须核对 PICOS、样本量与 GRADE 边界——单条观察性通常只够探索性假说，不够支撑强结论。</p>
-          ${sc ? `<p>临床端 ${sc} 笔现场信号<strong>不计入证据等级</strong>，仅说明「有人碰到过」。</p>` : ""}`;
+          ${evidenceMiniHtml(rows)}
+          <p>${g.verdict}。分布：${g.dist}。立项时须核对 PICOS、样本量与 GRADE 边界——单条观察性通常只够探索性假说，不够支撑强结论。</p>`;
       }
       return clinicReplyWrap(body, rows);
     }
@@ -2625,35 +3407,24 @@
       const miss = missingDimsNote(dims, "立项参考不等于课题获批。本助手不替代课题评审。");
       if (miss) return miss;
       const n = rows.length;
-      const sc = signalCount(dims.eth, dims.topic);
       const weak = n <= 2;
       const focus = `${dims.eth} · ${dims.topic}`;
       let choice = "现在还说不清";
-      let reason = "现场信号与文献均不够，不能下结论。";
-      if (sc >= 3 && (n === 0 || weak)) {
-        choice = "可以做成课题";
-        reason = `现场同类已有 ${sc} 笔，入库条目却很少——更像「现场有、文献少」的缺口。可作课题假说，不可作诊疗依据。`;
-      } else if (sc >= 3 && !weak) {
-        choice = "已有积累，暂不必再开同类描述题";
-        reason = "现场仍在发生，但文献已有一定覆盖。宜先消化现有材料，不宜再开同类描述题。";
-      } else if (sc > 0 && n === 0) {
-        choice = "可以做成课题";
-        reason = "文献几乎空白，但现场已有信号。可考虑小范围研究设计，仍须自行完成伦理与方案。";
-      } else if (sc === 0 && !weak) {
-        choice = "已有积累，暂不必再开同类描述题";
-        reason = "现场信号尚未攒起，文献却已有若干。不宜仅因「感觉新」即立项。";
-      } else if (sc === 0 && (n === 0 || weak)) {
+      let reason = "库内材料不够，不能下结论。";
+      if (n === 0) {
         choice = "现在还说不清";
-        reason = "现场与文献均薄。可待临床端再确认若干笔后再判断。";
+        reason = "库内没有对上的发表材料，不能据此硬行开题，也不宜据此认定必须立项。";
+      } else if (weak) {
+        choice = "可以做成课题";
+        reason = `入库仅 ${n} 条，多为单中心或观察性材料，覆盖有限。现有材料不足以把「已做透」当作不开题的理由。`;
       } else {
-        choice = "现在还说不清";
-        reason = "文献与现场均有一些，但尚未形成清晰对照。请自行权衡是否跟进。";
+        choice = "已有积累，暂不必再开同类描述题";
+        reason = `库内已有 ${n} 条相关材料。宜先核对口径、样本与能否跨民族横比，不宜仅因「感觉新」再开同类描述题。`;
       }
       state.lastJudgement = choice;
       const body = `<p class="reply-summary">关于<strong>${focus}</strong>，我的参考是：<strong>${choice}</strong>。</p>
         <p>${reason}</p>
-        <p style="font-size:13px;color:#555">口诀：医生报得多且文献很少，更值得考虑新研究；反之不宜急于立项。</p>
-        ${evidenceMiniHtml(rows, sc)}
+        ${evidenceMiniHtml(rows)}
         <p class="note" style="margin-top:8px">立项参考，不替代课题评审、伦理审查或研究设计。</p>`;
       return clinicReplyWrap(body, rows);
     }
@@ -2681,14 +3452,17 @@
     }
 
     function startAgent(mode) {
-      state.llmSeq += 1;
+      const keepChat = state.msgs.some((m) => m.role === "me") && !state.caseLive && !state.judgeLive;
+      if (!keepChat) state.llmSeq += 1;
       state.chatMode = mode;
       state.page = "home";
       state.caseLive = false;
       state.judgeLive = false;
-      state.clinicAsk = { eth: "", topic: "" };
-      state.researchAsk = { eth: "", topic: "" };
-      state.msgs = [];
+      if (!keepChat) {
+        state.clinicAsk = { eth: "", topic: "" };
+        state.researchAsk = { eth: "", topic: "" };
+        state.msgs = [];
+      }
       state.tips = {
         frontier: ["最新傣族代谢有什么研究？", "傣族G6PD变异，库里有没有？"],
         judge: ["傣族用华法林后出血，现有研究够不够判断？", "傣族代谢问题，能不能套汉族结论？", "这个人该怎么治、开什么药？"],
@@ -2697,7 +3471,7 @@
         decide: ["傣族华法林这题，做还是不做？", "傣族代谢，跟不跟？"],
         evidence: ["维吾尔族华法林，证据等级怎么样？", "傣族代谢，发表材料强不强？"]
       }[mode] || [];
-      if (mode === "judge" || mode === "frontier") {
+      if (!keepChat && (mode === "judge" || mode === "frontier")) {
         state.msgs = [{
           role: "bot",
           html: mode === "judge"
@@ -2705,11 +3479,11 @@
             : `下面按库内已入库条目作答。请点提示问题，或说明民族和病/药。`
         }];
       }
-      if (mode === "topic" || mode === "decide" || mode === "evidence") {
+      if (!keepChat && (mode === "topic" || mode === "decide" || mode === "evidence")) {
         const extra = {
-          topic: "对照入库文献与现场信号，说明这题有没有人做过。",
-          decide: "对照文献存量与现场信号，给出立项参考，不替代课题评审。",
-          evidence: "只统计入库文献的等级与设计；现场信号不算发表证据。"
+          topic: "对照入库文献，说明这题有没有人做过。",
+          decide: "对照文献存量，给出立项参考，不替代课题评审。",
+          evidence: "只统计入库文献的等级与设计。"
         }[mode];
         state.msgs = [{
           role: "bot",
@@ -2910,17 +3684,16 @@
         ${wxHeader()}
         <div class="body">${body}</div>
         <div class="dock">
-          ${!modeOn || sessionLive ? `<div class="chips">
+          <div class="chips">
             ${clinic ? `
-              <button data-agent="frontier">前沿研究</button>
-              <button data-agent="judge">辅助判断</button>
+              <button data-agent="frontier" class="${state.chatMode === "frontier" ? "on" : ""}">前沿研究</button>
+              <button data-agent="judge" class="${state.chatMode === "judge" ? "on" : ""}">辅助判断</button>
             ` : `
-              <button data-agent="topic">开题对照</button>
-              <button data-agent="decide">做不做研究</button>
-              <button data-agent="evidence">证据</button>
+              <button data-agent="topic" class="${state.chatMode === "topic" ? "on" : ""}">开题对照</button>
+              <button data-agent="decide" class="${state.chatMode === "decide" ? "on" : ""}">做不做研究</button>
+              <button data-agent="evidence" class="${state.chatMode === "evidence" ? "on" : ""}">证据</button>
             `}
-          </div>` : ""}
-          ${modeOn && !sessionLive ? `<div class="mode-chip">${svg("book")} ${modeLabel()}<button type="button" class="x alone" id="clear-mode">×</button></div>` : ""}
+          </div>
           ${modeOn && !sessionLive && state.tips && state.tips.length ? `<div class="suggest" style="margin-bottom:8px">${state.tips.map((t) => `<button type="button" data-ask="${t.replace(/"/g, "&quot;")}">${t}</button>`).join("")}</div>` : ""}
           ${llmStatusLine()}
           <div class="inputbar">
