@@ -44,5 +44,4 @@ py -3 demo/server.py
 
 - 文献 `ENTRIES` / `SHELVES` → `src/literature/data/`
 - `CLINIC_PROMPT` / `RESEARCH_PROMPT` 与问答 → `src/agents/`
-- 论坛 UI → `src/forum/`
 - 顶栏与路由 → `src/app/`

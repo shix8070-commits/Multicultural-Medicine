@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>临床助手 · 科研助手 · 我的论坛</title>
+  <title>临床助手 · 科研助手</title>
   <style>
     :root {
       --ink: #1d2430;
@@ -188,7 +188,7 @@
       font: inherit;
       font-size: 12px;
       color: #5c6573;
-      padding: 6px 2px;
+      padding: 6px 10px;
       border-radius: 15px;
       cursor: pointer;
       white-space: nowrap;
@@ -928,290 +928,6 @@
       background: var(--bar-grad);
       color: var(--ink);
       margin-bottom: 10px;
-    }
-    .forum {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-      background: var(--page-grad);
-    }
-    .forum-body {
-      flex: 1;
-      min-height: 0;
-      overflow: auto;
-      padding: 10px 12px 12px;
-    }
-    .forum-search {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255,255,255,.86);
-      border-radius: 16px;
-      padding: 8px 12px;
-      margin-bottom: 10px;
-      color: #8a93a3;
-    }
-    .forum-search input {
-      flex: 1;
-      border: 0;
-      outline: none;
-      background: transparent;
-      font: inherit;
-      font-size: 13px;
-      color: var(--ink);
-    }
-    .forum-card {
-      background: rgba(255,255,255,.88);
-      border-radius: 18px;
-      padding: 12px;
-      margin-bottom: 10px;
-    }
-    .forum-user {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-    .forum-av {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      color: #fff;
-      font-size: 13px;
-      font-weight: 800;
-      flex-shrink: 0;
-      background: linear-gradient(145deg, #7eb8f0, #7b6ed8);
-    }
-    .forum-av.s2 { background: linear-gradient(145deg, #9bb6ff, #8b6ad6); }
-    .forum-av.s3 { background: linear-gradient(145deg, #6cb8e8, #6b6ad6); }
-    .forum-av.s4 { background: linear-gradient(145deg, #b9a8f0, #5a7fd6); }
-    .forum-av.lg { width: 64px; height: 64px; font-size: 22px; }
-    .forum-user b { display: block; font-size: 13px; }
-    .forum-user em {
-      display: block;
-      font-style: normal;
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 1px;
-    }
-    .forum-card p {
-      font-size: 13.5px;
-      line-height: 1.55;
-      color: #2a3140;
-    }
-    .forum-acts {
-      display: flex;
-      gap: 16px;
-      margin-top: 10px;
-      color: #8a93a3;
-      font-size: 12px;
-    }
-    .forum-acts button {
-      border: 0;
-      background: none;
-      color: inherit;
-      font: inherit;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      cursor: pointer;
-      padding: 0;
-    }
-    .forum-acts button.on { color: #6b6ad6; }
-    .forum-banner {
-      height: 128px;
-      border-radius: 16px;
-      margin-bottom: 10px;
-      overflow: hidden;
-      position: relative;
-      background:
-        radial-gradient(ellipse 80% 70% at 20% 10%, rgba(255,255,255,.55), transparent 55%),
-        linear-gradient(180deg, #9fd0ff 0%, #7ea8f4 38%, #6b6ad6 100%);
-    }
-    .forum-banner::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(115deg, transparent 40%, rgba(255,255,255,.18) 48%, transparent 56%),
-        linear-gradient(70deg, rgba(90, 80, 180, .12), transparent 40%);
-    }
-    .forum-photos {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-      margin-top: 10px;
-    }
-    .forum-photos i {
-      display: block;
-      aspect-ratio: 1;
-      border-radius: 10px;
-      background: linear-gradient(145deg, #8ec8f0, #8b7ee0);
-    }
-    .forum-photos i:nth-child(2) { background: linear-gradient(160deg, #b9d8ff, #6b6ad6); }
-    .forum-photos i:nth-child(3) { background: linear-gradient(200deg, #c5b8ff, #4f8ad6); }
-    .forum-like {
-      margin-top: 10px;
-      font-size: 12px;
-      color: #6b6ad6;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .forum-chat-item {
-      width: 100%;
-      border: 0;
-      background: rgba(255,255,255,.88);
-      border-radius: 16px;
-      padding: 10px 12px;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-align: left;
-      font: inherit;
-      cursor: pointer;
-    }
-    .forum-chat-item b { display: block; font-size: 14px; }
-    .forum-chat-item span {
-      display: block;
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .forum-thread {
-      flex: 1;
-      overflow: auto;
-      padding: 12px 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .forum-bubble {
-      max-width: 78%;
-      background: rgba(255,255,255,.92);
-      border-radius: 16px 16px 16px 6px;
-      padding: 10px 12px;
-      font-size: 14px;
-      line-height: 1.45;
-      align-self: flex-start;
-    }
-    .forum-bubble.me {
-      align-self: flex-end;
-      background: linear-gradient(135deg, #d4e9ff, #dcd4ff);
-      border-radius: 16px 16px 6px 16px;
-    }
-    .forum-time {
-      align-self: center;
-      font-size: 11px;
-      color: var(--muted);
-    }
-    .forum-compose textarea {
-      width: 100%;
-      min-height: 160px;
-      border: 0;
-      resize: none;
-      background: rgba(255,255,255,.9);
-      border-radius: 16px;
-      padding: 14px;
-      font: inherit;
-      font-size: 14px;
-      line-height: 1.5;
-      outline: none;
-    }
-    .forum-send {
-      width: 100%;
-      margin-top: 12px;
-      border: 0;
-      border-radius: 16px;
-      padding: 12px;
-      font: inherit;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      background: var(--bar-grad);
-      color: var(--ink);
-    }
-    .forum-me-head {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: rgba(255,255,255,.88);
-      border-radius: 18px;
-      padding: 16px;
-      margin-bottom: 10px;
-    }
-    .forum-me-head b { display: block; font-size: 18px; }
-    .forum-me-head span { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
-    .forum-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-    .forum-stats div {
-      background: rgba(255,255,255,.88);
-      border-radius: 14px;
-      padding: 12px 8px;
-      text-align: center;
-    }
-    .forum-stats strong { display: block; font-size: 18px; }
-    .forum-stats em { font-style: normal; font-size: 11px; color: var(--muted); }
-    .forum-menu {
-      width: 100%;
-      border: 0;
-      background: rgba(255,255,255,.88);
-      border-radius: 14px;
-      padding: 14px 12px;
-      margin-bottom: 8px;
-      font: inherit;
-      font-size: 14px;
-      font-weight: 650;
-      text-align: left;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      color: var(--ink);
-    }
-    .forum-menu em { font-style: normal; color: var(--muted); font-weight: 400; font-size: 12px; }
-    .forum-tabbar {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      background: rgba(255,255,255,.9);
-      border-top: 1px solid rgba(180, 190, 210, .35);
-      padding: 6px 0 10px;
-    }
-    .forum-tabbar button {
-      border: 0;
-      background: transparent;
-      font: inherit;
-      font-size: 10px;
-      color: #7a8494;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-      cursor: pointer;
-    }
-    .forum-tabbar button.on { color: #6b6ad6; font-weight: 700; }
-    .forum-tabbar svg { width: 22px; height: 22px; }
-    .forum-chat-go {
-      border: 0;
-      background: var(--bar-grad);
-      border-radius: 14px;
-      padding: 6px 12px;
-      font: inherit;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      color: var(--ink);
-      flex-shrink: 0;
     }
   </style>
 </head>
@@ -2320,50 +2036,7 @@
       researchAsk: { eth: "", topic: "" },
       promptKind: "clinic",
       userName: "王敏",
-      userTitle: "多民族健康证据 · 演示账号",
-      forumTab: "discover",
-      forumChatId: null,
-      forumDraft: "",
-      forumQuery: "",
-      forumLiked: {},
-      forumPosts: [
-        { id: "p1", av: "", name: "李医生", meta: "10分钟前 · 2个回复", text: "夏天接诊里又见到傣族华法林相关出血表现。现有公开研究还是很少，先记一笔观察，不当诊疗依据。", likes: 12, comments: 2, shares: 1 },
-        { id: "p2", av: "s2", name: "阿依古丽", meta: "1小时前 · 5个回复", text: "维吾尔族抗凝这块，现场信号和入库对照对不上。有人把华法林题目做过横向比较吗？", likes: 28, comments: 5, shares: 3 },
-        { id: "p3", av: "s3", name: "陈研究员", meta: "昨天 · 8个回复", text: "开题前想先看各民族覆盖。文献少、现场多的题目，才值得拿去对照，而不是先立项。", likes: 41, comments: 8, shares: 6 },
-        { id: "p4", av: "s4", name: "王敏", meta: "昨天 · 1个回复", text: "刚把脱敏观察留在库里。同类信号能不能被别处看见，从而知道值不值得研究。", likes: 9, comments: 1, shares: 0 }
-      ],
-      forumThreads: [
-        {
-          id: "c1",
-          name: "李医生",
-          av: "",
-          preview: "傣族华法林这批观察，你那边也见到了吗？",
-          msgs: [
-            { role: "them", text: "傣族华法林这批观察，你那边也见到了吗？" },
-            { role: "me", text: "见到了。先对照入库，不急着当结论。" }
-          ]
-        },
-        {
-          id: "c2",
-          name: "陈研究员",
-          av: "s3",
-          preview: "这题做还是先等等？",
-          msgs: [
-            { role: "them", text: "这题做还是先等等？" },
-            { role: "me", text: "现场多、文献少才值得跟。先看对照报告。" }
-          ]
-        },
-        {
-          id: "c3",
-          name: "观察圈",
-          av: "s2",
-          preview: "有人补充过现场信号",
-          msgs: [
-            { role: "them", text: "有人补充过现场信号，同类现象可以对照了。" },
-            { role: "me", text: "好，我去圈子里看一眼。" }
-          ]
-        }
-      ]
+      userTitle: "多民族健康证据 · 演示账号"
     };
 
     function hourGreet() {
@@ -2385,14 +2058,6 @@
       if (name === "report") return `<svg width="22" height="22" viewBox="0 0 24 24" ${a}><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4"/><path d="M10 12h6M10 16h4"/></svg>`;
       if (name === "star") return `<svg width="20" height="20" viewBox="0 0 24 24" ${a}><path d="M12 3l2.7 5.5 6 .9-4.4 4.3 1 6.1L12 16.9 6.7 19.8l1-6.1L3.3 9.4l6-.9L12 3z"/></svg>`;
       if (name === "starfill") return `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1"><path d="M12 3l2.7 5.5 6 .9-4.4 4.3 1 6.1L12 16.9 6.7 19.8l1-6.1L3.3 9.4l6-.9L12 3z"/></svg>`;
-      if (name === "home") return `<svg viewBox="0 0 24 24" ${a}><path d="M4 10.5L12 4l8 6.5V20a1 1 0 01-1 1h-5v-6H10v6H5a1 1 0 01-1-1v-9.5z"/></svg>`;
-      if (name === "plusbox") return `<svg viewBox="0 0 24 24" ${a}><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg>`;
-      if (name === "chat") return `<svg viewBox="0 0 24 24" ${a}><path d="M5 6h14a2 2 0 012 2v8a2 2 0 01-2 2H9l-4 3V8a2 2 0 012-2z"/></svg>`;
-      if (name === "hash") return `<svg viewBox="0 0 24 24" ${a}><path d="M9 4l-2 16M17 4l-2 16M4 9h16M3 15h16"/></svg>`;
-      if (name === "user") return `<svg viewBox="0 0 24 24" ${a}><circle cx="12" cy="8" r="3.2"/><path d="M5 19c1.2-4 12.8-4 14 0"/></svg>`;
-      if (name === "heart") return `<svg width="16" height="16" viewBox="0 0 24 24" ${a}><path d="M12 20s-7-4.4-7-9.2A4 4 0 0112 7a4 4 0 017 3.8C19 15.6 12 20 12 20z"/></svg>`;
-      if (name === "comment") return `<svg width="16" height="16" viewBox="0 0 24 24" ${a}><path d="M5 6h14v10H9l-4 3V6z"/></svg>`;
-      if (name === "share") return `<svg width="16" height="16" viewBox="0 0 24 24" ${a}><path d="M14 6l6 6-6 6M20 12H9a5 5 0 00-5 5"/></svg>`;
       if (name === "search") return `<svg width="16" height="16" viewBox="0 0 24 24" ${a}><circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/></svg>`;
       return `<svg width="86" height="96" viewBox="0 0 86 96"><ellipse cx="43" cy="90" rx="28" ry="6" fill="#cfe6f8"/><rect x="22" y="48" width="42" height="40" rx="14" fill="#7db7e8"/><circle cx="43" cy="32" r="16" fill="#f3d2c0"/><path d="M27 32c2-14 32-14 34 0" fill="#2c3a4a"/><rect x="54" y="38" width="14" height="10" rx="3" fill="#d9eefc"/></svg>`;
     }
@@ -3515,9 +3180,8 @@
     }
 
     function wxHeader() {
-      const onClinic = state.assistant === "clinic" && state.page !== "forum";
-      const onResearch = state.assistant === "research" && state.page !== "forum";
-      const onForum = state.page === "forum";
+      const onClinic = state.assistant === "clinic";
+      const onResearch = state.assistant === "research";
       return `
         <div class="status"><span>9:41</span><span>100%</span></div>
         <div class="wx-bar">
@@ -3525,137 +3189,8 @@
           <div class="seg">
             <button class="${onClinic ? "on" : ""}" data-as="clinic">临床助手</button>
             <button class="${onResearch ? "on" : ""}" data-as="research">科研助手</button>
-            <button class="${onForum ? "on" : ""}" data-as="forum">我的论坛</button>
           </div>
           <div class="capsule"><span>···</span><span><i class="cap-dot"></i></span></div>
-        </div>`;
-    }
-
-    function forumActs(p) {
-      const liked = !!state.forumLiked[p.id];
-      return `<div class="forum-acts">
-        <button type="button" data-like="${p.id}" class="${liked ? "on" : ""}">${svg("heart")} ${liked ? p.likes + 1 : p.likes}</button>
-        <button type="button">${svg("comment")} ${p.comments}</button>
-        <button type="button">${svg("share")} ${p.shares}</button>
-      </div>`;
-    }
-
-    function forumDiscover() {
-      const q = (state.forumQuery || "").trim();
-      const posts = state.forumPosts.filter((p) => !q || (p.name + p.text).includes(q));
-      return `
-        <div class="forum-search">${svg("search")}<input id="forum-q" placeholder="搜索帖子" value="${q.replace(/"/g, "&quot;")}" /></div>
-        ${posts.map((p) => `
-          <article class="forum-card">
-            <div class="forum-user">
-              <div class="forum-av ${p.av}">${p.name.slice(0, 1)}</div>
-              <div><b>${p.name}</b><em>${p.meta}</em></div>
-            </div>
-            <p>${p.text}</p>
-            ${forumActs(p)}
-          </article>
-        `).join("") || `<div class="forum-card"><p>没有找到相关帖子。</p></div>`}`;
-    }
-
-    function forumCircle() {
-      return `
-        <div class="forum-banner"></div>
-        <article class="forum-card">
-          <div class="forum-user">
-            <div class="forum-av s2">圈</div>
-            <div><b>多民族健康观察圈</b><em>今天 · 现场信号</em></div>
-          </div>
-          <p>今天把脱敏观察整理了一版。先看现有研究知道多少，再决定值不值得跟。</p>
-          <div class="forum-photos"><i></i><i></i><i></i></div>
-          <div class="forum-like">${svg("heart")} 你和其他 17 人赞了 · 102 次</div>
-        </article>
-        <article class="forum-card">
-          <div class="forum-user">
-            <div class="forum-av s3">陈</div>
-            <div><b>陈研究员</b><em>2小时前</em></div>
-          </div>
-          <p>圈子里这条华法林题目，文献还薄。欢迎把同类观察放进来对照，不讨论怎么治。</p>
-          ${forumActs({ id: "circle1", likes: 36, comments: 9, shares: 4 })}
-        </article>`;
-    }
-
-    function forumChatList() {
-      return `
-        <div class="forum-search">${svg("search")}<input id="forum-q" placeholder="搜索聊天" value="${(state.forumQuery || "").replace(/"/g, "&quot;")}" /></div>
-        ${state.forumThreads.map((t) => `
-          <button type="button" class="forum-chat-item" data-forum-chat="${t.id}">
-            <div class="forum-av ${t.av}">${t.name.slice(0, 1)}</div>
-            <div style="min-width:0;flex:1"><b>${t.name}</b><span>${t.preview}</span></div>
-          </button>
-        `).join("")}`;
-    }
-
-    function forumChatThread() {
-      const t = state.forumThreads.find((x) => x.id === state.forumChatId);
-      if (!t) return forumChatList();
-      return `
-        <div class="forum-thread">
-          ${t.msgs.map((m) => `<div class="forum-bubble ${m.role === "me" ? "me" : ""}">${m.text}</div>`).join("")}
-          <div class="forum-time">22:30</div>
-        </div>
-        <div class="dock">
-          <div class="inputbar">
-            ${svg("mic")}
-            <input id="forum-chat-in" placeholder="发送消息" />
-            <button class="forum-chat-go" id="forum-chat-send">发送</button>
-          </div>
-        </div>`;
-    }
-
-    function forumPublish() {
-      return `
-        <p class="note" style="margin:0 0 10px">只发脱敏观察或选题想法。不写可识别病历，不讨论怎么治、开什么药。</p>
-        <div class="forum-compose">
-          <textarea id="forum-draft" placeholder="分享现场观察、对照想法，或想问圈子的问题…">${(state.forumDraft || "").replace(/</g, "&lt;")}</textarea>
-          <button type="button" class="forum-send" id="forum-publish">发布</button>
-        </div>`;
-    }
-
-    function forumMe() {
-      return `
-        <div class="forum-me-head">
-          <div class="forum-av lg">${(state.userName || "用").slice(0, 1)}</div>
-          <div>
-            <b>${state.userName}</b>
-            <span>${state.userTitle}</span>
-          </div>
-        </div>
-        <div class="forum-stats">
-          <div><strong>${state.forumPosts.filter((p) => p.name === state.userName).length}</strong><em>帖子</em></div>
-          <div><strong>2</strong><em>圈子</em></div>
-          <div><strong>${state.favorites.length}</strong><em>收藏</em></div>
-        </div>
-        <button type="button" class="forum-menu" data-forum-tab="discover">我的帖子<em>发现</em></button>
-        <button type="button" class="forum-menu" data-forum-tab="circle">我的圈子<em>观察圈</em></button>
-        <button type="button" class="forum-menu" data-go="favorites">我的知识库<em>文献收藏</em></button>`;
-    }
-
-    function forumPage() {
-      const tab = state.forumTab || "discover";
-      const inChat = tab === "chat" && state.forumChatId;
-      let body = "";
-      if (tab === "discover") body = forumDiscover();
-      else if (tab === "publish") body = forumPublish();
-      else if (tab === "chat") body = inChat ? forumChatThread() : forumChatList();
-      else if (tab === "circle") body = forumCircle();
-      else body = forumMe();
-      return `
-        ${wxHeader()}
-        ${inChat ? `<div class="nav" style="height:40px;display:flex;align-items:center;gap:8px;padding:0 12px;font-weight:700"><button type="button" id="forum-chat-back" style="border:0;background:none;font-size:22px;cursor:pointer;width:28px">‹</button>${state.forumThreads.find((x) => x.id === state.forumChatId)?.name || "聊天"}</div>` : ""}
-        <div class="forum">
-          ${inChat ? body : `<div class="forum-body">${body}</div>`}
-          ${inChat ? "" : `<nav class="forum-tabbar">
-            <button type="button" class="${tab === "discover" ? "on" : ""}" data-forum-tab="discover">${svg("home")}发现</button>
-            <button type="button" class="${tab === "publish" ? "on" : ""}" data-forum-tab="publish">${svg("plusbox")}发布</button>
-            <button type="button" class="${tab === "chat" ? "on" : ""}" data-forum-tab="chat">${svg("chat")}聊天</button>
-            <button type="button" class="${tab === "circle" ? "on" : ""}" data-forum-tab="circle">${svg("hash")}圈子</button>
-            <button type="button" class="${tab === "me" ? "on" : ""}" data-forum-tab="me">${svg("user")}我</button>
-          </nav>`}
         </div>`;
     }
 
@@ -4057,14 +3592,13 @@
     let litComposing = false;
 
     function render() {
-      if (state.page === "board") state.page = "home";
+      if (state.page === "board" || state.page === "forum") state.page = "home";
       const oldLit = document.getElementById("q-lit");
       const keepLit = !!(oldLit && document.activeElement === oldLit);
       const litCaret = keepLit ? oldLit.selectionStart : 0;
       const root = document.getElementById("app");
       let html = "";
       if (state.page === "home") html = home();
-      if (state.page === "forum") html = forumPage();
       if (state.page === "lit") html = litPage();
       if (state.page === "litDetail") html = litDetailPage();
       if (state.page === "judgeHist") html = judgeHistPage();
@@ -4173,12 +3707,6 @@
       document.querySelectorAll("[data-as]").forEach((b) => {
         b.onclick = () => {
           state.drawerOpen = false;
-          if (b.dataset.as === "forum") {
-            state.page = "forum";
-            state.forumChatId = null;
-            render();
-            return;
-          }
           state.assistant = b.dataset.as;
           state.page = "home";
           state.chatMode = "";
@@ -4190,76 +3718,6 @@
           render();
         };
       });
-      document.querySelectorAll("[data-forum-tab]").forEach((b) => {
-        b.onclick = () => {
-          state.forumTab = b.dataset.forumTab;
-          state.forumChatId = null;
-          state.forumQuery = "";
-          render();
-        };
-      });
-      document.querySelectorAll("[data-forum-chat]").forEach((b) => {
-        b.onclick = () => {
-          state.forumChatId = b.dataset.forumChat;
-          render();
-        };
-      });
-      document.querySelectorAll("[data-like]").forEach((b) => {
-        b.onclick = () => {
-          const id = b.dataset.like;
-          state.forumLiked[id] = !state.forumLiked[id];
-          render();
-        };
-      });
-      const forumChatBack = document.getElementById("forum-chat-back");
-      if (forumChatBack) forumChatBack.onclick = () => { state.forumChatId = null; render(); };
-      const forumQ = document.getElementById("forum-q");
-      if (forumQ) {
-        forumQ.onkeydown = (e) => {
-          if (e.key !== "Enter") return;
-          state.forumQuery = forumQ.value;
-          render();
-        };
-      }
-      const forumDraft = document.getElementById("forum-draft");
-      if (forumDraft) {
-        forumDraft.oninput = () => { state.forumDraft = forumDraft.value; };
-      }
-      const forumPublishBtn = document.getElementById("forum-publish");
-      if (forumPublishBtn) {
-        forumPublishBtn.onclick = () => {
-          const text = (state.forumDraft || "").trim();
-          if (!text) return;
-          state.forumPosts.unshift({
-            id: "p" + Date.now(),
-            av: "s4",
-            name: state.userName,
-            meta: "刚刚 · 0个回复",
-            text,
-            likes: 0,
-            comments: 0,
-            shares: 0
-          });
-          state.forumDraft = "";
-          state.forumTab = "discover";
-          render();
-        };
-      }
-      const forumChatIn = document.getElementById("forum-chat-in");
-      const forumChatSend = document.getElementById("forum-chat-send");
-      if (forumChatIn && forumChatSend) {
-        const sendForum = () => {
-          const text = forumChatIn.value.trim();
-          if (!text) return;
-          const t = state.forumThreads.find((x) => x.id === state.forumChatId);
-          if (!t) return;
-          t.msgs.push({ role: "me", text });
-          t.preview = text;
-          render();
-        };
-        forumChatSend.onclick = sendForum;
-        forumChatIn.onkeydown = (e) => { if (e.key === "Enter") sendForum(); };
-      }
       document.querySelectorAll("[data-go]").forEach((b) => {
         b.onclick = () => go(b.dataset.go);
       });
